@@ -21,7 +21,7 @@ export interface Student {
 
 const useStudentList = () => {
   return useCustom<{ message: Student[] }>({
-    url: "/api/method/edu_quality.public.py.walsh.cmap.get_students",
+    url: "/api/method/unity_parent_app.api.cmap.get_students",
     method: "get",
     queryOptions: {
       queryKey: ["student", "list"],

@@ -17,7 +17,7 @@ interface TimetableResponse {
     error?: string;
   };
 }
-const API_URL = "/api/method/edu_quality.api.timetable.get_timetable_data";
+const API_URL = "/api/method/unity_parent_app.api.timetable.get_timetable_data";
 
 const fetchTimetable = async (
   studentGroup: string

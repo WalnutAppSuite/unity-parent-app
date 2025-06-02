@@ -21,7 +21,7 @@ const useBonafideList = (student_id: string) => {
             queryKey: ["bonafide_certificate", 'list_bonafide', student_id], 
         },
         successNotification: undefined,
-        url: '/api/method/edu_quality.public.py.walsh.bonafide.bonafide_list'
+        url: '/api/method/unity_parent_app.api.bonafide.bonafide_list'
     })
 }
 

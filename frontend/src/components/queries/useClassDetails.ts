@@ -38,7 +38,7 @@ const useClassDetails = (student: string, academic_year?: any) => {
       enabled: !!student,
     },
     successNotification: undefined,
-    url: "/api/method/edu_quality.public.py.walsh.cmap.get_student_class_details",
+    url: "/api/method/unity_parent_app.api.cmap.get_student_class_details",
   });
 };
 

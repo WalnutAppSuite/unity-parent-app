@@ -15,7 +15,7 @@ const useWeeklyCmapList = (division: string, date: string) => {
       queryKey: ["weeklyCmap", "list", date, division],
     },
     successNotification: undefined,
-    url: "/api/method/edu_quality.public.py.walsh.cmap.get_all_cmap_in_range",
+    url: "/api/method/unity_parent_app.api.cmap.get_all_cmap_in_range",
   });
 };
 

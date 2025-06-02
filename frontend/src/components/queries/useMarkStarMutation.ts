@@ -13,14 +13,14 @@ const useMarkAsStared = () => {
   })
   const mutationFunction = useCallback((variables: MarkAsStaredVariables) => {
     return mutate({
-      url: '/api/method/edu_quality.public.py.walsh.notices.mark_as_stared',
+      url: '/api/method/unity_parent_app.api.notices.mark_as_stared',
       method: 'post',
       values: variables
     })
   }, [mutate])
   const mutationAsyncFunction = useCallback((variables: MarkAsStaredVariables) => {
     return mutateAsync({
-      url: '/api/method/edu_quality.public.py.walsh.notices.mark_as_stared',
+      url: '/api/method/unity_parent_app.api.notices.mark_as_stared',
       method: 'post',
       values: variables
     })

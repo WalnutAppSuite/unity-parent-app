@@ -21,7 +21,7 @@ const usePastLeaveNotes = (student: string) => {
       queryKey: ["past-leave-note", "list", student],
     },
     successNotification: undefined,
-    url: "/api/method/edu_quality.public.py.walsh.leave.get_past_pick_ups",
+    url: "/api/method/unity_parent_app.api.leave.get_past_pick_ups",
   });
 };
 

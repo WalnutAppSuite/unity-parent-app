@@ -31,7 +31,7 @@ const usePortionCircularList = (unit: string, division: string) => {
       queryKey: ["cmap", "list", unit, division],
     },
     successNotification: undefined,
-    url: "/api/method/edu_quality.public.py.walsh.cmap.get_portion_circulars",
+    url: "/api/method/unity_parent_app.api.cmap.get_portion_circulars",
   });
 };
 

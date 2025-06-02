@@ -8,7 +8,7 @@ export const authProvider: AuthBindings = {
     myHeaders.append("Content-Type", "application/json");
 
     const response = await fetch(
-      "/api/method/edu_quality.public.py.walsh.login.verify_otp",
+      "/api/method/unity_parent_app.api.login.verify_otp",
       {
         method: "POST",
         headers: myHeaders,
@@ -46,7 +46,7 @@ export const authProvider: AuthBindings = {
     const pushToken = window.getPushNotificationToken?.();
 
     const response = await fetch(
-      "/api/method/edu_quality.public.py.walsh.login.logout",
+      "/api/method/unity_parent_app.api.login.logout",
       {
         method: "POST",
         headers: myHeaders,
@@ -104,7 +104,7 @@ const sendPushToken = async () => {
   if (pushToken) {
     try {
       const response = await fetch(
-        "/api/method/edu_quality.public.py.walsh.login.register_push_notice",
+        "/api/method/unity_parent_app.api.login.register_push_notice",
         {
           method: "POST",
           headers: {

@@ -48,7 +48,7 @@ const useStudentEvents = (studentId: string, filters: EventFilters = {}, pageSiz
 
       try {
         const response = await axios.post(
-          "/api/method/edu_quality.public.py.walsh.event.get_student_events",
+          "/api/method/unity_parent_app.api.event.get_student_events",
           {
             student_id: studentId,
             page,

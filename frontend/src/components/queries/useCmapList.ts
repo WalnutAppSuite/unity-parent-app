@@ -35,7 +35,7 @@ const useCmapList = (subject: string, unit: string, division: string) => {
       queryKey: ["cmap", 'list', subject, unit, division],
     },
     successNotification: undefined,
-    url: '/api/method/edu_quality.public.py.walsh.cmap.get_all_cmaps'
+    url: '/api/method/unity_parent_app.api.cmap.get_all_cmaps'
   })
 }
 

@@ -18,7 +18,7 @@ const useLeaveNote = () => {
   const mutationFunction = useCallback(
     (variables: LeaveNoteVariables) => {
       return mutate({
-        url: "/api/method/edu_quality.public.py.walsh.leave.add_leave_note",
+        url: "/api/method/unity_parent_app.api.leave.add_leave_note",
         method: "post",
         values: variables,
       });
@@ -28,7 +28,7 @@ const useLeaveNote = () => {
   const mutationAsyncFunction = useCallback(
     (variables: LeaveNoteVariables) => {
       return mutateAsync({
-        url: "/api/method/edu_quality.public.py.walsh.leave.add_leave_note",
+        url: "/api/method/unity_parent_app.api.leave.add_leave_note",
         method: "post",
         values: variables,
       });

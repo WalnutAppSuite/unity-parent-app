@@ -11,7 +11,7 @@ const useEventFolders = (studentId: string) => {
     ["event", "folders", studentId],
     async () => {
       const response = await axios.post(
-        "/api/method/edu_quality.public.py.walsh.event.get_event_folders",
+        "/api/method/unity_parent_app.api.event.get_event_folders",
         { student_id: studentId || "" },
         {
           headers: {

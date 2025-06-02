@@ -13,7 +13,7 @@ const useFeesAcademicYear = (student: string) => {
       queryKey: ["fees", "academic-year", "list", student],
     },
     successNotification: undefined,
-    url: "/api/method/edu_quality.public.py.walsh.fee.get_academic_year_with_fees",
+    url: "/api/method/unity_parent_app.api.fee.get_academic_year_with_fees",
   });
 };
 

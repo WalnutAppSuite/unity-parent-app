@@ -55,7 +55,7 @@ export const useDetailsList = (student_id: string) => {
             queryKey: ["DetailsDataList", student_id],
         },
         successNotification: undefined,
-        url: `/api/method/edu_quality.api.student.get_student_data`,
+        url: `/api/method/unity_parent_app.api.student.get_student_data`,
     })
 }
 

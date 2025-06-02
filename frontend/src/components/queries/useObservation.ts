@@ -33,7 +33,7 @@ export interface ObservationResponse {
 
 const useObservationList = (studentId: string, unit?: string) => {
   return useCustom<ObservationResponse>({
-    url: "/api/method/edu_quality.api.observation.get_observations",
+    url: "/api/method/unity_parent_app.api.observation.get_observations",
     method: "get",
     config: {
       query: {

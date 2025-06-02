@@ -18,7 +18,7 @@ const useEarlyPickUpMutation = () => {
   const mutationFunction = useCallback(
     (variables: EarlyPickUpNoteVariables) => {
       return mutate({
-        url: "/api/method/edu_quality.public.py.walsh.leave.add_early_pick_up",
+        url: "/api/method/unity_parent_app.api.leave.add_early_pick_up",
         method: "post",
         values: variables,
       });
@@ -28,7 +28,7 @@ const useEarlyPickUpMutation = () => {
   const mutationAsyncFunction = useCallback(
     (variables: EarlyPickUpNoteVariables) => {
       return mutateAsync({
-        url: "/api/method/edu_quality.public.py.walsh.leave.add_early_pick_up",
+        url: "/api/method/unity_parent_app.api.leave.add_early_pick_up",
         method: "post",
         values: variables,
       });

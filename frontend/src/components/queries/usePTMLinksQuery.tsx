@@ -12,7 +12,7 @@ export const usePTMLinksQuery = (selectedStudent: string) => {
       enabled: !!selectedStudent,
       queryKey: ["onlinePTMList", selectedStudent],
     },
-    url: `/api/method/edu_quality.cmap_jobs.get_upcoming_online_ptm_links`,
+    url: `/api/method/unity_parent_app.api.cmap_jobs.get_upcoming_online_ptm_links`,
   });
   return {
     data,
@@ -33,7 +33,7 @@ export const useOfflinePTMLinksQuery = (custom_school: string | undefined) => {
       enabled: !!custom_school,
       queryKey: ["offlinePTMList", custom_school],
     },
-    url: `/api/method/edu_quality.api.calendar.get_calender_events`,
+    url: `/api/method/unity_parent_app.api.calendar.get_calender_events`,
   });
 
   return {

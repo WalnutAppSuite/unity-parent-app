@@ -43,7 +43,7 @@ export const Login = () => {
         setSendingOtp(true);
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        fetch("/api/method/edu_quality.public.py.walsh.login.send_otp", {
+        fetch("/api/method/unity_parent_app.api.login.send_otp", {
           method: "POST",
           headers: myHeaders,
           body: JSON.stringify({

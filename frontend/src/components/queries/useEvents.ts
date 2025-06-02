@@ -21,7 +21,7 @@ const useEvents = (folder: string, studentId?: string) => {
     queryKey: ["events", folder, studentId],
     queryFn: async () => {
       const response = await axios.post(
-        "/api/method/edu_quality.public.py.walsh.event.get_events",
+        "/api/method/unity_parent_app.api.event.get_events",
         {
           folder: folder || "",
           student_id: studentId || "",

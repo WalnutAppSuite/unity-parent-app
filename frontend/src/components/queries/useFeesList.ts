@@ -36,7 +36,7 @@ const useFeesList = (student: string, academic_year: string | null) => {
       enabled: !!student,
     },
     successNotification: undefined,
-    url: "/api/method/edu_quality.public.py.walsh.fee.get_student_fees",
+    url: "/api/method/unity_parent_app.api.fee.get_student_fees",
   });
 };
 

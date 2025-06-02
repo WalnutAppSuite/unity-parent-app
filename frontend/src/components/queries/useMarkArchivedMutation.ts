@@ -13,14 +13,14 @@ const useMarkAsArchived = () => {
   })
   const mutationFunction = useCallback((variables: MarkAsArchivedVariables) => {
     return mutate({
-      url: '/api/method/edu_quality.public.py.walsh.notices.mark_as_archived',
+      url: '/api/method/unity_parent_app.api.notices.mark_as_archived',
       method: 'post',
       values: variables
     })
   }, [mutate])
   const mutationAsyncFunction = useCallback((variables: MarkAsArchivedVariables) => {
     return mutateAsync({
-      url: '/api/method/edu_quality.public.py.walsh.notices.mark_as_archived',
+      url: '/api/method/unity_parent_app.api.notices.mark_as_archived',
       method: 'post',
       values: variables
     })

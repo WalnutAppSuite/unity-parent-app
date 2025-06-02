@@ -21,7 +21,7 @@ const useAllEvents = (studentId: string) => {
     async () => {
       // Get all available folders for this student
       const foldersResponse = await axios.post(
-        "/api/method/edu_quality.public.py.walsh.event.get_event_folders",
+        "/api/method/unity_parent_app.api.event.get_event_folders",
         { student_id: studentId || "" },
         {
           headers: {
@@ -38,7 +38,7 @@ const useAllEvents = (studentId: string) => {
       // For each folder, get all events
       const allEventsPromises = folders.map((folder) =>
         axios.post(
-          "/api/method/edu_quality.public.py.walsh.event.get_events",
+          "/api/method/unity_parent_app.api.event.get_events",
           {
             folder: folder,
             student_id: studentId || "",

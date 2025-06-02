@@ -33,7 +33,7 @@ const useEventDetails = (eventId: string) => {
     ["event_details", eventId],
     async () => {
       const response = await axios.post(
-        "/api/method/edu_quality.public.py.walsh.event.get_event_details",
+        "/api/method/unity_parent_app.api.event.get_event_details",
         { event_id: eventId || "" },
         {
           headers: {

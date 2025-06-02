@@ -34,7 +34,7 @@ const useNoticeList = (props: NoticeListProps) => {
     ["student", "list", props.staredOnly, props.archivedOnly],
     async ({ pageParam }) => {
       const response = await fetch(
-        `/api/method/edu_quality.public.py.walsh.notices.get_all_notices?${new URLSearchParams(
+        `/api/method/unity_parent_app.api.notices.get_all_notices?${new URLSearchParams(
           {
             stared_only: props.staredOnly?.toString() || "",
             archived_only: props.archivedOnly?.toString() || "",
