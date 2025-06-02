@@ -10,7 +10,7 @@ export interface Cmap extends BaseRecord {
 
 const cmapsDataProvider: Partial<IDataContextProvider> = {
   getList: async () => {
-    const url = "/api/method/unity_parent_app.api.cmaps.get_all_cmaps"
+    const url = "/api/method/edu_quality.public.py.walsh.cmaps.get_all_cmaps"
     const response = await fetch(url);
     const data = await response.json();
     if (!data?.message?.success) {

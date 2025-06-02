@@ -1,5 +1,9 @@
 import frappe
 from frappe import _
+from walmiki_lms.walmiki_lms.utils import (
+    get_current_academic_year,
+)
+
 @frappe.whitelist()
 def get_observations(student_id, unit=None):
     response = {
@@ -10,63 +14,70 @@ def get_observations(student_id, unit=None):
 
     program_enrollment = frappe.get_all("Program Enrollment",
         filters={"student": student_id, "docstatus": 1, "academic_year": current_academic_year},
-        fields=["name", "program"]
+        fields=["name"]
     )
     
     if not program_enrollment:
         frappe.throw(_("No program enrollment found for this student"))
     
-    program = program_enrollment[0].program
-    program_doc = frappe.get_doc("Program", program)
-    
-    course_marks = {
-        course.course: {
-            "homework": course.get("custom_homework_total_marks", 0) or 0,
-            "classroom": course.get("custom_classroom_total_marks", 0) or 0,
-            "attendance": course.get("custom_attendance_total_marks", 0) or 0
-        }
-        for course in program_doc.get("courses", [])
-    }
+    program_enrollment_name = program_enrollment[0]["name"]
 
     filters = {
-        "program_enrollment": program_enrollment[0].name,
+        "program_enrollment": program_enrollment_name,
     }
     if unit:
         filters["unit"] = unit
 
     observation_data = frappe.get_all("Observation Data",
         filters=filters,
-        fields=["name", "subject", "observation_type", "average_marks", "unit"]
+        fields=["name", "subject", "observation_type", "marks", "scale", "unit"]
     )
 
     for obs in observation_data:
-        obs_marks = frappe.get_all(
-            "Observation Marks",
+        obs_marks = frappe.get_all("Observation Marks",
             filters={"parent": obs.name},
-            fields=["name","docstatus","idx","date","period_number","grade","remarks"]
+            fields=["grade", "remarks", "date", "period_number"]
+        )[0] if frappe.db.exists("Observation Marks", {"parent": obs.name}) else {}
+
+        obs_result_filters = {
+            "subject": obs.subject,
+            "unit": obs.unit,
+            "observation_type": obs.observation_type
+        }
+
+        obs_result = frappe.get_all("Observation Result",
+            filters=obs_result_filters,
+            fields=["name", "total_marks"]
         )
 
-        # Get total marks for this subject's observation type
-        subject_marks = course_marks.get(obs.subject, {})
-        total_marks = 0
-        
-        # Determine which marks to use based on observation type
-        obs_type = (obs.observation_type or "").lower()
-        if "homework" in obs_type:
-            total_marks = subject_marks.get("homework", 0)
-        elif "classroom" in obs_type:
-            total_marks = subject_marks.get("classroom", 0)
-        elif "attendance" in obs_type:
-            total_marks = subject_marks.get("attendance", 0)
+        class_avg, division_avg = None, None
+        if obs_result:
+            avg_scores = frappe.get_all("Observation Average Score",
+                filters={"parent": obs_result[0]["name"]},
+                fields=["class_average"]
+            )
+            division_scores = frappe.get_all("Observation Division Average",
+                filters={"parent": obs_result[0]["name"]},
+                fields=["division_average"]
+            )
+            class_avg = avg_scores[0]["class_average"] if avg_scores else None
+            division_avg = division_scores[0]["division_average"] if division_scores else None
+            total_marks = obs_result[0]["total_marks"] if obs_result else None
 
         observation_details = {
             "name": obs.name,
             "subject": obs.subject,
             "observation_type": obs.observation_type,
-            "observation_label": (obs.observation_type or "").split()[0] if obs.observation_type and obs.observation_type.strip() else "Unknown",
-            "marks": obs.average_marks,
-            "Table": obs_marks,
-            "total_marks": total_marks
+            "observation_label": obs.observation_type[0],
+            "marks": obs.marks,
+            "scale": obs.scale,
+            "remarks": obs_marks.get("remarks"),
+            "period": obs_marks.get("period_number"),
+            "grade": obs_marks.get("grade"),
+            "date": obs_marks.get("date"),
+            "class_average": class_avg,
+            "division_average": division_avg,
+            "total_marks": total_marks,
         }
 
         # Group observations by subject
@@ -76,32 +87,3 @@ def get_observations(student_id, unit=None):
         response["observations_by_subject"][subject_key].append(observation_details)
 
     return response
-
-def get_current_academic_year(program_data=None):
-    """
-    Retrieves the current academic year with 1-minute caching.
-
-    Returns:
-        str: Name of the current academic year
-    """
-    cache_key = "current_academic_year"
-    if program_data and hasattr(program_data, 'name'):
-        cache_key = f"current_academic_year_{program_data.name}"
-
-    current_year = frappe.cache.get_value(cache_key)
-
-    if not current_year:
-        try:
-            current_year = frappe.db.get_value(
-                "Academic Year", {"custom_current_academic_year": 1}, "name"
-            )
-        except Exception as e:
-            frappe.log_error(f"Error fetching current academic year: {str(e)}")
-            return None
-                   
-        if current_year:
-            frappe.cache.set_value(
-                cache_key, current_year, expires_in_sec=60
-            )  # 1 minute cache
-
-    return current_year

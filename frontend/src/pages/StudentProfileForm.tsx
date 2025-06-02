@@ -528,7 +528,7 @@ export const StudentProfleFOrm = ({
               Class:
             </Text>
             <span style={{ color: "black" }}>
-              {classDetails?.data?.message?.class?.name}
+              {classDetails?.data?.message?.class?.name || student?.program || "Not Assigned"}
             </span>
           </div>
           <div
@@ -550,7 +550,7 @@ export const StudentProfleFOrm = ({
               School:{" "}
             </Text>
             <span style={{ color: "black" }}>
-              {classDetails?.data?.message?.division?.custom_school}
+              {classDetails?.data?.message?.division?.custom_school || student?.school || "Not Assigned"}
             </span>
           </div>
           <div

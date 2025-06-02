@@ -35,35 +35,36 @@ def get_students():
 
 
 @frappe.whitelist(allow_guest=True)
-def get_student_class_details(student,academic_year=None):
-    dynamic_doc = None
-    if academic_year:
-        dynamic_doc = frappe.get_cached_doc("Academic Year",academic_year)
-
-    current_year_doc = dynamic_doc or frappe.db.get_value(
-        "Academic Year", {"custom_current_academic_year": 1},["name","custom_kg_rolled_over"],as_dict=True
+def get_student_class_details(student):
+    current_yr = frappe.db.get_value(
+        "Academic Year", {"custom_current_academic_year": 1}
     )
-    current_yr = current_year_doc.name
-    class_group = frappe.db.get_value("Student",student,"program.class_group")
-    if class_group and "kg" in class_group.lower():
-
-        if not current_year_doc.custom_kg_rolled_over:
-            current_yr = get_previous_academic_year(current_year_doc.name)
-    
     program_enrollments = frappe.get_all(
         "Program Enrollment",
-        filters={"student": student, "academic_year":current_yr, "docstatus": 1},
+        filters={"student": student, "academic_year": current_yr, 'docstatus': 1},
         fields=["program", "student_group"],
     )
-    if not len(program_enrollments):
-        return {}
+    if not program_enrollments:
+        # Fallback: fetch from Student doctype
+        student_doc = frappe.get_doc("Student", student)
+        return {
+            "division": frappe._dict({"custom_school": student_doc.school}),
+            "program": frappe._dict({"program_name": student_doc.program}),
+            "class": frappe._dict({"name": student_doc.program}),
+        }
 
     program = program_enrollments[0]["program"]
     program_data = frappe.get_cached_doc("Program", program)
-    class_type = frappe.get_cached_doc("Class Type", program_data.program_name)
-    division = frappe.get_cached_doc(
-        "Student Group", program_enrollments[0]["student_group"]
-    )
+    try:
+        class_type = frappe.get_cached_doc("Class Type", program_data.program_name)
+    except Exception:
+        class_type = frappe._dict({"name": "Not Assigned"})
+    try:
+        division = frappe.get_cached_doc("Student Group", program_enrollments[0]["student_group"])
+        if not hasattr(division, "custom_school") or not division.custom_school:
+            division.custom_school = "Not Assigned"
+    except Exception:
+        division = frappe._dict({"custom_school": "Not Assigned"})
 
     return {"division": division, "program": program_data, "class": class_type}
 

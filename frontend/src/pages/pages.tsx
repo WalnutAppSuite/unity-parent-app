@@ -27,9 +27,9 @@ import { PtmLinks } from "./PtmLinks.tsx";
 import Fees from "./fee/index.tsx";
 import { FeesList } from "./fee/List.tsx";
 import { Results } from "./Results.tsx";
-import Observation  from "./observation/index.tsx";
 import Timetable from "./Timetable.tsx";
 import Wiki from "./wiki/index.tsx";
+import Observation from "./observation/index.tsx";
 
 const Pages = () => {
   // const location = useLocation()
@@ -89,7 +89,6 @@ const Pages = () => {
                 <Route path="/notice/:id" element={<NoticeDetails />} />
                 <Route path="/cmap" element={<Cmap />} />
                 <Route path="/cmap/list" element={<CmapList />} />
-                <Route path="/observation" element={<Observation />} />
                 <Route path="/portion-circular" element={<PortionCircular />} />
                 <Route path="/fee" element={<Fees />} />
                 <Route path="/fee/list" element={<FeesList />} />

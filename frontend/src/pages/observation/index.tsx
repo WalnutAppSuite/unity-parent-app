@@ -31,18 +31,14 @@ const Observation = () => {
     })) || [];
   }, [unitList?.data]);
 
-  const studentNames = useMemo(() =>
-    students.map((student) => student.name),
-    [students]
-  );
-
   useEffect(() => {
+    const studentNames = students.map((student) => student.name);
     if (searchedStudent && studentNames.includes(searchedStudent)) {
       setSelectedStudent(searchedStudent);
     } else if (!studentNames.includes(selectedStudent)) {
       setSelectedStudent(studentNames[0] || "");
     }
-  }, [searchedStudent, selectedStudent, studentNames]);
+  }, [searchedStudent, selectedStudent, students]);
 
   const studentProfileColor = useStudentProfileColor(selectedStudent);
 

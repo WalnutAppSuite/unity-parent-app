@@ -332,6 +332,23 @@ export const PtmLinks = () => {
           borderRadius: 10,
         }}
       >
+        <Box
+          sx={{
+            margin: 10,
+            color: studentProfileColor,
+            borderRadius: 10,
+            padding: "5px 10px",
+            textAlign: "center",
+            background: studentProfileColor + "22",
+            fontSize: 13,
+            fontWeight: "bold",
+          }}
+        >
+          The PTM link becomes active 5 minutes before the scheduled time. If you
+          do not see the link, please reload the app.Once a scheduled PTM is
+          completed (i.e., the date has passed), the link will no longer be
+          visible in the app.
+        </Box>
         <Stack
           sx={{
             borderBottom: "1px solid " + studentProfileColor + "77",
@@ -361,27 +378,27 @@ export const PtmLinks = () => {
           </Text>
           {students.find((student) => student.name === selectedStudent)
             ?.reference_number && (
-            <Text
-              sx={{
-                borderRadius: 50,
-                backgroundColor: studentProfileColor + "22",
-                padding: "1px 5px",
-                fontSize: 10,
-                display: "inline-block",
-                height: "1.4em",
-                lineHeight: 1.4,
-                color: studentProfileColor,
-                fontWeight: "bold",
-                letterSpacing: 0.5,
-                textTransform: "uppercase",
-              }}
-            >
-              {
-                students.find((student) => student.name === selectedStudent)
-                  ?.reference_number
-              }
-            </Text>
-          )}
+              <Text
+                sx={{
+                  borderRadius: 50,
+                  backgroundColor: studentProfileColor + "22",
+                  padding: "1px 5px",
+                  fontSize: 10,
+                  display: "inline-block",
+                  height: "1.4em",
+                  lineHeight: 1.4,
+                  color: studentProfileColor,
+                  fontWeight: "bold",
+                  letterSpacing: 0.5,
+                  textTransform: "uppercase",
+                }}
+              >
+                {
+                  students.find((student) => student.name === selectedStudent)
+                    ?.reference_number
+                }
+              </Text>
+            )}
         </Stack>
         {isLoading ? (
           <Text align="center" color="dimmed" weight="bold" my={30}>
@@ -455,27 +472,27 @@ export const PtmLinks = () => {
           </Text>
           {students.find((student) => student.name === selectedStudent)
             ?.reference_number && (
-            <Text
-              sx={{
-                borderRadius: 50,
-                backgroundColor: studentProfileColor + "22",
-                padding: "1px 5px",
-                fontSize: 10,
-                display: "inline-block",
-                height: "1.4em",
-                lineHeight: 1.4,
-                color: studentProfileColor,
-                fontWeight: "bold",
-                letterSpacing: 0.5,
-                textTransform: "uppercase",
-              }}
-            >
-              {
-                students.find((student) => student.name === selectedStudent)
-                  ?.reference_number
-              }
-            </Text>
-          )}
+              <Text
+                sx={{
+                  borderRadius: 50,
+                  backgroundColor: studentProfileColor + "22",
+                  padding: "1px 5px",
+                  fontSize: 10,
+                  display: "inline-block",
+                  height: "1.4em",
+                  lineHeight: 1.4,
+                  color: studentProfileColor,
+                  fontWeight: "bold",
+                  letterSpacing: 0.5,
+                  textTransform: "uppercase",
+                }}
+              >
+                {
+                  students.find((student) => student.name === selectedStudent)
+                    ?.reference_number
+                }
+              </Text>
+            )}
         </Stack>
         {offlinePtmLoading ? (
           <Text align="center" color="dimmed" weight="bold" my={30}>
