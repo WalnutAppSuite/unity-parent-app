@@ -3,10 +3,8 @@ import json
 
 import frappe
 import requests
+from frappe.core.doctype.communication.email import make as create_email
 from edu_quality.edu_quality.server_scripts.utils import current_academic_year
-from typing import Dict, Any
-import json
-from aws_integration.utils import send_email_in_batches
 
 
 def render_jinja(text, object):
@@ -132,7 +130,6 @@ def enqueued_specific_notice_emails(__args):
     failure_ref_ids = []
     failure_texts = []
     school_admin_bcc_email = ""
-    student_data = {}
     for row in csv_data:
         try:
             student_id = row.get("ID") or row.get("id") or row.get("name")
@@ -145,20 +142,21 @@ def enqueued_specific_notice_emails(__args):
             notice_content = render_jinja(content, data)
             student_email = student.student_email_id
             guardian_email = get_guardian_emails(student_id)
-            student_data[student_id] = {
-                "subject": notice_subject,
-                "content": notice_content,
-                "recepients": [student_email],
-                "cc_recepients": guardian_email,
-                "bcc_recepients": bcc_emails
+            create_email(
+                recipients=[student_email] + guardian_email,
+                subject=notice_subject,
+                content=notice_content,
+                bcc=bcc_emails
                 + ([school_admin_bcc_email] if school_admin_bcc_email else []),
-            }
+                send_email=True,
+                read_receipt=True,
+            )
             bcc_emails = []
             success_ref_ids.append(student_id)
         except Exception as e:
             failure_ref_ids.append(row.get("ID") or row.get("id") or row.get("name"))
             failure_texts.append(e)
-    send_email_in_batches(student_data)
+
     if len(failure_ref_ids):
         frappe.get_doc(
             {
@@ -254,8 +252,8 @@ def enqueued_specific_notice_docs(__args):
         except Exception as e:
             failure_ref_ids.append(row.get("ID") or row.get("id") or row.get("name"))
             failure_texts.append(frappe.get_traceback())
-    frappe.enqueue(enqueued_specific_notifications, queue="long", notice_ids=notice_ids)
-    # enqueued_specific_notifications(notice_ids)
+    # Notifications will be sent when notices are submitted via on_submit method
+    # frappe.enqueue(enqueued_specific_notifications, queue="long", notice_ids=notice_ids)
 
     if len(failure_ref_ids):
         frappe.get_doc(
@@ -339,7 +337,6 @@ def enqueued_generic_notice_emails(__args):
     failure_student_ids = []
     failure_texts = []
     school_admin_bcc_email = ""
-    student_data = {}
     for student in students:
         try:
             notice_subject = render_jinja(subject, student)
@@ -349,20 +346,21 @@ def enqueued_generic_notice_emails(__args):
             if not school_admin_bcc_email:
                 school = frappe.get_cached_doc("School", student.school)
                 school_admin_bcc_email = school.email_address
-            student_data[student.name] = {
-                "subject": notice_subject,
-                "content": notice_content,
-                "recepients": [student_email],
-                "cc_recepients": guardian_email,
-                "bcc_recepients": bcc_emails
+            create_email(
+                recipients=[student_email] + guardian_email,
+                subject=notice_subject,
+                content=notice_content,
+                bcc=bcc_emails
                 + ([school_admin_bcc_email] if school_admin_bcc_email else []),
-            }
+                send_email=True,
+                read_receipt=True,
+            )
             bcc_emails = []
             success_student_ids.append(student.name)
         except Exception as e:
             failure_student_ids.append(student.get("name"))
             failure_texts.append(e)
-    send_email_in_batches(student_data)
+
     if len(failure_student_ids):
         frappe.get_doc(
             {
@@ -519,16 +517,16 @@ def enqueued_generic_notice_docs(__args):
                             "pdf": pdf,
                             "academic_year": academic_year,
                             "circular_number": circular_number,
-                            "category": categories,
+                            "category":categories,
                         }
                     ).insert(ignore_permissions=True)
                     notice.reload()
                     notice_ids.append(notice.name)
-    if not is_public:
-        frappe.enqueue(
-            enqueued_generic_notifications, queue="long", notice_ids=notice_ids
-        )
-    # enqueued_generic_notifications(notice_ids)
+    # Notifications will be sent when notices are submitted via on_submit method
+    # if not is_public:
+    #     frappe.enqueue(
+    #         enqueued_generic_notifications, queue="long", notice_ids=notice_ids
+    #     )
 
 
 def send_generic_notification(variables, **kwargs):
@@ -563,7 +561,8 @@ def send_generic_notification(variables, **kwargs):
                 "is_raw_html": 1 if raw_html else 0,
             }
         ).insert(ignore_permissions=True)
-        send_notification(student.name, notice.subject, notice.name)
+        # Notifications will be sent when notice is submitted via on_submit method
+        # send_notification(student.name, notice.subject, notice.name)
     except Exception:
         frappe.log_error("Push Notification", frappe.get_traceback())
 
@@ -589,13 +588,13 @@ def validate_args(**kwargs):
     is_test = kwargs.get("is_test")
     academic_year = kwargs.get("academic_year")
     student_data = kwargs.get("student_data")
-    has_ids = kwargs.get("has_ids")
-    # verify supplied data
     has_pdf = kwargs.get("hasPdf")
     pdf = kwargs.get("pdf")
     is_public = kwargs.get("is_public")
     has_ids = kwargs.get("has_ids")
     categories = kwargs.get("categories", [])
+    if not categories:
+        raise frappe.ValidationError("Categories are required")
     if has_csv:
         if is_test:
             student_id = (
@@ -652,7 +651,7 @@ def validate_args(**kwargs):
                     f"School Mismatch: <br/> {error_string}"
                 )
     else:
-
+        print(has_ids)
         if not is_public and not has_ids:
             if not school:
                 raise frappe.exceptions.MandatoryError("School is required")
@@ -702,17 +701,20 @@ def create_notice(**kwargs):
     if has_csv and not is_public:
         frappe.enqueue(enqueued_specific_notice_docs, __args=kwargs)
         # enqueued_specific_notice_docs(kwargs)
-        if send_emails:
-            frappe.enqueue(enqueued_specific_notice_emails, queue="long", __args=kwargs)
+        # Emails will be sent when notices are submitted via on_submit method
+        # if send_emails:
+        #     frappe.enqueue(enqueued_specific_notice_emails, queue="long", __args=kwargs)
     elif has_ids:
         frappe.enqueue(enqueued_ids_notice_docs, __args=kwargs)
-        if send_emails:
-            frappe.enqueue(enqueued_ids_notice_emails, queue="long", __args=kwargs)
+        # Emails will be sent when notices are submitted via on_submit method
+        # if send_emails:
+        #     frappe.enqueue(enqueued_ids_notice_emails, queue="long", __args=kwargs)
     else:
         frappe.enqueue(enqueued_generic_notice_docs, __args=kwargs)
         # enqueued_generic_notice_docs(kwargs)
-        if send_emails and not is_public:
-            frappe.enqueue(enqueued_generic_notice_emails, queue="long", __args=kwargs)
+        # Emails will be sent when notices are submitted via on_submit method
+        # if send_emails and not is_public:
+        #     frappe.enqueue(enqueued_generic_notice_emails, queue="long", __args=kwargs)
 
 
 @frappe.whitelist()
@@ -746,7 +748,6 @@ def send_test_mail(**kwargs):
         data = {**student.as_dict(), **student_data}
         notice_subject = render_jinja(subject, data)
         notice_content = render_jinja(content, data)
-
     elif has_ids:
         ids = convert_string_id_to_list(student_ids)
         student_id = ids[0]
@@ -754,7 +755,6 @@ def send_test_mail(**kwargs):
         data = {**student.as_dict()}
         notice_subject = render_jinja(subject, data)
         notice_content = render_jinja(content, data)
-
     elif not is_public:
         students = []
         students_values = {
@@ -803,14 +803,14 @@ def send_test_mail(**kwargs):
             notice_content = render_jinja(content, students[0])
 
     test_emails = [e.strip() for e in str(test_emails).split(",")]
-    student_data_dict = {
-        "Test": {
-            "subject": notice_subject,
-            "content": notice_content,
-            "recepients": test_emails,
-        }
-    }
-    return send_email_in_batches(student_data_dict)
+    return create_email(
+        recipients=test_emails,
+        subject=notice_subject,
+        content=notice_content,
+        send_email=True,
+        read_receipt=True,
+        now=True,
+    )
 
 
 # /api/method/edu_quality.public.py.walsh.admin.get_student_count
@@ -899,19 +899,21 @@ def create_notice_from_email_template(data, email_template, send_notif=False):
             }
         ).insert(ignore_permissions=True)
 
-        frappe.enqueue(
-            send_notification,
-            queue="long",
-            student_id=student,
-            custom={
-                "title": subject,
-                "data": {"url_path": f"/notice/{notice.name}?student={student}"},
-            },
-        )
+        # Notifications will be sent when notice is submitted via on_submit method
+        # frappe.enqueue(
+        #     send_notification,
+        #     queue="long",
+        #     student_id=student,
+        #     custom={
+        #         "title": subject,
+        #         "data": {"url_path": f"/notice/{notice.name}?student={student}"},
+        #     },
+        # )
 
     except Exception as e:
         frappe.logger("Notice Email").exception(e)
         raise e
+
 
 def enqueued_ids_notice_docs(__args):
     student_id_string = __args.get("student_ids")
@@ -926,7 +928,7 @@ def enqueued_ids_notice_docs(__args):
     approval_reject_template = __args.get("approval_template")
     categories = [{"school_notice_category": c} for c in __args.get("categories", [])]
     academic_year = __args.get("academic_year")
-
+    
     if has_pdf:
         content = frappe.utils.get_url() + "/" + pdf
 
@@ -965,7 +967,7 @@ def enqueued_ids_notice_docs(__args):
                     "requires_approval": requires_approval,
                     "approve_reject_template": approval_reject_template,
                     "is_mandatory_notice": is_mandatory_notice,
-                    "academic_year": academic_year,
+                    "academic_year":academic_year,
                     "circular_number": circular_number,
                     "category": categories,
                 }
@@ -982,12 +984,13 @@ def enqueued_ids_notice_docs(__args):
                 f"Error processing student ID {student_id}"
             )
 
-    if notice_ids:
-        frappe.enqueue(
-            enqueued_specific_notifications,
-            queue="long",
-            notice_ids=notice_ids,
-        )
+    # Notifications will be sent when notices are submitted via on_submit method
+    # if notice_ids:
+    #     frappe.enqueue(
+    #         enqueued_specific_notifications,
+    #         queue="long",
+    #         notice_ids=notice_ids,
+    #     )
 
     if failure_ref_ids:
         frappe.get_doc(
@@ -1047,6 +1050,7 @@ def enqueued_ids_notice_emails(__args):
             student = student_map.get(student_id)
             if not student:
                 raise ValueError(f"Student ID {student_id} does not exist.")
+
             if not school_admin_bcc_email:
                 school_admin = frappe.get_cached_doc("School", student["school"])
                 school_admin_bcc_email = school_admin.email_address
@@ -1063,6 +1067,15 @@ def enqueued_ids_notice_emails(__args):
                 + ([school_admin_bcc_email] if school_admin_bcc_email else []),
             }
             guardian_emails = get_guardian_emails(student_id)
+            create_email(
+                recipients=[student_email] + guardian_emails,
+                subject=notice_subject,
+                content=notice_content,
+                bcc=bcc_emails
+                + ([school_admin_bcc_email] if school_admin_bcc_email else []),
+                send_email=True,
+                read_receipt=True,
+            )
 
             success_ref_ids.append(student_id)
         except Exception as e:
@@ -1071,7 +1084,7 @@ def enqueued_ids_notice_emails(__args):
             frappe.logger("School Notice Email").exception(
                 f"Error processing student ID {student_id}: {e}"
             )
-    send_email_in_batches(student_data)
+    # send_email_in_batches(student_data)
 
     if failure_ref_ids:
         frappe.get_doc(
@@ -1086,109 +1099,3 @@ def enqueued_ids_notice_emails(__args):
 
 def convert_string_id_to_list(string):
     return [id.strip() for id in string.split(",") if id.strip()]
-
-
-@frappe.whitelist()
-def funnel_create_notice(**data):
-    try:
-        if not isinstance(data, dict) or not data:
-            return
-        data = data.get("action_node").get("data")
-        data = json.loads(data)
-        email_template = data.get("email_template")
-        notice = data.get("notice")
-        subject = data.get("subject")
-        if email_template and not notice and not subject:
-            email_template_data = frappe.get_cached_doc(
-                "Email Template", email_template
-            )
-            subject = email_template_data.get("subject")
-            notice = email_template_data.get(
-                "response_html"
-            ) or email_template_data.get("response")
-        data["notice"] = notice
-        data["subject"] = subject
-        create_notice(**data)
-    except Exception as e:
-        frappe.log_error("Error in funnel_create_notice", frappe.get_traceback())
-
-
-def send_custom_notification(student_ids, payload={}, title=""):
-
-    if not payload:
-        payload = {}
-    else:
-        try:
-            payload = json.loads(payload)
-        except Exception as e:
-            frappe.log_error(
-                "Error parsing payload in notification node", frappe.get_traceback()
-            )
-            payload = {}
-
-    if not (
-        "System Manager" in frappe.get_roles() or "Administrator" in frappe.get_roles()
-    ):
-        frappe.throw("Not authorized to send notifications")
-    all_ids = list(map(str.strip, student_ids.split(",")))
-
-    push_tokens = frappe.get_all(
-        "Mobile Push Token",
-        filters={"token": ["in", all_ids]},
-        fields=["token"],
-        pluck="token",
-    )
-    if push_tokens:
-        for push_token in push_tokens:
-            url = "https://exp.host/--/api/v2/push/send"
-            payload["to"] = push_token
-            payload["title"] = title
-            headers = {"Content-Type": "application/json"}
-            requests.request("POST", url, headers=headers, data=json.dumps(payload))
-
-    student_guardians = frappe.get_all(
-        "Student Guardian",
-        filters={"parent": ["in", all_ids], "parenttype": "Student"},
-        fields=["guardian"],
-    )
-
-    guardians = [
-        frappe.get_cached_doc("Guardian", g.get("guardian")) for g in student_guardians
-    ]
-
-    for guardian in guardians:
-        user = guardian.get("user")
-        if user:
-            push_tokens = frappe.get_all(
-                "Mobile Push Token", filters={"user_id": user}, fields=["token"]
-            )
-            for push_token in push_tokens:
-                url = "https://exp.host/--/api/v2/push/send"
-                payload["to"] = push_token.get("token")
-                payload["title"] = title
-                headers = {"Content-Type": "application/json"}
-                requests.request("POST", url, headers=headers, data=json.dumps(payload))
-
-
-@frappe.whitelist()
-def send_funnel_notif(**data):
-    if not isinstance(data, dict) or not data:
-        return
-    if not (
-        "System Manager" in frappe.get_roles() or "Administrator" in frappe.get_roles()
-    ):
-        frappe.throw("Not authorized to send notifications")
-
-    data = data.get("action_node").get("data")
-    data = json.loads(data)
-
-    token = data.get("tokens")
-    payload = data.get("payload")
-    title = data.get("title")
-    frappe.enqueue(
-        send_custom_notification,
-        student_ids=token,
-        payload=payload,
-        title=title,
-        timeout=10000,
-    )

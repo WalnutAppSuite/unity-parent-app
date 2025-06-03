@@ -1,0 +1,73 @@
+:root {
+  /* Main colors */
+  --walsh-primary: #005e5f;
+  --walsh-secondary: #e2df8a;
+
+  /* Additional colors */
+  --walsh-light-blue: #aae1ff;
+  --walsh-purple: #6d3bea;
+  --walsh-orange: #f27841;
+  --walsh-red: #ed1651;
+
+  /* Neutrals */
+  --walsh-white: #f5f7f8;
+  --walsh-black: #000000;
+
+  /* Shades of primary */
+  --walsh-primary-light: #007f80;
+  --walsh-primary-lighter: #009b9c;
+  --walsh-primary-dark: #004b4c;
+  --walsh-primary-darker: #003a3b;
+
+  /* Shades of secondary */
+  --walsh-secondary-light: #ecedb0;
+  --walsh-secondary-lighter: #f5f6d6;
+  --walsh-secondary-dark: #c5c278;
+  --walsh-secondary-darker: #a8a566;
+
+  /* Background and text colors */
+  --walsh-bg-light: var(--walsh-white);
+  --walsh-bg-dark: #121212;
+  --walsh-text-light: var(--walsh-black);
+  --walsh-text-dark: var(--walsh-white);
+
+  /* Status colors */
+  --walsh-success: #2ecc40;
+  --walsh-warning: #ffdc00;
+  --walsh-error: var(--walsh-red);
+  --walsh-info: var(--walsh-light-blue);
+}
+
+/* Dark mode overrides */
+.dark-mode {
+  --walsh-bg: var(--walsh-bg-dark);
+  --walsh-text: var(--walsh-text-dark);
+}
+
+/* Light mode defaults */
+:root {
+  --walsh-bg: var(--walsh-bg-light);
+  --walsh-text: var(--walsh-text-light);
+}
+
+/* Input styling */
+.walsh-input {
+  border-color: var(--walsh-primary) !important;
+  transition: border-color 0.3s ease;
+}
+
+.walsh-input:focus,
+.walsh-input:focus-within {
+  border-color: var(--walsh-primary) !important;
+  box-shadow: 0 0 0 1px var(--walsh-primary) !important;
+}
+
+/* For inputs with student profile color */
+.walsh-input-student {
+  transition: border-color 0.3s ease;
+}
+
+.walsh-input-student:focus,
+.walsh-input-student:focus-within {
+  box-shadow: 0 0 0 1px currentColor !important;
+}

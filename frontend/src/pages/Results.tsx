@@ -5,6 +5,10 @@ import useStudentProfileColor from "../components/hooks/useStudentProfileColor";
 import { useSearchParams } from "react-router-dom";
 import useClassDetails from "../components/queries/useClassDetails";
 
+import {
+  useAcademicCurrentYear,
+  useAcademicNextYear,
+} from "../components/queries/useFeeDetailsList";
 import usePrintFormat from "../components/queries/usePrintFormat";
 import useSchoolLetterHead from "../components/queries/useSchoolLetterHead";
 
@@ -12,11 +16,6 @@ interface PrintFormat {
   html: string;
   style: string;
 }
-type enrollmentData = {
-  academic_year: string;
-  student_group: string;
-  program: string;
-};
 
 export const Results = () => {
   const [selectedStudent, setSelectedStudent] = useState<string>("");
@@ -27,7 +26,7 @@ export const Results = () => {
   const [error, setError] = useState<string>("null");
   const { data: classDetails } = useClassDetails(selectedStudent);
   const [selectedUnit, setSelectedUnit] = useState<string>("unit 1");
-  const [years, setYears] = useState<enrollmentData[]>([]);
+  const [years, setYears] = useState<string[]>([]);
   const [examResult, setExamResult] = useState<string[]>([]);
   const [printFormatMode, setPrintFormatMode] = useState<"result" | "marks">(
     "result"
@@ -36,13 +35,15 @@ export const Results = () => {
   const [examOptions, setExamOptions] = useState<
     { value: string; label: string }[]
   >([]);
-  const [selectedYear, setSelectedYear] = useState<enrollmentData | null>(null);
+  const [selectedYear, setSelectedYear] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedExam, setSelectedExam] = useState("");
   const [printFormat, setPrintFormat] = useState<PrintFormat>({
     html: "",
     style: "",
   });
+  const { data: current_year } = useAcademicCurrentYear();
+  const { data: next_year } = useAcademicNextYear();
   const studentProfileColor = useStudentProfileColor(selectedStudent);
   const [, setSelectedUnitExam] = useState("");
   const [searchParams] = useSearchParams();
@@ -56,8 +57,8 @@ export const Results = () => {
 
   const examName = examResult?.map?.((i: any) => i?.name);
   const assessmentGroupFilter = async (
-    selected_year: string | null,
-    class_name?: string | null
+    selected_year: string,
+    class_name: any
   ) => {
     try {
       const resp = await fetch(
@@ -87,7 +88,7 @@ export const Results = () => {
       console.log("error", error);
     }
   };
-
+  console.log(letterHeadData?.data?.data?.letter_head, "eetr");
   const params = {
     doctype: "Assessment Result",
     name: examName[0],
@@ -162,12 +163,12 @@ export const Results = () => {
   //   }
   // };
   const assessmentResuktFilter = async (
-    selected_year?: enrollmentData|null,
-    selected_exam?: string
+    selected_year: string,
+    selected_exam: string
   ) => {
     try {
       const resp = await fetch(
-        `/api/resource/Assessment%20Result?filters=[["academic_year", "=", "${selected_year?.academic_year}"], ["assessment_group", "=", "${selected_exam}"], ["program", "=", "${selected_year?.program}"], ["student", "=", "${selectedStudent}"], ["docstatus", "=", "1"]]`
+        `/api/resource/Assessment%20Result?filters=[["academic_year", "=", "${selected_year}"], ["assessment_group", "=", "${selected_exam}"], ["program", "=", "${classDetails?.data?.message?.division?.program}"], ["student", "=", "${selectedStudent}"], ["docstatus", "=", "1"]]`
       );
       if (!resp.ok) {
         throw new Error("No Result Found");
@@ -189,7 +190,7 @@ export const Results = () => {
     }
   };
 
-  const printFormatView = async (exam_name: any) => {
+  const printFormatView = async (exam_name: any, class_name: any) => {
     setLoading(true);
     setError("");
     try {
@@ -213,7 +214,7 @@ export const Results = () => {
           body: JSON.stringify({
             doc: "Assessment Result",
             name: `${exam_name}`,
-            program: selectedYear?.program,
+            program: class_name,
             format: printFormat,
             no_letterhead: 0,
             letterhead:
@@ -249,7 +250,8 @@ export const Results = () => {
     if (examName[0] && classDetails?.data?.message?.division?.program) {
       setErrorTrue(false);
       printFormatView(
-        examName[0]
+        examName[0],
+        classDetails?.data?.message?.division?.program
       );
     }
     if (selectedExam === "") {
@@ -297,37 +299,22 @@ export const Results = () => {
     [studentsList?.data]
   );
 
-  const fetchAcademicYears = async (student: string) => {
-    if (!student) return;
-
-    try {
-      const response = await fetch(
-        `/api/method/unity_parent_app.api.studentProfile.get_academic_years?student=${student}`
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch academic years");
-      }
-
-      const data = await response.json();
-
-      if (data.message && data.message.academic_years) {
-        setYears(data.message.academic_years);
-      } else if (data.message && data.message.error) {
-        console.error(data.message.error);
-        setYears([]);
-      }
-    } catch (error) {
-      console.error("Error fetching academic years:", error);
-      setYears([]);
-    }
-  };
-
   useEffect(() => {
-    if (selectedStudent) {
-      fetchAcademicYears(selectedStudent);
+    if (current_year?.data?.data || next_year?.data?.data) {
+      const currentYears =
+        current_year?.data?.data?.map?.((i: any) => i?.name) || [];
+      const nextYears = next_year?.data?.data?.map?.((i: any) => i?.name) || [];
+      const combinedYears = Array.from(
+        new Set([...currentYears, ...nextYears])
+      );
+      setYears((prevYears) => {
+        const updatedYears = Array.from(
+          new Set([...prevYears, ...combinedYears])
+        );
+        return updatedYears?.sort();
+      });
     }
-  }, [selectedStudent]);
+  }, [current_year, next_year, selectedStudent]);
 
   useEffect(() => {
     const studentNames = students?.map((student) => student.name) || [];
@@ -357,27 +344,22 @@ export const Results = () => {
     }
   }, [selectedUnit, unitOptions]);
 
-  const handleYearChange = (e: string | null) => {
-    const selectedYear = years.find((v) => v.academic_year === e);
-    if (selectedYear) {
-      setSelectedYear(selectedYear);
-    } else {
-      setSelectedYear(null);
-    }
-    assessmentGroupFilter(e, selectedYear?.program);
+  const handleYearChange = (e: any) => {
+    setSelectedYear(e);
+    assessmentGroupFilter(e, classDetails?.data?.message?.division?.program);
   };
 
-  const html = printFormat?.html;
+  let html = printFormat?.html;
 
-  const style = printFormat.style;
+  let style = printFormat.style;
 
-  const combinedHtml = `
+  let combinedHtml = `
     <style>${style}</style>
     ${html}
   `;
 
   const clearFilters = () => {
-    setSelectedYear(null);
+    setSelectedYear("");
     setSelectedExam("");
     setExamOptions([]);
     setErrorMessage("");
@@ -473,13 +455,10 @@ export const Results = () => {
                   width: "25vh",
                   padding: "8px",
                 }}
-                value={selectedYear?.academic_year}
+                value={selectedYear}
                 onChange={(value) => handleYearChange(value)}
                 placeholder="Select Year"
-                data={years.map((year) => ({
-                  value: year.academic_year,
-                  label: year.academic_year,
-                }))}
+                data={years.map((year) => ({ value: year, label: year }))}
               />
             </div>
             <div

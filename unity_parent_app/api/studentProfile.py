@@ -2,7 +2,7 @@ import frappe
 import random
 import string
 import requests
-from edu_quality.public.py.utils import remove_indian_country_code, sms_otp
+from edu_quality.public.py.utils import remove_indian_country_code
 from frappe.auth import LoginManager
 
 
@@ -187,7 +187,23 @@ def send_otp_to_mobile_number(mobile_number):
 
     phone_with_country_code = "+" + str(wa_phone_no)
     otp = create_otp(wa_phone_no)
-    sms_otp(phone_with_country_code, otp)
+    send_otp_to_sms(phone_with_country_code, otp)
+
+
+def send_otp_to_sms(full_phone_no, otp):
+    api_key = "A7d05a510dc42605ac16154f90e301ebb"
+    message = (
+        f"OTP is {otp} for logging into Walnut School's Wal-Sh app."
+        + "Valid till 10 min.\nDo not share OTP for security reasons."
+    )
+    template_id = 1007162194737763683
+    sender = "WLTSCL"
+    encoded_message = requests.utils.quote(message)
+    url = f"http://smssolution.net.in/api/v4/?api_key={api_key}&method=sms&message={encoded_message}\
+    &to={full_phone_no}&sender={sender}&template_id={template_id}"
+    response = requests.post(url)
+    response = response.json()
+    return response
 
 
 def get_guardian_number(guardian_number):
@@ -221,20 +237,3 @@ def get_student_form(doc):
             {"student": student, "link": link + applicant.parent + "/edit"}
         )
     return student_forms
-
-@frappe.whitelist()
-def get_academic_years(student):
-    academic_years = frappe.db.sql("""
-        SELECT DISTINCT academic_year 
-        FROM `tabProgram Enrollment` 
-        WHERE student = %s 
-        ORDER BY academic_year ASC
-    """, (student,), as_dict=True)
-
-    if not academic_years:
-        return {"error": "No academic years found for this student"}
-
-    return {
-        "student": student,
-        "academic_years": [row["academic_year"] for row in academic_years]
-    }

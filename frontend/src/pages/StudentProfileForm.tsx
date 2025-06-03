@@ -1,51 +1,74 @@
 import { useMemo, useState } from "react";
 import {
-  guardin_address,
-  guardin_address2,
-  guardin_email_update,
-  guardin_father_number_update,
-  guardin_number_update,
+  guardian_address,
+  guardian_address2,
+  guardian_city,
+  guardian_email_update,
+  guardian_father_number_update,
+  guardian_number_update,
+  guardian_pincode,
   updateAnnualIncome,
   updateBloodGroup,
-  useDetailsList,
 } from "../components/queries/useGuardianList";
 import { Box, Text, Button } from "@mantine/core";
 import { IconEdit } from "@tabler/icons-react";
 import OTPInput from "otp-input-react";
-import useStudentList from "../components/queries/useStudentList";
+
+interface Guardian {
+  relation: string;
+  guardian: string;
+  email_address: string;
+  mobile_number: string;
+  guardian_name: string;
+  annual_income: string;
+  occupation: string;
+  company_name: string;
+  designation: string;
+  work_address: string;
+  custom_secondary_mobile_number: string;
+}
 
 interface StudentProfileProps {
-  student: any;
-  selectedStudent: any;
-  studentProfileColor: any;
+  student: {
+    name: string;
+  };
+  selectedStudent: string;
+  studentProfileColor: string;
   classDetails: any;
-  isSelected: any;
+  isSelected: boolean;
+  detailsList: any;
+  studentsList: any;
+  onRefetch: () => void;
 }
+
 export const StudentProfleFOrm = ({
   student,
   selectedStudent,
   studentProfileColor,
   classDetails,
   isSelected,
+  detailsList,
+  studentsList,
+  onRefetch,
 }: StudentProfileProps) => {
-  const { data: details_list, refetch: detailsRefetch } =
-    useDetailsList(selectedStudent);
-  const { mutateAsync: mutateAddress2 } = guardin_address2();
+  const { mutateAsync: mutateAddress2 } = guardian_address2();
+  const { mutateAsync: mutateCity } = guardian_city();
+  const { mutateAsync: mutatePinCode } = guardian_pincode();
   const { mutateAsync: mutateAsyncAnnualIncome } = updateAnnualIncome();
-
   const { mutateAsync: mutateAsyncBloodGroup } = updateBloodGroup();
+  const { mutateAsync: mutateAsyncEmail } = guardian_email_update();
+
+ 
 
   const [statusColor, setStatusColor] = useState("");
-
   const [verificationStatus, setVerificationStatus] = useState("");
-  const { data: studentsList } = useStudentList();
-  const [editIcom, setEditIcon] = useState({
+  const [editIcon, setEditIcon] = useState<Record<string, boolean>>({
     mother_email: false,
     mother_number: false,
     father_email: false,
     father_number: false,
   });
-  const [submitBtn, setSubmitBtn] = useState({
+  const [submitBtn, setSubmitBtn] = useState<Record<string, boolean>>({
     mother_email: false,
     mother_number: false,
     father_email: false,
@@ -56,7 +79,7 @@ export const StudentProfleFOrm = ({
     annual__father_income: false,
     annual__mother_income: false,
   });
-  const [isEditable, setIsEditable] = useState({
+  const [isEditable, setIsEditable] = useState<Record<string, boolean>>({
     mother_email: false,
     mother_number: false,
     father_email: false,
@@ -67,314 +90,149 @@ export const StudentProfleFOrm = ({
     annual__father_income: false,
     annual__mother_income: false,
   });
-  const [sendOtp, setSendotp] = useState({
+  const [sendOtp, setSendOtp] = useState<Record<string, boolean>>({
     mother_email: false,
     mother_number: false,
     father_email: false,
     father_number: false,
   });
-  const [newEmail, setNewEmail] = useState({
+  const [newEmail, setNewEmail] = useState<Record<string, string>>({
     mother_email_input: "",
     father_email_input: "",
   });
   const [, setEmailOtp] = useState("");
-  const [newNumber, setNewNumber] = useState({
+  const [newNumber, setNewNumber] = useState<Record<string, string>>({
     mother_number_input: "",
     father_number_input: "",
   });
   const [newBloodG, setBloodG] = useState("");
   const [newAnnualI, setAnnualI] = useState("");
   const [newAnnualIMother, setAnnualIMother] = useState("");
-  const [addressguardian1, setAddressGuardian1] = useState("");
-  const [addressguardian2, setAddressGuardian2] = useState("");
+  const [addressGuardian1, setAddressGuardian1] = useState("");
+  const [addressGuardian2, setAddressGuardian2] = useState("");
+  const [cityValue, setCity] = useState("");
+  const [pincodeValue, setPincode] = useState("");
   const [, setErrorMessage] = useState("");
   const [otpMessage, setOtpMessage] = useState("");
   const [otpVerify, setOtpVerify] = useState("");
+
+  const guardians: Guardian[] = detailsList?.data?.message?.guardians || [];
   const FatherGuardian =
-    details_list?.data?.message?.guardians?.find?.(
-      (i: any) => i?.relation === "Father"
-    )?.guardian || "";
+    guardians.find((i) => i.relation === "Father")?.guardian || "";
   const MotherGuardian =
-    details_list?.data?.message?.guardians?.find?.(
-      (i: any) => i?.relation === "Mother"
-    )?.guardian || "";
-  const { mutateAsync: mutateAsyncNumber } = guardin_number_update();
+    guardians.find((i) => i.relation === "Mother")?.guardian || "";
+  const { mutateAsync: mutateAsyncNumber } = guardian_number_update();
   const { mutateAsync: mutateAsyncFatherNumbers } =
-    guardin_father_number_update(FatherGuardian);
-  const { mutateAsync } = guardin_email_update();
-  const { mutateAsync: mutateAddress } = guardin_address();
+    guardian_father_number_update(FatherGuardian);
+
+  const { mutateAsync: mutateAddress } = guardian_address();
 
   const MotherEmail =
-    details_list?.data?.message?.guardians?.find?.(
-      (i: any) => i?.relation === "Mother"
-    )?.email_address || "N/A";
+    guardians.find((i) => i.relation === "Mother")?.email_address || "N/A";
   const FatherEmail =
-    details_list?.data?.message?.guardians?.find?.(
-      (i: any) => i?.relation === "Father"
-    )?.email_address || "N/A";
+    guardians.find((i) => i.relation === "Father")?.email_address || "N/A";
   const FatherMobile =
-    details_list?.data?.message?.guardians?.find?.(
-      (i: any) => i?.relation === "Father"
-    )?.mobile_number || "N/A";
+    guardians.find((i) => i.relation === "Father")?.mobile_number || "N/A";
+  const FatherSecondaryMobile =
+    guardians.find((i) => i.relation === "Father")
+      ?.custom_secondary_mobile_number || "N/A";
   const MotherMobile =
-    details_list?.data?.message?.guardians?.find?.(
-      (i: any) => i?.relation === "Mother"
-    )?.mobile_number || "N/A";
+    guardians.find((i) => i.relation === "Mother")?.mobile_number || "N/A";
+  const MotherSecondaryMobile =
+    guardians.find((i) => i.relation === "Mother")
+      ?.custom_secondary_mobile_number || "N/A";
   const MotherName =
-    details_list?.data?.message?.guardians?.find?.(
-      (i: any) => i?.relation === "Mother"
-    )?.guardian_name || "N/A";
+    guardians.find((i) => i.relation === "Mother")?.guardian_name || "N/A";
   const FatherName =
-    details_list?.data?.message?.guardians?.find?.(
-      (i: any) => i?.relation === "Father"
-    )?.guardian_name || "N/A";
-  const address_guardian = details_list?.data?.message?.address_line_1 || "N/A";
-  const blood_group = details_list?.data?.message?.blood_group || "N/A";
+    guardians.find((i) => i.relation === "Father")?.guardian_name || "N/A";
+  const address_guardian = detailsList?.data?.message?.address_line_1 || "N/A";
+  const blood_group = detailsList?.data?.message?.blood_group || "N/A";
   const annuals_income =
-    details_list?.data?.message?.guardians?.find?.(
-      (i: any) => i?.relation === "Father"
-    )?.annual_income || "N/A";
-
+    guardians.find((i) => i.relation === "Father")?.annual_income || "N/A";
   const annuals_income_mother =
-    details_list?.data?.message?.guardians?.find?.(
-      (i: any) => i?.relation === "Mother"
-    )?.annual_income || "N/A";
+    guardians.find((i) => i.relation === "Mother")?.annual_income || "N/A";
   const address_guardian2 =
-    details_list?.data?.message?.address_line_2 || "N/A";
+    detailsList?.data?.message?.address_line_2 || "N/A";
+  const cityData = detailsList?.data?.message?.city || "N/A";
+  const pincodeData = detailsList?.data?.message?.pincode || "N/A";
 
-  const verifyEmailOTP = async (id: string) => {
-    if (
-      id ===
-      details_list?.data?.message?.guardians?.find?.(
-        (i: any) => i?.relation === "Mother"
-      )?.relation
-    ) {
+  const verifyOTP = async (id: string, type: string) => {
+    const relation = guardians.find((i) => i.relation === id)?.relation;
+    const payload =
+      type === "email"
+        ? { otp: otpVerify, email: id === "Mother" ? MotherEmail : FatherEmail }
+        : {
+            otp: otpVerify,
+            phone_no: id === "Mother" ? MotherMobile : FatherMobile,
+          };
+    const url =
+      type === "email"
+        ? "/api/method/unity_parent_app.api.studentProfile.verify_otp"
+        : "/api/method/unity_parent_app.api.studentProfile.verify_otp_mobile";
+
+    if (relation) {
       try {
-        const payload = { otp: otpVerify, email: MotherEmail };
-        const response = await fetch(
-          "/api/method/edu_quality.public.py.walsh.studentProfile.verify_otp",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-          }
-        );
-        const data = await response.json();
-        if (data.message.success) {
-          setVerificationStatus("OTP Verified!");
-          setStatusColor("green");
-          setTimeout(async () => {
-            mutateAsyncNumber({
-              name: MotherGuardian,
-              mobile_number: newNumber.mother_number_input,
-            }).then(() => {
-              detailsRefetch();
-              setIsEditable((prevState) => ({
-                ...prevState,
-                mother_number: false,
-              }));
-              setSubmitBtn((prevState) => ({
-                ...prevState,
-                mother_number: false,
-              }));
-            });
-            setSendotp((prevState) => ({
-              ...prevState,
-              mother_number: false,
-            }));
-            setEditIcon((prevState) => ({
-              ...prevState,
-              mother_number: false,
-            }));
-            setOtpVerify(" ");
-            setVerificationStatus("");
-          }, 2000);
-          // Proceed with further actions like updating email address, etc.
-        } else {
-          setVerificationStatus("Invalid OTP. Please try again.");
-          setStatusColor("red");
-          setVerificationStatus("");
-        }
-      } catch (error) {
-        console.error("Error verifying OTP:", error);
-        setVerificationStatus("Error verifying OTP. Please try again later.");
-      }
-    }
-    if (
-      id ===
-      details_list?.data?.message?.guardians?.find?.(
-        (i: any) => i?.relation === "Father"
-      )?.relation
-    ) {
-      try {
-        const payload = { otp: otpVerify, email: FatherEmail };
-        const response = await fetch(
-          "/api/method/edu_quality.public.py.walsh.studentProfile.verify_otp",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-          }
-        );
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
         const data = await response.json();
         if (data.message.success) {
           setVerificationStatus("OTP Verified!");
           setStatusColor("green");
           setTimeout(() => {
-            mutateAsyncFatherNumbers({
-              name: FatherGuardian,
-              mobile_number: newNumber.father_number_input,
-            }).then(() => {
-              detailsRefetch();
-              setIsEditable((prevState) => ({
-                ...prevState,
-                father_number: false,
-              }));
-              setSubmitBtn((prevState) => ({
-                ...prevState,
-                father_number: false,
-              }));
-            });
-            setSendotp((prevState) => ({
+            if (type === "email") {
+              mutateAsyncEmail({
+                name: id === "Mother" ? MotherGuardian : FatherGuardian,
+                email_address:
+                  id === "Mother"
+                    ? newEmail.mother_email_input
+                    : newEmail.father_email_input,
+              }).then(() => {
+                onRefetch();
+                setIsEditable((prevState) => ({
+                  ...prevState,
+                  [`${id.toLowerCase()}_email`]: false,
+                }));
+                setSubmitBtn((prevState) => ({
+                  ...prevState,
+                  [`${id.toLowerCase()}_email`]: false,
+                }));
+              });
+            } else {
+              (id === "Mother" ? mutateAsyncNumber : mutateAsyncFatherNumbers)({
+                name: id === "Mother" ? MotherGuardian : FatherGuardian,
+                mobile_number:
+                  id === "Mother"
+                    ? newNumber.mother_number_input
+                    : newNumber.father_number_input,
+              }).then(() => {
+                onRefetch();
+                setIsEditable((prevState) => ({
+                  ...prevState,
+                  [`${id.toLowerCase()}_number`]: false,
+                }));
+                setSubmitBtn((prevState) => ({
+                  ...prevState,
+                  [`${id.toLowerCase()}_number`]: false,
+                }));
+              });
+            }
+            setSendOtp((prevState) => ({
               ...prevState,
-              father_number: false,
+              [`${id.toLowerCase()}_${type}`]: false,
             }));
             setEditIcon((prevState) => ({
               ...prevState,
-              father_number: false,
+              [`${id.toLowerCase()}_${type}`]: false,
             }));
-            setOtpVerify(" ");
+            setOtpVerify("");
             setVerificationStatus("");
           }, 2000);
         } else {
           setVerificationStatus("Invalid OTP. Please try again.");
           setStatusColor("red");
-          setVerificationStatus("");
-        }
-      } catch (error) {
-        console.error("Error verifying OTP:", error);
-        setVerificationStatus("Error verifying OTP. Please try again later.");
-      }
-    }
-  };
-
-  const verifyMobileOTP = async (id: string) => {
-    if (
-      id ===
-      details_list?.data?.message?.guardians?.find?.(
-        (i: any) => i?.relation === "Mother"
-      )?.relation
-    ) {
-      try {
-        const payload = { otp: otpVerify, phone_no: MotherMobile };
-        const response = await fetch(
-          "/api/method/edu_quality.public.py.walsh.studentProfile.verify_otp_mobile",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-          }
-        );
-        const data = await response.json();
-        if (data.message.success) {
-          setVerificationStatus("OTP Verified!");
-          setStatusColor("green");
-
-          setTimeout(() => {
-            mutateAsync({
-              name: MotherGuardian,
-              email_address: newEmail.mother_email_input,
-            }).then(() => {
-              detailsRefetch();
-              setIsEditable((prevState) => ({
-                ...prevState,
-                mother_email: false,
-              }));
-              setSubmitBtn((prevState) => ({
-                ...prevState,
-                mother_email: false,
-              }));
-            });
-            setSendotp((prevState) => ({
-              ...prevState,
-              mother_email: false,
-            }));
-            setEditIcon((prevState) => ({
-              ...prevState,
-              mother_email: false,
-            }));
-            setOtpVerify(" ");
-            setVerificationStatus("");
-          }, 2000);
-        } else {
-          setVerificationStatus("Invalid OTP. Please try again.");
-          setStatusColor("red");
-          setVerificationStatus("");
-        }
-      } catch (error) {
-        console.error("Error verifying OTP:", error);
-        setVerificationStatus("Error verifying OTP. Please try again later.");
-      }
-    }
-    if (
-      id ===
-      details_list?.data?.message?.guardians?.find?.(
-        (i: any) => i?.relation === "Father"
-      )?.relation
-    ) {
-      try {
-        const payload = { otp: otpVerify, phone_no: FatherMobile };
-        const response = await fetch(
-          "/api/method/edu_quality.public.py.walsh.studentProfile.verify_otp_mobile",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-          }
-        );
-        const data = await response.json();
-        if (data.message.success) {
-          setVerificationStatus("OTP Verified!");
-          setStatusColor("green");
-          setTimeout(() => {
-            mutateAsync({
-              name: FatherGuardian,
-              email_address: newEmail.father_email_input,
-            }).then(() => {
-              detailsRefetch();
-              setIsEditable((prevState) => ({
-                ...prevState,
-                father_email: false,
-              }));
-              setSubmitBtn((prevState) => ({
-                ...prevState,
-                father_email: false,
-              }));
-            });
-            setSendotp((prevState) => ({
-              ...prevState,
-              father_email: false,
-            }));
-            setEditIcon((prevState) => ({
-              ...prevState,
-              father_email: false,
-            }));
-            setOtpVerify(" ");
-            setVerificationStatus("");
-          }, 2000);
-          // Proceed with further actions like updating email address, etc.
-        } else {
-          setVerificationStatus("Invalid OTP. Please try again.");
-          setStatusColor("red");
-          setVerificationStatus("");
         }
       } catch (error) {
         console.error("Error verifying OTP:", error);
@@ -384,331 +242,166 @@ export const StudentProfleFOrm = ({
   };
 
   const handleSubmit = useMemo(
-    () => (id: string) => {
-      if (id === "Mother") {
-        const myHeaders = new Headers();
-        const payload = { email_address: MotherEmail };
-        myHeaders.append("Content-Type", "application/json");
-        fetch(
-          "/api/method/edu_quality.public.py.walsh.studentProfile.send_otp_to_email_address",
-          {
-            method: "POST",
-            headers: myHeaders,
-            body: JSON.stringify(payload),
-            redirect: "follow",
+    () => (id: string, type: string) => {
+      const payload =
+        type === "email"
+          ? { email_address: id === "Mother" ? MotherEmail : FatherEmail }
+          : { mobile_number: id === "Mother" ? MotherMobile : FatherMobile };
+      const url =
+        type === "email"
+          ? "/api/method/unity_parent_app.api.studentProfile.send_otp_to_email_address"
+          : "/api/method/unity_parent_app.api.studentProfile.send_otp_to_mobile_number";
+
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+        .then((response) => response.json())
+        .then((result) => result.message)
+        .then((message) => {
+          if (message.success) {
+            setErrorMessage("");
+            setOtpMessage(message.message);
+          } else {
+            setErrorMessage(message.error_message);
+            console.log("Error ", message.error);
           }
-        )
-          .then((response) => response.json())
-          .then((result) => result.message)
-          .then((message) => {
-            if (message.success) {
-              setErrorMessage("");
-              setOtpMessage(message.message);
-            } else {
-              setErrorMessage(message.error_message);
-              console.log("Error ", message.error);
-            }
-          })
-          .catch((error) => console.log("error", error));
-      }
-      if (id === "Father") {
-        const myHeaders = new Headers();
-        const payload = { email_address: FatherEmail };
-        myHeaders.append("Content-Type", "application/json");
-        fetch(
-          "/api/method/edu_quality.public.py.walsh.studentProfile.send_otp_to_email_address",
-          {
-            method: "POST",
-            headers: myHeaders,
-            body: JSON.stringify(payload),
-            redirect: "follow",
-          }
-        )
-          .then((response) => response.json())
-          .then((result) => result.message)
-          .then((message) => {
-            if (message.success) {
-              setErrorMessage("");
-              setOtpMessage(message.message);
-            } else {
-              setErrorMessage(message.error_message);
-              console.log("Error ", message.error);
-            }
-          })
-          .catch((error) => console.log("error", error));
-      }
+        })
+        .catch((error) => console.log("error", error));
     },
-    [MotherEmail, FatherEmail]
-  );
-  const handleMobileNumber = useMemo(
-    () => (id: string) => {
-      if (id === "Mother") {
-        const myHeaders = new Headers();
-        const payload = { mobile_number: MotherMobile };
-        myHeaders.append("Content-Type", "application/json");
-        fetch(
-          "/api/method/edu_quality.public.py.walsh.studentProfile.send_otp_to_mobile_number",
-          {
-            method: "POST",
-            headers: myHeaders,
-            body: JSON.stringify(payload),
-            redirect: "follow",
-          }
-        )
-          .then((response) => response.json())
-          .then((result) => result.message)
-          .then((message) => {
-            if (message.success) {
-              setErrorMessage("");
-              setOtpMessage(message.message);
-            } else {
-              setErrorMessage(message.error_message);
-              console.log("Error ", message.error);
-            }
-          })
-          .catch((error) => console.log("error", error));
-      }
-      if (id === "Father") {
-        const myHeaders = new Headers();
-        const payload = { mobile_number: FatherMobile };
-        myHeaders.append("Content-Type", "application/json");
-        fetch(
-          "/api/method/edu_quality.public.py.walsh.studentProfile.send_otp_to_mobile_number",
-          {
-            method: "POST",
-            headers: myHeaders,
-            body: JSON.stringify(payload),
-            redirect: "follow",
-          }
-        )
-          .then((response) => response.json())
-          .then((result) => result.message)
-          .then((message) => {
-            if (message.success) {
-              setErrorMessage("");
-              setOtpMessage(message.message);
-            } else {
-              setErrorMessage(message.error_message);
-              console.log("Error ", message.error);
-            }
-          })
-          .catch((error) => console.log("error", error));
-      }
-    },
-    [MotherMobile, FatherMobile]
+    [MotherEmail, FatherEmail, MotherMobile, FatherMobile]
   );
 
-  const data_of_birth = details_list?.data?.message?.date_of_birth;
-
-  const endDate = new Date(data_of_birth);
-  const formattedEndDate = endDate
+  const data_of_birth = detailsList?.data?.message?.date_of_birth;
+  const formattedEndDate = new Date(data_of_birth)
     .toLocaleDateString("en-GB")
     .replace(/\//g, "-");
 
   return (
-    <>
-      <div style={{ display: "flex", flexDirection: "column", width: "700px" }}>
-        <div style={{ width: "700px", overflowX: "auto" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        maxWidth: "700px",
+        fontSize: "14px",
+        margin: "0 auto",
+      }}
+    >
+      <div style={{ width: "100%", overflowX: "hidden" }}>
+        {[
+          { label: "ID", value: detailsList?.data?.message?.name || "-" },
+          {
+            label: "First Name",
+            value: detailsList?.data?.message?.first_name || "-",
+          },
+          {
+            label: "Middle Name",
+            value: detailsList?.data?.message?.middle_name || "-",
+          },
+          {
+            label: "Last Name",
+            value: detailsList?.data?.message?.last_name || "-",
+          },
+          {
+            label: "Student Email",
+            value: detailsList?.data?.message?.student_email_id,
+          },
+          { label: "City", value: cityData },
+          {
+            label: "Pin code",
+            value: pincodeData,
+          },
+          { label: "Class", value: classDetails?.data?.message?.class?.name },
+          {
+            label: "School",
+            value: classDetails?.data?.message?.division?.custom_school,
+          },
+          { label: "Mother Name", value: MotherName },
+          { label: "Father Name", value: FatherName },
+          { label: "Date of Birth", value: formattedEndDate },
+          {
+            label: "Religion",
+            value: studentsList?.data?.message[0]?.religion,
+          },
+          { label: "Caste", value: studentsList?.data?.message[0]?.caste },
+          {
+            label: "Sub Caste",
+            value: studentsList?.data?.message[0]?.sub_caste,
+          },
+          {
+            label: "Mother Tongue",
+            value: studentsList?.data?.message[0]?.mother_tongue,
+          },
+          {
+            label: "Mother's Secondary Mobile",
+            value: MotherSecondaryMobile,
+          },
+          {
+            label: "Father's Secondary Mobile",
+            value: FatherSecondaryMobile,
+          },
+        ].map(({ label, value }) => (
           <div
+            key={label}
             style={{
               display: "flex",
               alignItems: "center",
               borderBottom: `1px solid ${studentProfileColor}`,
               paddingBottom: "0.5rem",
+              width: "100%",
               margin: "0px auto",
-              width: "700px",
+              flexWrap: "wrap",
             }}
           >
             <Text
               sx={{
                 color: studentProfileColor,
                 padding: "10px 1rem",
+                minWidth: "150px",
               }}
+              size={"sm"}
             >
-              Class:
+              {label}:
             </Text>
-            <span style={{ color: "black" }}>
-              {classDetails?.data?.message?.class?.name || student?.program || "Not Assigned"}
-            </span>
+            <span style={{ color: "black", flex: 1 }}>{value}</span>
           </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              borderBottom: `1px solid ${studentProfileColor}`,
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              School:{" "}
-            </Text>
-            <span style={{ color: "black" }}>
-              {classDetails?.data?.message?.division?.custom_school || student?.school || "Not Assigned"}
-            </span>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              borderBottom: `1px solid ${studentProfileColor}`,
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              Mother Name:{" "}
-            </Text>
-            <span style={{ color: "black" }}>{MotherName}</span>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              borderBottom: `1px solid ${studentProfileColor}`,
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              Father Name:{" "}
-            </Text>
-            <span style={{ color: "black" }}>{FatherName}</span>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              borderBottom: `1px solid ${studentProfileColor}`,
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              Date of Birth:{" "}
-            </Text>
+        ))}
 
-            <span style={{ color: "black" }}>{formattedEndDate}</span>
-          </div>
+        {[
+          {
+            label: "Mother's Email",
+            value: MotherEmail,
+            type: "email",
+            id: "Mother",
+          },
+          {
+            label: "Mother's Mobile",
+            value: MotherMobile,
+            type: "mobile",
+            id: "Mother",
+          },
+          {
+            label: "Father's Email",
+            value: FatherEmail,
+            type: "email",
+            id: "Father",
+          },
+          {
+            label: "Father's Mobile",
+            value: FatherMobile,
+            type: "mobile",
+            id: "Father",
+          },
+        ].map(({ label, value, type, id }) => (
           <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              borderBottom: `1px solid ${studentProfileColor}`,
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              Religion:{" "}
-            </Text>
-            <span style={{ color: "black" }}>
-              {studentsList?.data?.message[0]?.religion}
-            </span>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              borderBottom: `1px solid ${studentProfileColor}`,
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              Caste:
-            </Text>
-            <span style={{ color: "black" }}>
-              {studentsList?.data?.message[0]?.caste}
-            </span>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              borderBottom: `1px solid ${studentProfileColor}`,
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              Sub Caste:{" "}
-            </Text>
-            <span style={{ color: "black" }}>
-              {studentsList?.data?.message[0]?.sub_caste}
-            </span>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              borderBottom: `1px solid ${studentProfileColor}`,
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              Mother Tongue:{" "}
-            </Text>
-            <span style={{ color: "black" }}>
-              {studentsList?.data?.message[0]?.mother_tongue}
-            </span>
-          </div>
-
-          <div
+            key={label}
             style={{
               position: "relative",
               borderBottom: `1px solid ${studentProfileColor}`,
               paddingBottom: "0.5rem",
-              width: "700px",
+              width: "100%",
               margin: "0px auto",
             }}
           >
@@ -716,9 +409,11 @@ export const StudentProfleFOrm = ({
               sx={{
                 color: studentProfileColor,
                 padding: "10px 1rem",
+                minWidth: "150px",
               }}
+              size={"sm"}
             >
-              Mother Email:
+              {label}:
             </Text>
             <div
               style={{
@@ -726,52 +421,67 @@ export const StudentProfleFOrm = ({
                 flexDirection: "row",
                 gap: "0.2rem",
                 alignItems: "center",
+                flexWrap: "wrap",
               }}
             >
               <input
                 type="text"
-                name=""
-                id=""
                 style={{
                   borderRadius: "8px",
-                  width: "312px",
+                  width: "100%",
+                  maxWidth: "312px",
                   marginLeft: "1rem",
                   padding: "0.5rem",
                   backgroundColor: "lightgray",
                   border: "none",
                 }}
                 value={
-                  isEditable.mother_email
-                    ? newEmail.mother_email_input
-                    : MotherEmail
+                  isEditable[`${id.toLowerCase()}_${type}`]
+                    ? type === "email"
+                      ? newEmail[`${id.toLowerCase()}_email_input`]
+                      : newNumber[`${id.toLowerCase()}_number_input`]
+                    : value
                 }
                 onChange={(e) => {
-                  setNewEmail((prevEmail) => ({
-                    ...prevEmail,
-                    mother_email_input: e.target.value,
-                  }));
-                }}
-                disabled={!isEditable.mother_email}
-              />
-              {student.name === selectedStudent &&
-              ((!MotherEmail && MotherEmail === "") || MotherEmail) &&
-              !submitBtn.mother_email &&
-              !editIcom.mother_email ? (
-                <IconEdit
-                  stroke={2}
-                  onClick={() => {
-                    setIsEditable((prevState) => ({
-                      ...prevState,
-                      mother_email: true,
-                    }));
-
+                  if (type === "email") {
                     setNewEmail((prevEmail) => ({
                       ...prevEmail,
-                      mother_email_input: MotherEmail || "",
+                      [`${id.toLowerCase()}_email_input`]: e.target.value,
                     }));
+                  } else {
+                    setNewNumber((prevNumber) => ({
+                      ...prevNumber,
+                      [`${id.toLowerCase()}_number_input`]: e.target.value,
+                    }));
+                  }
+                }}
+                disabled={!isEditable[`${id.toLowerCase()}_${type}`]}
+              />
+              {student.name === selectedStudent &&
+              value &&
+              !submitBtn[`${id.toLowerCase()}_${type}`] &&
+              !editIcon[`${id.toLowerCase()}_${type}`] ? (
+                <IconEdit
+                  stroke={2}
+                  onClick={() => {
+                    setIsEditable((prevState) => ({
+                      ...prevState,
+                      [`${id.toLowerCase()}_${type}`]: true,
+                    }));
+                    if (type === "email") {
+                      setNewEmail((prevEmail) => ({
+                        ...prevEmail,
+                        [`${id.toLowerCase()}_email_input`]: value || "",
+                      }));
+                    } else {
+                      setNewNumber((prevNumber) => ({
+                        ...prevNumber,
+                        [`${id.toLowerCase()}_number_input`]: value || "",
+                      }));
+                    }
                     setSubmitBtn((prevState) => ({
                       ...prevState,
-                      mother_email: true,
+                      [`${id.toLowerCase()}_${type}`]: true,
                     }));
                   }}
                 />
@@ -786,61 +496,99 @@ export const StudentProfleFOrm = ({
                   >
                     <Button
                       sx={{ background: "green", color: "white" }}
-                      disabled={sendOtp.mother_email}
+                      disabled={sendOtp[`${id.toLowerCase()}_${type}`]}
                       onClick={() => {
-                        if (MotherMobile === "N/A") {
-                          mutateAsync({
-                            name: MotherGuardian,
-                            email_address: newEmail.mother_email_input,
-                          }).then(() => {
-                            detailsRefetch();
-                            setSubmitBtn((prevState) => ({
-                              ...prevState,
-                              mother_email: false,
-                            }));
-                            setIsEditable((prevState) => ({
-                              ...prevState,
-                              mother_email: false,
-                            }));
-                          });
+                        if (
+                          (type === "email" &&
+                            (id === "Mother" ? MotherMobile : FatherMobile) ===
+                              "N/A") ||
+                          (type === "mobile" &&
+                            (id === "Mother" ? MotherEmail : FatherEmail) ===
+                              "N/A")
+                        ) {
+                          if (type === "email") {
+                            mutateAsyncEmail({
+                              name:
+                                id === "Mother"
+                                  ? MotherGuardian
+                                  : FatherGuardian,
+                              email_address:
+                                id === "Mother"
+                                  ? newEmail.mother_email_input
+                                  : newEmail.father_email_input,
+                            }).then(() => {
+                              onRefetch();
+                              setSubmitBtn((prevState) => ({
+                                ...prevState,
+                                [`${id.toLowerCase()}_${type}`]: false,
+                              }));
+                              setIsEditable((prevState) => ({
+                                ...prevState,
+                                [`${id.toLowerCase()}_${type}`]: false,
+                              }));
+                            });
+                          } else {
+                            (id === "Mother"
+                              ? mutateAsyncNumber
+                              : mutateAsyncFatherNumbers)({
+                              name:
+                                id === "Mother"
+                                  ? MotherGuardian
+                                  : FatherGuardian,
+                              mobile_number:
+                                id === "Mother"
+                                  ? newNumber.mother_number_input
+                                  : newNumber.father_number_input,
+                            }).then(() => {
+                              onRefetch();
+                              setSubmitBtn((prevState) => ({
+                                ...prevState,
+                                [`${id.toLowerCase()}_${type}`]: false,
+                              }));
+                              setIsEditable((prevState) => ({
+                                ...prevState,
+                                [`${id.toLowerCase()}_${type}`]: false,
+                              }));
+                            });
+                          }
                         } else {
-                          setEmailOtp(newEmail.mother_email_input);
-                          handleMobileNumber("Mother");
+                          setEmailOtp(
+                            type === "email"
+                              ? newEmail[`${id.toLowerCase()}_email_input`]
+                              : newNumber[`${id.toLowerCase()}_number_input`]
+                          );
+                          handleSubmit(id, type);
                           setEditIcon((prevState) => ({
                             ...prevState,
-                            mother_email: true,
+                            [`${id.toLowerCase()}_${type}`]: true,
                           }));
-                          setSendotp((prevState) => ({
+                          setSendOtp((prevState) => ({
                             ...prevState,
-                            mother_email: true,
+                            [`${id.toLowerCase()}_${type}`]: true,
                           }));
-                          // <button></button>
                         }
                       }}
                     >
                       Update
                     </Button>
-
                     <Button
-                      sx={{
-                        backgroundColor: "red",
-                      }}
+                      sx={{ backgroundColor: "red" }}
                       onClick={() => {
                         setIsEditable((prevState) => ({
                           ...prevState,
-                          mother_email: false,
+                          [`${id.toLowerCase()}_${type}`]: false,
                         }));
                         setSubmitBtn((prevState) => ({
                           ...prevState,
-                          mother_email: false,
+                          [`${id.toLowerCase()}_${type}`]: false,
                         }));
-                        setSendotp((prevState) => ({
+                        setSendOtp((prevState) => ({
                           ...prevState,
-                          mother_email: false,
+                          [`${id.toLowerCase()}_${type}`]: false,
                         }));
                         setEditIcon((prevState) => ({
                           ...prevState,
-                          mother_email: false,
+                          [`${id.toLowerCase()}_${type}`]: false,
                         }));
                       }}
                     >
@@ -851,11 +599,19 @@ export const StudentProfleFOrm = ({
               )}
             </div>
             {student.name === selectedStudent &&
-              MotherEmail &&
-              sendOtp.mother_email && (
+              value &&
+              sendOtp[`${id.toLowerCase()}_${type}`] && (
                 <>
                   <p style={{ color: "green", marginLeft: "1rem" }}>
-                    OTP sent to {MotherMobile} {otpMessage}
+                    OTP sent to{" "}
+                    {type === "email"
+                      ? id === "Mother"
+                        ? MotherMobile
+                        : FatherMobile
+                      : id === "Mother"
+                      ? MotherEmail
+                      : FatherEmail}{" "}
+                    {otpMessage}
                   </p>
                   <div
                     style={{
@@ -886,7 +642,7 @@ export const StudentProfleFOrm = ({
                         borderRadius: "10px",
                       }}
                       onClick={() => {
-                        verifyMobileOTP("Mother");
+                        verifyOTP(id, type);
                       }}
                     >
                       Verify OTP
@@ -900,1194 +656,282 @@ export const StudentProfleFOrm = ({
                 </>
               )}
           </div>
-          {/* avantee.joshi@yopmail.com */}
+        ))}
+
+        {[
+          {
+            label: "Mother's Education",
+            value:
+              guardians.find((i) => i.relation === "Mother")?.email_address ||
+              "N/A",
+          },
+          {
+            label: "Mother's Occupation",
+            value:
+              guardians.find((i) => i.relation === "Mother")?.occupation ||
+              "N/A",
+          },
+          {
+            label: "Mother's Company Name",
+            value:
+              guardians.find((i) => i.relation === "Mother")?.company_name ||
+              "N/A",
+          },
+          {
+            label: "Mother's Designation",
+            value:
+              guardians.find((i) => i.relation === "Mother")?.designation ||
+              "N/A",
+          },
+          {
+            label: "Mother's Work Address",
+            value:
+              guardians.find((i) => i.relation === "Mother")?.work_address ||
+              "N/A",
+          },
+          {
+            label: "Father's Education",
+            value:
+              guardians.find((i) => i.relation === "Father")?.email_address ||
+              "N/A",
+          },
+          {
+            label: "Father's Occupation",
+            value:
+              guardians.find((i) => i.relation === "Father")?.occupation ||
+              "N/A",
+          },
+          {
+            label: "Father's Company Name",
+            value:
+              guardians.find((i) => i.relation === "Father")?.company_name ||
+              "N/A",
+          },
+          {
+            label: "Father's Designation",
+            value:
+              guardians.find((i) => i.relation === "Father")?.designation ||
+              "N/A",
+          },
+          {
+            label: "Father's Work Address",
+            value:
+              guardians.find((i) => i.relation === "Father")?.work_address ||
+              "N/A",
+          },
+        ].map(({ label, value }) => (
           <div
+            key={label}
             style={{
+              display: "flex",
+              alignItems: "center",
               borderBottom: `1px solid ${studentProfileColor}`,
               paddingBottom: "0.5rem",
-              width: "700px",
+              width: "100%",
               margin: "0px auto",
+              flexWrap: "wrap",
             }}
           >
             <Text
               sx={{
                 color: studentProfileColor,
                 padding: "10px 1rem",
+                minWidth: "150px",
               }}
+              size={"sm"}
             >
-              Mother's Mobile:
+              {label}:
             </Text>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: "0.2rem",
-                alignItems: "center",
-              }}
-            >
-              <input
-                type="text"
-                name=""
-                id=""
-                style={{
-                  borderRadius: "8px",
-                  width: "312px",
-                  marginLeft: "1rem",
-                  padding: "0.5rem",
-                  backgroundColor: "lightgray",
-                  border: "none",
-                }}
-                value={
-                  isEditable.mother_number
-                    ? newNumber.mother_number_input
-                    : MotherMobile
-                }
-                onChange={(e) => {
-                  setNewNumber((prevEmail) => ({
-                    ...prevEmail,
-                    mother_number_input: e.target.value,
-                  }));
-                }}
-                disabled={!isEditable.mother_number}
-              />
-              {student.name === selectedStudent &&
-              ((!MotherMobile && MotherMobile === "") || MotherMobile) &&
-              !submitBtn.mother_number &&
-              !editIcom.mother_number ? (
-                <IconEdit
-                  stroke={2}
-                  onClick={() => {
-                    setIsEditable((prevState) => ({
-                      ...prevState,
-                      mother_number: true,
-                    }));
-                    // setNewFatherEmail(FatherEmail || '');
-                    setNewNumber((prevEmail) => ({
-                      ...prevEmail,
-                      mother_number_input: MotherMobile || "",
-                    }));
-                    setSubmitBtn((prevState) => ({
-                      ...prevState,
-                      mother_number: true,
-                    }));
-                  }}
-                />
-              ) : (
-                <>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
-                    }}
-                  >
-                    <Button
-                      sx={{ background: "green", color: "white" }}
-                      disabled={sendOtp.mother_number}
-                      onClick={() => {
-                        if (MotherEmail === "N/A") {
-                          mutateAsyncNumber({
-                            name: MotherGuardian,
-                            mobile_number: newNumber.mother_number_input,
-                          }).then(() => {
-                            detailsRefetch();
-                            setSubmitBtn((prevState) => ({
-                              ...prevState,
-                              mother_number: false,
-                            }));
-                            setIsEditable((prevState) => ({
-                              ...prevState,
-                              mother_number: false,
-                            }));
-                          });
-                        } else {
-                          setEmailOtp(newNumber.mother_number_input);
-                          handleSubmit("Mother");
-                          setEditIcon((prevState) => ({
-                            ...prevState,
-                            mother_number: true,
-                          }));
-                          setSendotp((prevState) => ({
-                            ...prevState,
-                            mother_number: true,
-                          }));
-                        }
-                      }}
-                    >
-                      Update
-                    </Button>
-                    <Button
-                      sx={{
-                        backgroundColor: "red",
-                      }}
-                      onClick={() => {
-                        setIsEditable((prevState) => ({
-                          ...prevState,
-                          mother_number: false,
-                        }));
-                        setSubmitBtn((prevState) => ({
-                          ...prevState,
-                          mother_number: false,
-                        }));
-                        setSendotp((prevState) => ({
-                          ...prevState,
-                          mother_number: false,
-                        }));
-                        setEditIcon((prevState) => ({
-                          ...prevState,
-                          mother_number: false,
-                        }));
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </>
-              )}
-            </div>
-            {student.name === selectedStudent &&
-              MotherMobile &&
-              sendOtp.mother_number && (
-                <>
-                  <p style={{ color: "green", marginLeft: "1rem" }}>
-                    OTP sent to {MotherEmail} {otpMessage}
-                  </p>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      width: "100%",
-                      gap: "1rem",
-                      marginLeft: "1rem",
-                    }}
-                  >
-                    <OTPInput
-                      autoFocus
-                      OTPLength={4}
-                      value={otpVerify}
-                      onChange={setOtpVerify}
-                      otpType="number"
-                      disabled={false}
-                      secure
-                    />
-                    <button
-                      style={{
-                        width: "25%",
-                        marginLeft: "1rem",
-                        backgroundColor: "rgb(31 197 94)",
-                        color: "white",
-                        border: "none",
-                        padding: "0.5rem",
-                        borderRadius: "10px",
-                      }}
-                      onClick={() => {
-                        verifyEmailOTP("Mother");
-                      }}
-                    >
-                      Verify OTP
-                    </button>
-                    {verificationStatus && (
-                      <p style={{ color: statusColor, marginLeft: "1rem" }}>
-                        {verificationStatus}
-                      </p>
-                    )}
-                  </div>
-                </>
-              )}
+            <span style={{ color: "black", flex: 1 }}>{value}</span>
           </div>
-          <div
-            style={{
-              position: "relative",
-              borderBottom: `1px solid ${studentProfileColor}`,
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              Father's Email:
-            </Text>
+        ))}
 
+        {[
+          {
+            label: "Address 1",
+            value: address_guardian,
+            state: addressGuardian1,
+            setState: setAddressGuardian1,
+            mutate: mutateAddress,
+            key: "address",
+          },
+          {
+            label: "Address 2",
+            value: address_guardian2,
+            state: addressGuardian2,
+            setState: setAddressGuardian2,
+            mutate: mutateAddress2,
+            key: "address2",
+          },
+          {
+            label: "City",
+            value: cityData,
+            state: cityValue,
+            setState: setCity,
+            mutate: mutateCity,
+            key: "city",
+          },
+          {
+            label: "Pincode",
+            value: pincodeData,
+            state: pincodeValue,
+            setState: setPincode,
+            mutate: mutatePinCode,
+            key: "pincode",
+          },
+          {
+            label: "Blood Group",
+            value: blood_group,
+            state: newBloodG,
+            setState: setBloodG,
+            mutate: mutateAsyncBloodGroup,
+            key: "bloods_group",
+          },
+          {
+            label: "Approximate Yearly Income of Father",
+            value: annuals_income,
+            state: newAnnualI,
+            setState: setAnnualI,
+            mutate: mutateAsyncAnnualIncome,
+            key: "annual__father_income",
+          },
+          {
+            label: "Approximate Yearly Income of Mother",
+            value: annuals_income_mother,
+            state: newAnnualIMother,
+            setState: setAnnualIMother,
+            mutate: mutateAsyncAnnualIncome,
+            key: "annual__mother_income",
+          },
+        ].map(({ label, value, state, setState, mutate, key }) => {
+          const handleMutation = (mutate: any) => {
+            const name = key.includes("mother")
+              ? MotherGuardian
+              : FatherGuardian;
+            const data = {
+              name,
+              ...(key === "address" && { address_line_1: state }),
+              ...(key === "address2" && { address_line_2: state }),
+              ...(key === "city" && { city: state }),
+              ...(key === "pincode" && { pincode: state }),
+              ...(key === "bloods_group" && { blood_group: state }),
+              ...(key.includes("annual") && { annual_income: state }),
+            };
+
+            mutate(data as any).then(() => {
+              onRefetch();
+              setIsEditable((prev) => ({ ...prev, [key]: false }));
+              setSubmitBtn((prev) => ({ ...prev, [key]: false }));
+            });
+          };
+
+          return (
             <div
+              key={label}
               style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: "0.2rem",
-                alignItems: "center",
+                borderBottom: `1px solid ${studentProfileColor}`,
+                paddingBottom: "0.5rem",
+                width: "100%",
+                margin: "0px auto",
               }}
             >
-              <input
-                type="text"
-                name=""
-                id=""
+              <Text
+                sx={{
+                  color: studentProfileColor,
+                  padding: "10px 1rem",
+                  minWidth: "150px",
+                }}
+                size={"sm"}
+              >
+                {label}
+              </Text>
+              <div
                 style={{
-                  borderRadius: "8px",
-                  width: "312px",
-                  marginLeft: "1rem",
-                  padding: "0.5rem",
-                  backgroundColor: "lightgray",
-                  border: "none",
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "0.2rem",
+                  alignItems: "center",
                 }}
-                value={
-                  isEditable.father_email
-                    ? newEmail.father_email_input
-                    : FatherEmail
-                }
-                onChange={(e) => {
-                  setNewEmail((prevEmail) => ({
-                    ...prevEmail,
-                    father_email_input: e.target.value,
-                  }));
-                }}
-                disabled={!isEditable.father_email}
-              />
-              {student.name === selectedStudent &&
-              ((!FatherEmail && FatherEmail === "") || FatherEmail) &&
-              !submitBtn.father_email &&
-              !editIcom.father_email ? (
-                <IconEdit
-                  stroke={2}
-                  onClick={() => {
-                    setIsEditable((prevState) => ({
-                      ...prevState,
-                      father_email: true,
-                    }));
-                    // setNewFatherEmail(FatherEmail || '');
-                    setNewEmail((prevEmail) => ({
-                      ...prevEmail,
-                      father_email_input: FatherEmail || "",
-                    }));
-                    setSubmitBtn((prevState) => ({
-                      ...prevState,
-                      father_email: true,
-                    }));
+              >
+                <input
+                  type="text"
+                  style={{
+                    borderRadius: "8px",
+                    width: "100%",
+                    maxWidth: "312px",
+                    marginLeft: "1rem",
+                    padding: "0.5rem",
+                    backgroundColor: "lightgray",
+                    border: "none",
                   }}
+                  value={isEditable[key] ? state : value}
+                  onChange={(e) => setState(e.target.value)}
+                  disabled={!isEditable[key]}
                 />
-              ) : (
-                <>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
+                {student.name === selectedStudent &&
+                value &&
+                !submitBtn[key] ? (
+                  <IconEdit
+                    stroke={2}
+                    onClick={() => {
+                      setIsEditable((prevState) => ({
+                        ...prevState,
+                        [key]: true,
+                      }));
+                      setState(value || "");
+                      setSubmitBtn((prevState) => ({
+                        ...prevState,
+                        [key]: true,
+                      }));
                     }}
-                  >
-                    <Button
-                      sx={{ background: "green", color: "white" }}
-                      disabled={sendOtp.father_email}
-                      onClick={() => {
-                        if (FatherMobile === "N/A") {
-                          mutateAsync({
-                            name: FatherGuardian,
-                            email_address: newEmail.father_email_input,
-                          }).then(() => {
-                            detailsRefetch();
-                            setSubmitBtn((prevState) => ({
-                              ...prevState,
-                              father_email: false,
-                            }));
-                            setIsEditable((prevState) => ({
-                              ...prevState,
-                              father_email: false,
-                            }));
-                          });
-                        } else {
-                          setEmailOtp(newEmail.father_email_input);
-                          handleMobileNumber("Father");
-                          setEditIcon((prevState) => ({
-                            ...prevState,
-                            father_email: true,
-                          }));
-                          setSendotp((prevState) => ({
-                            ...prevState,
-                            father_email: true,
-                          }));
-                        }
-                      }}
-                    >
-                      Update
-                    </Button>
-                    <Button
-                      sx={{
-                        backgroundColor: "red",
-                      }}
+                  />
+                ) : (
+                  <>
+                    <div
                       style={{
-                        display: sendOtp.mother_email ? "none" : "inline",
-                      }}
-                      onClick={() => {
-                        setIsEditable((prevState) => ({
-                          ...prevState,
-                          father_email: false,
-                        }));
-                        setSubmitBtn((prevState) => ({
-                          ...prevState,
-                          father_email: false,
-                        }));
-                        setSendotp((prevState) => ({
-                          ...prevState,
-                          father_email: false,
-                        }));
-                        setEditIcon((prevState) => ({
-                          ...prevState,
-                          father_email: false,
-                        }));
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "1rem",
                       }}
                     >
-                      {" "}
-                      Cancel
-                    </Button>
-                  </div>
-                </>
-              )}
-            </div>
-
-            {student.name === selectedStudent &&
-              FatherEmail &&
-              sendOtp.father_email && (
-                <>
-                  <p style={{ color: "green", marginLeft: "1rem" }}>
-                    OTP sent to {FatherMobile} {otpMessage}
-                  </p>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      width: "100%",
-                      gap: "1rem",
-                      marginLeft: "1rem",
-                    }}
-                  >
-                    {/* <OtpInput /> */}
-                    <OTPInput
-                      autoFocus
-                      OTPLength={4}
-                      value={otpVerify}
-                      onChange={setOtpVerify}
-                      otpType="number"
-                      disabled={false}
-                      secure
-                    />
-                    <button
-                      style={{
-                        width: "25%",
-                        marginLeft: "1rem",
-                        backgroundColor: "rgb(31 197 94)",
-                        color: "white",
-                        border: "none",
-                        padding: "0.5rem",
-                        borderRadius: "10px",
-                      }}
-                      onClick={() => {
-                        verifyMobileOTP("Father");
-                      }}
-                    >
-                      Verify OTP
-                    </button>
-                    {verificationStatus && (
-                      <p style={{ color: statusColor, marginLeft: "1rem" }}>
-                        {verificationStatus}
-                      </p>
-                    )}
-                  </div>
-                </>
-              )}
-          </div>
-          <div
-            style={{
-              borderBottom: `1px solid ${studentProfileColor}`,
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              Father's Mobile:
-            </Text>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: "0.2rem",
-                alignItems: "center",
-              }}
-            >
-              <input
-                type="text"
-                name=""
-                id=""
-                style={{
-                  borderRadius: "8px",
-                  width: "312px",
-                  marginLeft: "1rem",
-                  padding: "0.5rem",
-                  backgroundColor: "lightgray",
-                  border: "none",
-                }}
-                value={
-                  isEditable.father_number
-                    ? newNumber.father_number_input
-                    : FatherMobile
-                }
-                onChange={(e) => {
-                  setNewNumber((prevState) => ({
-                    ...prevState,
-                    father_number_input: e.target.value,
-                  }));
-                }}
-                disabled={!isEditable.father_number}
-              />
-              {student.name === selectedStudent &&
-              ((!FatherMobile && FatherMobile === "") || FatherMobile) &&
-              !submitBtn.father_number &&
-              !editIcom.father_number ? (
-                <IconEdit
-                  stroke={2}
-                  onClick={() => {
-                    setIsEditable((prevState) => ({
-                      ...prevState,
-                      father_number: true,
-                    }));
-                    // setNewFatherEmail(FatherEmail || '');
-                    setNewNumber((prevEmail) => ({
-                      ...prevEmail,
-                      father_number_input: FatherMobile || "",
-                    }));
-                    setSubmitBtn((prevState) => ({
-                      ...prevState,
-                      father_number: true,
-                    }));
-                  }}
-                />
-              ) : (
-                <>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
-                    }}
-                  >
-                    <Button
-                      sx={{ background: "green", color: "white" }}
-                      disabled={sendOtp.father_number}
-                      onClick={() => {
-                        if (FatherEmail === "N/A") {
-                          mutateAsyncFatherNumbers({
-                            name: FatherGuardian,
-                            mobile_number: newNumber.father_number_input,
-                          }).then(() => {
-                            detailsRefetch();
-                            setSubmitBtn((prevState) => ({
-                              ...prevState,
-                              father_number: false,
-                            }));
-                            setIsEditable((prevState) => ({
-                              ...prevState,
-                              father_number: false,
-                            }));
-                          });
-                        } else {
-                          setEmailOtp(newNumber.father_number_input);
-                          handleSubmit("Father");
-                          setEditIcon((prevState) => ({
-                            ...prevState,
-                            father_number: true,
-                          }));
-                          setSendotp((prevState) => ({
-                            ...prevState,
-                            father_number: true,
-                          }));
-                        }
-                      }}
-                    >
-                      Update
-                    </Button>
-                    <Button
-                      sx={{
-                        backgroundColor: "red",
-                      }}
-                      style={{
-                        display: sendOtp.mother_email ? "none" : "inline",
-                      }}
-                      onClick={() => {
-                        setIsEditable((prevState) => ({
-                          ...prevState,
-                          father_number: false,
-                        }));
-                        setSubmitBtn((prevState) => ({
-                          ...prevState,
-                          father_number: false,
-                        }));
-                        setSendotp((prevState) => ({
-                          ...prevState,
-                          father_number: false,
-                        }));
-                        setEditIcon((prevState) => ({
-                          ...prevState,
-                          father_number: false,
-                        }));
-                      }}
-                    >
-                      {" "}
-                      Cancel
-                    </Button>
-                  </div>
-                </>
-              )}
-            </div>
-
-            {student.name === selectedStudent &&
-              FatherMobile &&
-              sendOtp.father_number && (
-                <>
-                  <p style={{ color: "green", marginLeft: "1rem" }}>
-                    OTP sent to {FatherEmail} {otpMessage}
-                  </p>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      width: "100%",
-                      gap: "1rem",
-                      marginLeft: "1rem",
-                    }}
-                  >
-                    <OTPInput
-                      autoFocus
-                      OTPLength={4}
-                      value={otpVerify}
-                      onChange={setOtpVerify}
-                      otpType="number"
-                      disabled={false}
-                      secure
-                    />
-                    <button
-                      style={{
-                        width: "25%",
-                        marginLeft: "1rem",
-                        backgroundColor: "rgb(31 197 94)",
-                        color: "white",
-                        border: "none",
-                        padding: "0.5rem",
-                        borderRadius: "10px",
-                      }}
-                      onClick={() => {
-                        verifyEmailOTP("Father");
-                      }}
-                    >
-                      Verify OTP
-                    </button>
-                    {verificationStatus && (
-                      <p style={{ color: statusColor, marginLeft: "1rem" }}>
-                        {verificationStatus}
-                      </p>
-                    )}
-                  </div>
-                </>
-              )}
-          </div>
-          <div
-            style={{
-              borderBottom: `1px solid ${studentProfileColor}`,
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              Address 1
-            </Text>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: "0.2rem",
-                alignItems: "center",
-              }}
-            >
-              <input
-                type="text"
-                name=""
-                id=""
-                style={{
-                  borderRadius: "8px",
-                  width: "312px",
-                  marginLeft: "1rem",
-                  padding: "0.5rem",
-                  backgroundColor: "lightgray",
-                  border: "none",
-                }}
-                value={isEditable.address ? addressguardian1 : address_guardian}
-                disabled={!isEditable.address}
-                onChange={(e) => setAddressGuardian1(e.target.value)}
-              />
-              {student.name === selectedStudent &&
-              address_guardian &&
-              !submitBtn.address1 ? (
-                <IconEdit
-                  stroke={2}
-                  onClick={() => {
-                    setIsEditable((prevState) => ({
-                      ...prevState,
-                      address: true,
-                    }));
-
-                    setAddressGuardian1(address_guardian || "");
-                    setSubmitBtn((prevState) => ({
-                      ...prevState,
-                      address1: true,
-                    }));
-                  }}
-                />
-              ) : (
-                <>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
-                    }}
-                  >
-                    <Button
-                      sx={{ background: "green", color: "white" }}
-                      onClick={() => {
-                        mutateAddress({
-                          name: selectedStudent,
-                          address_line_1: addressguardian1,
-                        }).then(() => {
-                          detailsRefetch();
-
+                      <Button
+                        sx={{ background: "green", color: "white" }}
+                        onClick={() => handleMutation(mutate)}
+                      >
+                        Update
+                      </Button>
+                      <Button
+                        sx={{ backgroundColor: "red" }}
+                        onClick={() => {
                           setIsEditable((prevState) => ({
                             ...prevState,
-                            address: false,
+                            [key]: false,
                           }));
                           setSubmitBtn((prevState) => ({
                             ...prevState,
-                            address1: false,
+                            [key]: false,
                           }));
-                        });
-                      }}
-                    >
-                      Update
-                    </Button>
-                    <Button
-                      sx={{
-                        backgroundColor: "red",
-                      }}
-                      style={{
-                        display: sendOtp.mother_email ? "none" : "inline",
-                      }}
-                      onClick={() => {
-                        setIsEditable((prevState) => ({
-                          ...prevState,
-                          address: false,
-                        }));
-                        setSubmitBtn((prevState) => ({
-                          ...prevState,
-                          address1: false,
-                        }));
-                      }}
-                    >
-                      {" "}
-                      Cancel
-                    </Button>
-                  </div>
-                </>
-              )}
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-          <div
-            style={{
-              borderBottom: `1px solid ${studentProfileColor}`,
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              Address 2
-            </Text>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: "0.2rem",
-                alignItems: "center",
-              }}
-            >
-              <input
-                type="text"
-                name=""
-                id=""
-                style={{
-                  borderRadius: "8px",
-                  width: "312px",
-                  marginLeft: "1rem",
-                  padding: "0.5rem",
-                  backgroundColor: "lightgray",
-                  border: "none",
-                }}
-                value={
-                  isEditable.address2 ? addressguardian2 : address_guardian2
-                }
-                disabled={!isEditable.address2}
-                onChange={(e) => setAddressGuardian2(e.target.value)}
-              />
-              {student.name === selectedStudent &&
-              address_guardian2 &&
-              !submitBtn.address2 ? (
-                <IconEdit
-                  stroke={2}
-                  onClick={() => {
-                    setIsEditable((prevState) => ({
-                      ...prevState,
-                      address2: true,
-                    }));
-
-                    setAddressGuardian2(address_guardian2 || "");
-                    setSubmitBtn((prevState) => ({
-                      ...prevState,
-                      address2: true,
-                    }));
-                  }}
-                />
-              ) : (
-                <>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      gap: "1rem",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Button
-                      sx={{ background: "green", color: "white" }}
-                      onClick={() => {
-                        mutateAddress2({
-                          name: selectedStudent,
-                          address_line_2: addressguardian2,
-                        }).then(() => {
-                          detailsRefetch();
-                          setIsEditable((prevState) => ({
-                            ...prevState,
-                            address2: false,
-                          }));
-                          setSubmitBtn((prevState) => ({
-                            ...prevState,
-                            address2: false,
-                          }));
-                        });
-                      }}
-                    >
-                      Update
-                    </Button>
-                    <Button
-                      sx={{
-                        backgroundColor: "red",
-                      }}
-                      style={{
-                        display: sendOtp.mother_email ? "none" : "inline",
-                      }}
-                      onClick={() => {
-                        setIsEditable((prevState) => ({
-                          ...prevState,
-                          address2: false,
-                        }));
-                        setSubmitBtn((prevState) => ({
-                          ...prevState,
-                          address2: false,
-                        }));
-                      }}
-                    >
-                      {" "}
-                      Cancel
-                    </Button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-          <div
-            style={{
-              borderBottom: `1px solid ${studentProfileColor}`,
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              Blood Group
-            </Text>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: "0.2rem",
-                alignItems: "center",
-              }}
-            >
-              <input
-                type="text"
-                name=""
-                id=""
-                style={{
-                  borderRadius: "8px",
-                  width: "312px",
-                  marginLeft: "1rem",
-                  padding: "0.5rem",
-                  backgroundColor: "lightgray",
-                  border: "none",
-                }}
-                value={isEditable.bloods_group ? newBloodG : blood_group}
-                onChange={(e) => setBloodG(e.target.value)}
-                disabled={!isEditable.bloods_group}
-              />
-              {student.name === selectedStudent &&
-              blood_group &&
-              !submitBtn.bloods_group ? (
-                <IconEdit
-                  stroke={2}
-                  onClick={() => {
-                    setIsEditable((prevState) => ({
-                      ...prevState,
-                      bloods_group: true,
-                    }));
-
-                    setBloodG(blood_group || "");
-                    setSubmitBtn((prevState) => ({
-                      ...prevState,
-                      bloods_group: true,
-                    }));
-                  }}
-                />
-              ) : (
-                <>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
-                    }}
-                  >
-                    <Button
-                      sx={{ background: "green", color: "white" }}
-                      onClick={() => {
-                        mutateAsyncBloodGroup({
-                          name: student.name,
-                          blood_group: newBloodG,
-                        }).then(() => {
-                          detailsRefetch();
-                          setIsEditable((prevState) => ({
-                            ...prevState,
-                            bloods_group: false,
-                          }));
-                          setSubmitBtn((prevState) => ({
-                            ...prevState,
-                            bloods_group: false,
-                          }));
-                        });
-                      }}
-                    >
-                      Update
-                    </Button>
-                    <Button
-                      sx={{
-                        backgroundColor: "red",
-                      }}
-                      style={{
-                        display: sendOtp.mother_email ? "none" : "inline",
-                      }}
-                      onClick={() => {
-                        setIsEditable((prevState) => ({
-                          ...prevState,
-                          bloods_group: false,
-                        }));
-                        setSubmitBtn((prevState) => ({
-                          ...prevState,
-                          bloods_group: false,
-                        }));
-                      }}
-                    >
-                      {" "}
-                      Cancel
-                    </Button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-          <div
-            style={{
-              borderBottom: `1px solid ${studentProfileColor}`,
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              Approximate Yearly Income of Father
-            </Text>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: "0.2rem",
-                alignItems: "center",
-              }}
-            >
-              <input
-                type="text"
-                name=""
-                id=""
-                style={{
-                  borderRadius: "8px",
-                  width: "312px",
-                  marginLeft: "1rem",
-                  padding: "0.5rem",
-                  backgroundColor: "lightgray",
-                  border: "none",
-                }}
-                value={
-                  isEditable.annual__father_income ? newAnnualI : annuals_income
-                }
-                onChange={(e) => setAnnualI(e.target.value)}
-                disabled={!isEditable.annual__father_income}
-              />
-              {student.name === selectedStudent &&
-              annuals_income &&
-              !submitBtn.annual__father_income ? (
-                <IconEdit
-                  stroke={2}
-                  onClick={() => {
-                    setIsEditable((prevState) => ({
-                      ...prevState,
-                      annual__father_income: true,
-                    }));
-
-                    setAnnualI(annuals_income || "");
-                    setSubmitBtn((prevState) => ({
-                      ...prevState,
-                      annual__father_income: true,
-                    }));
-                  }}
-                />
-              ) : (
-                <>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
-                    }}
-                  >
-                    <Button
-                      sx={{ background: "green", color: "white" }}
-                      onClick={() => {
-                        mutateAsyncAnnualIncome({
-                          name: FatherGuardian,
-                          annual_income: newAnnualI,
-                        }).then(() => {
-                          detailsRefetch();
-                          setIsEditable((prevState) => ({
-                            ...prevState,
-                            annual__father_income: false,
-                          }));
-                          setSubmitBtn((prevState) => ({
-                            ...prevState,
-                            annual__father_income: false,
-                          }));
-                        });
-                      }}
-                    >
-                      Update
-                    </Button>
-                    <Button
-                      sx={{
-                        backgroundColor: "red",
-                      }}
-                      style={{
-                        display: sendOtp.mother_email ? "none" : "inline",
-                      }}
-                      onClick={() => {
-                        setIsEditable((prevState) => ({
-                          ...prevState,
-                          annual__father_income: false,
-                        }));
-                        setSubmitBtn((prevState) => ({
-                          ...prevState,
-                          annual__father_income: false,
-                        }));
-                      }}
-                    >
-                      {" "}
-                      Cancel
-                    </Button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-          <div
-            style={{
-              paddingBottom: "0.5rem",
-              width: "700px",
-              margin: "0px auto",
-            }}
-          >
-            <Text
-              sx={{
-                color: studentProfileColor,
-                padding: "10px 1rem",
-              }}
-            >
-              Approximate Yearly Income of Mother
-            </Text>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: "0.2rem",
-                alignItems: "center",
-              }}
-            >
-              <input
-                type="text"
-                name=""
-                id=""
-                style={{
-                  borderRadius: "8px",
-                  width: "312px",
-                  marginLeft: "1rem",
-                  padding: "0.5rem",
-                  backgroundColor: "lightgray",
-                  border: "none",
-                }}
-                value={
-                  isEditable.annual__mother_income
-                    ? newAnnualIMother
-                    : annuals_income_mother
-                }
-                onChange={(e) => setAnnualIMother(e.target.value)}
-                disabled={!isEditable.annual__mother_income}
-              />
-              {student.name === selectedStudent &&
-              annuals_income_mother &&
-              !submitBtn.annual__mother_income ? (
-                <IconEdit
-                  stroke={2}
-                  onClick={() => {
-                    setIsEditable((prevState) => ({
-                      ...prevState,
-                      annual__mother_income: true,
-                    }));
-
-                    setAnnualIMother(annuals_income_mother || "");
-                    setSubmitBtn((prevState) => ({
-                      ...prevState,
-                      annual__mother_income: true,
-                    }));
-                  }}
-                />
-              ) : (
-                <>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      gap: "1rem",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Button
-                      sx={{ background: "green", color: "white" }}
-                      onClick={() => {
-                        mutateAsyncAnnualIncome({
-                          name: MotherGuardian,
-                          annual_income: newAnnualIMother,
-                        }).then(() => {
-                          detailsRefetch();
-                          setIsEditable((prevState) => ({
-                            ...prevState,
-                            annual__mother_income: false,
-                          }));
-                          setSubmitBtn((prevState) => ({
-                            ...prevState,
-                            annual__mother_income: false,
-                          }));
-                        });
-                      }}
-                    >
-                      Update
-                    </Button>
-                    <Button
-                      sx={{
-                        backgroundColor: "red",
-                      }}
-                      style={{
-                        display: sendOtp.mother_email ? "none" : "inline",
-                      }}
-                      onClick={() => {
-                        setIsEditable((prevState) => ({
-                          ...prevState,
-                          annual__mother_income: false,
-                        }));
-                        setSubmitBtn((prevState) => ({
-                          ...prevState,
-                          annual__mother_income: false,
-                        }));
-                      }}
-                    >
-                      {" "}
-                      Cancel
-                    </Button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-        <Box
-          sx={{
-            marginTop: "2rem",
-            width: "100%",
-            borderBottom: isSelected
-              ? "2px solid " + studentProfileColor
-              : "1px solid #0005",
-          }}
-        />
+          );
+        })}
       </div>
-    </>
+      <Box
+        sx={{
+          marginTop: "2rem",
+          width: "100%",
+          borderBottom: isSelected
+            ? `2px solid ${studentProfileColor}`
+            : "1px solid #0005",
+        }}
+      />
+    </div>
   );
 };

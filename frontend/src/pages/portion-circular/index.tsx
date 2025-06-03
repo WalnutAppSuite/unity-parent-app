@@ -4,62 +4,36 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import useStudentList from "../../components/queries/useStudentList.ts";
 import useClassDetails from "../../components/queries/useClassDetails.ts";
 import useStudentProfileColor from "../../components/hooks/useStudentProfileColor.ts";
-import { IconList, IconCalendar } from "@tabler/icons";
+import { IconList } from "@tabler/icons";
 import HelpLink from "../../components/HelpLink/index.tsx";
-import {
-  useStudentEnrollmentYears,
-  EnrollmentData,
-} from "../../components/queries/useAcademicYear.ts";
 
 const PortionCircular = () => {
   const [selectedStudent, setSelectedStudent] = useState<string>("");
   const [selectedSubject, setSelectedSubject] = useState<string>("");
-  const [selectedUnit, setSelectedUnit] = useState<string>("1");
-  const [selectedYear, setSelectedYear] = useState<EnrollmentData | null>(null);
+  const [selectedUnit, setSelectedUnit] = useState<string>("unit 1");
 
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const searchedStudent = searchParams.get("student");
 
-  const {
-    years,
-    isLoading: isLoadingYears,
-    defaultYearEnrollment,
-  } = useStudentEnrollmentYears(selectedStudent);
-
   const { data: studentsList } = useStudentList();
-  const { data: classDetails, isFetching: classLoading } = useClassDetails(
-    selectedStudent,
-    selectedYear?.academic_year
-  );
+  const {
+    data: classDetails,
+    error: classError,
+    isFetching: classLoading,
+  } = useClassDetails(selectedStudent);
 
   const students = useMemo(
     () => studentsList?.data?.message || [],
     [studentsList?.data]
   );
 
-  // Set the default year when it becomes available
-  useEffect(() => {
-    if (defaultYearEnrollment && !selectedYear) {
-      setSelectedYear(defaultYearEnrollment);
-    }
-  }, [defaultYearEnrollment]);
-
   useEffect(() => {
     if (selectedStudent) {
       searchParams.set("student", selectedStudent || "");
       setSearchParams(searchParams, { replace: true });
     }
-  }, [selectedStudent, searchParams, setSearchParams]);
-
-  const handleYearChange = (e: string | null) => {
-    const yearEnrollment = years.find((v) => v.academic_year === e);
-    if (yearEnrollment) {
-      setSelectedYear(yearEnrollment);
-    } else {
-      setSelectedYear(null);
-    }
-  };
+  }, [selectedStudent]);
 
   const subjectOptions = useMemo(() => {
     return (
@@ -86,17 +60,14 @@ const PortionCircular = () => {
       studentNames.includes(searchedStudent)
     ) {
       setSelectedStudent(searchedStudent);
-    } else if (
-      !studentNames.includes(selectedStudent) &&
-      studentNames.length > 0
-    ) {
+    } else if (!studentNames.includes(selectedStudent)) {
       setSelectedStudent(studentNames[0]);
     }
   }, [searchedStudent, selectedStudent, students]);
 
   useEffect(() => {
     const subjectNames = subjectOptions.map((subject) => subject.value);
-    if (subjectNames.length > 0 && !subjectNames.includes(selectedSubject)) {
+    if (!subjectNames.includes(selectedSubject)) {
       setSelectedSubject(subjectNames[0]);
     }
   }, [selectedSubject, subjectOptions]);
@@ -109,8 +80,11 @@ const PortionCircular = () => {
   }, [selectedUnit, unitOptions]);
 
   const studentProfileColor = useStudentProfileColor(selectedStudent);
-  const notEnrolledInProgram = years.length === 0 && !isLoadingYears;
-
+  const notEnrolledInProgram =
+    classLoading ||
+    classError ||
+    !classDetails?.data?.message ||
+    Object.keys(classDetails?.data?.message).length == 0;
   return (
     <Box>
       <Stack
@@ -225,35 +199,6 @@ const PortionCircular = () => {
               }}
             >
               <Select
-                sx={{
-                  margin: 10,
-                  ".mantine-Select-dropdown": {
-                    '.mantine-Select-item[data-hovered="true"]': {
-                      backgroundColor: studentProfileColor,
-                    },
-                  },
-                  ".mantine-Select-input": {
-                    color: studentProfileColor,
-                    ":active": {
-                      borderColor: studentProfileColor,
-                    },
-                    ":focus": {
-                      borderColor: studentProfileColor,
-                    },
-                  },
-                  borderRadius: 10,
-                  borderColor: studentProfileColor,
-                }}
-                data={years.map((year) => ({
-                  value: year.academic_year,
-                  label: year.academic_year,
-                }))}
-                value={selectedYear?.academic_year}
-                onChange={handleYearChange}
-                placeholder="Select Academic Year"
-                icon={<IconCalendar color={studentProfileColor} stroke={1} />}
-              />
-              <Select
                 color={studentProfileColor}
                 sx={{
                   margin: 10,
@@ -287,18 +232,13 @@ const PortionCircular = () => {
                   backgroundColor: studentProfileColor,
                 }}
                 onClick={() => {
-                  if (selectedStudent && selectedUnit && selectedYear)
+                  if (selectedStudent && selectedUnit && selectedSubject)
                     navigate(
                       `/portion-circular/list?unit=${encodeURIComponent(
                         selectedUnit || ""
-                      )}&student=${encodeURIComponent(
-                        selectedStudent || ""
-                      )}&academic_year=${encodeURIComponent(
-                        selectedYear.academic_year || ""
-                      )}`
+                      )}&student=${encodeURIComponent(selectedStudent || "")}`
                     );
                 }}
-                disabled={!selectedYear}
               >
                 Show Portion
               </Button>

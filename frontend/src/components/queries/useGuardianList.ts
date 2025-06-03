@@ -1,311 +1,150 @@
-import { useCustom } from "@refinedev/core";
-import { useCustomMutation } from "@refinedev/core";
+import { useCustom, useCustomMutation } from "@refinedev/core";
 import { useCallback } from "react";
 
-export interface Guardian {
-
-    first_name: string
-    last_name: string
-    guardian_name: string
-    email_address: string
-    mobile_number: string
-    annual_income: string
-    name: string
-    relation: string
-    address_line_1: string
-}
-interface Student_ID {
-    student_id: string
+// Common interfaces
+interface BaseGuardian {
+  name: string;
 }
 
-interface MotherId {
-    name: string
-}
-interface FatherId {
-    name: string
-}
-
-
-export const useStudentDataList = (props: Student_ID) => {
-    return useCustom({
-        config: {
-            query: {
-                student_id: props.student_id
-            }
-        },
-        errorNotification: undefined,
-        method: "get",
-        queryOptions: {
-            queryKey: ["studentDataList", props.student_id],
-        },
-        successNotification: undefined,
-        url: `/api/resource/Student/${props.student_id}`,
-    })
-}
-export const useDetailsList = (student_id: string) => {
-    return useCustom({
-        config: {
-            query: {
-                student: student_id
-            }
-        },
-        errorNotification: undefined,
-        method: "get",
-        queryOptions: {
-            queryKey: ["DetailsDataList", student_id],
-        },
-        successNotification: undefined,
-        url: `/api/method/unity_parent_app.api.student.get_student_data`,
-    })
+export interface Guardian extends BaseGuardian {
+  first_name: string;
+  last_name: string;
+  guardian_name: string;
+  email_address: string;
+  mobile_number: string;
+  annual_income: string;
+  relation: string;
+  address_line_1: string;
 }
 
-
-
-
-export const useMotherGuardianList = (props: MotherId) => {
-    return useCustom({
-        config: {
-            query: {
-                name: props.name
-            }
-        },
-        errorNotification: undefined,
-        method: "get",
-        queryOptions: {
-            queryKey: ["guardianMotherData", props.name],
-        },
-        successNotification: undefined,
-        url: `/api/resource/Guardian/${props.name}`
-    })
-}
-export const useFatherGuardianList = (props: FatherId) => {
-    return useCustom({
-        config: {
-            query: {
-                name: props.name
-            }
-        },
-        errorNotification: undefined,
-        method: "get",
-        queryOptions: {
-            queryKey: ["guardianFatherData", props.name],
-        },
-        successNotification: undefined,
-        url: `/api/resource/Guardian/${props.name}`
-    })
+// Request interfaces
+interface GuardianEmailVariables extends BaseGuardian {
+  email_address: string;
 }
 
-
-interface FatherDetailsProps {
-    FatherGuardian: string
+interface GuardianNumberVariables extends BaseGuardian {
+  mobile_number: string;
 }
 
-interface GuardianEmailvariables {
-    name: string
-    email_address: string
-}
-interface GuardianNumbervariables {
-    name: string
-    mobile_number: string
+interface GuardianAddress extends BaseGuardian {
+  address_line_1: string;
 }
 
-interface GuardianFatherNumbervariables {
-    name: string
-    mobile_number: string
-}
-interface GuardianAddress {
-    name: string
-    address_line_1: string
-}
-interface GuardianAddress2 {
-    name: string
-    address_line_2: string
-}
-interface UpdateBloodGroupProps {
-    name: string
-    blood_group: string
-}
-interface UpdateAnnualIncomeProps {
-    name: string
-    annual_income: string
+interface GuardianAddress2 extends BaseGuardian {
+  address_line_2: string;
 }
 
-export const guardin_email_update = () => {
+interface GuardianCity extends BaseGuardian {
+  city: string;
+}
+
+interface GuardianPincode extends BaseGuardian {
+  pincode: string;
+}
+
+interface UpdateBloodGroupProps extends BaseGuardian {
+  blood_group: string;
+}
+
+interface UpdateAnnualIncomeProps extends BaseGuardian {
+  annual_income: string;
+}
+
+// Helper function to create mutation hook
+const createMutationHook = <T extends BaseGuardian>(
+  urlBuilder: (variables: T) => string,
+  method = "put"
+) => {
+  return () => {
     const { mutate, mutateAsync, ...mutationObjs } = useCustomMutation({
-        mutationOptions: {}
-    })
-    const mutationFunction = useCallback((variables: GuardianEmailvariables) => {
+      mutationOptions: {},
+    });
+
+    const mutationFunction = useCallback(
+      (variables: T) => {
         return mutate({
-            url: `/api/resource/Guardian/${variables.name}`,
-            method: 'put',
-            values: variables
-        })
-    }, [mutate])
-    const mutationAsyncFunction = useCallback((variables: GuardianEmailvariables) => {
+          url: urlBuilder(variables),
+          method: method as "put" | "delete" | "post" | "patch",
+          values: variables,
+        });
+      },
+      [mutate]
+    );
+
+    const mutationAsyncFunction = useCallback(
+      (variables: T) => {
         return mutateAsync({
-            url: `/api/resource/Guardian/${variables.name}`,
-            method: 'put',
-            values: variables
-        })
-    }, [mutateAsync])
+          url: urlBuilder(variables),
+          method: method as "put" | "delete" | "post" | "patch",
+          values: variables,
+        });
+      },
+      [mutateAsync]
+    );
+
     return {
-        ...mutationObjs,
-        mutate: mutationFunction,
-        mutateAsync: mutationAsyncFunction
-    }
-}
-export const guardin_number_update = () => {
-    const { mutate, mutateAsync, ...mutationObjs } = useCustomMutation({
-        mutationOptions: {}
-    })
-    const mutationFunction = useCallback((variables: GuardianNumbervariables) => {
-        return mutate({
-            url: `/api/resource/Guardian/${variables.name}`,
-            method: 'put',
-            values: variables
-        })
-    }, [mutate])
-    const mutationAsyncFunction = useCallback((variables: GuardianNumbervariables) => {
-        return mutateAsync({
-            url: `/api/resource/Guardian/${variables.name}`,
-            method: 'put',
-            values: variables
-        })
-    }, [mutateAsync])
-    return {
-        ...mutationObjs,
-        mutate: mutationFunction,
-        mutateAsync: mutationAsyncFunction
-    }
-}
+      ...mutationObjs,
+      mutate: mutationFunction,
+      mutateAsync: mutationAsyncFunction,
+    };
+  };
+};
 
-export const guardin_father_number_update = ({ FatherGuardian }: FatherDetailsProps) => {
-    const urls = `/api/resource/Guardian/${FatherGuardian}`;
-    console.log("check url", urls)
-    const { mutate, mutateAsync, ...mutationObjs } = useCustomMutation({
-        mutationOptions: {}
-    })
-    const mutationFunction = useCallback((variables: GuardianFatherNumbervariables) => {
-        return mutate({
-            url: `/api/resource/Guardian/${variables.name}`,
-            method: 'put',
-            values: variables
-        })
-    }, [mutate])
-    const mutationAsyncFunction = useCallback((variables: GuardianFatherNumbervariables) => {
-        return mutateAsync({
-            url: `/api/resource/Guardian/${variables.name}`,
-            method: 'put',
-            values: variables
-        })
-    }, [mutateAsync])
-    return {
-        ...mutationObjs,
-        mutate: mutationFunction,
-        mutateAsync: mutationAsyncFunction
-    }
-}
-export const guardin_address = () => {
-    const { mutate, mutateAsync, ...mutationObjs } = useCustomMutation({
-        mutationOptions: {}
-    })
-    const mutationFunction = useCallback((variables: GuardianAddress) => {
-        return mutate({
-            url: `/api/resource/Student/${variables.name}`,
-            method: 'put',
-            values: variables
-        })
-    }, [mutate])
-    const mutationAsyncFunction = useCallback((variables: GuardianAddress) => {
-        return mutateAsync({
-            url: `/api/resource/Student/${variables.name}`,
-            method: 'put',
-            values: variables
-        })
-    }, [mutateAsync])
-    return {
-        ...mutationObjs,
-        mutate: mutationFunction,
-        mutateAsync: mutationAsyncFunction
-    }
-}
-export const guardin_address2 = () => {
-    const { mutate, mutateAsync, ...mutationObjs } = useCustomMutation({
-        mutationOptions: {}
-    })
-    const mutationFunction = useCallback((variables: GuardianAddress2) => {
-        return mutate({
-            url: `/api/resource/Student/${variables.name}`,
-            method: 'put',
-            values: variables
-        })
-    }, [mutate])
-    const mutationAsyncFunction = useCallback((variables: GuardianAddress2) => {
-        return mutateAsync({
-            url: `/api/resource/Student/${variables.name}`,
-            method: 'put',
-            values: variables
-        })
-    }, [mutateAsync])
-    return {
-        ...mutationObjs,
-        mutate: mutationFunction,
-        mutateAsync: mutationAsyncFunction
-    }
-}
-export const updateBloodGroup = () => {
-    const { mutate, mutateAsync, ...mutationObjs } = useCustomMutation({
-        mutationOptions: {}
-    })
-    const mutationFunction = useCallback((variables: UpdateBloodGroupProps) => {
-        return mutate({
-            url: `/api/resource/Student/${variables.name}`,
-            method: 'put',
-            values: variables
-        })
-    }, [mutate])
-    const mutationAsyncFunction = useCallback((variables: UpdateBloodGroupProps) => {
-        return mutateAsync({
-            url: `/api/resource/Student/${variables.name}`,
-            method: 'put',
-            values: variables
-        })
-    }, [mutateAsync])
-    return {
-        ...mutationObjs,
-        mutate: mutationFunction,
-        mutateAsync: mutationAsyncFunction
-    }
-}
+// Query hooks
+export const useDetailsList = (student_id: string) =>
+  useCustom({
+    config: { query: { student: student_id } },
+    method: "get",
+    queryOptions: {
+      queryKey: ["DetailsDataList", student_id],
+      enabled: !!student_id,
+    },
+    url: `/api/method/unity_parent_app.api.student.get_student_data`,
+  });
 
+export const useGuardianList = (name: string, type: "mother" | "father") =>
+  useCustom({
+    config: { query: { name } },
+    method: "get",
+    queryOptions: { queryKey: [`guardian${type}Data`, name] },
+    url: `/api/resource/Guardian/${name}`,
+  });
 
+// Mutation hooks
+export const guardian_email_update = createMutationHook<GuardianEmailVariables>(
+  (variables) => `/api/resource/Guardian/${variables.name}`
+);
 
-export const updateAnnualIncome = () => {
-    const { mutate, mutateAsync, ...mutationObjs } = useCustomMutation({
-        mutationOptions: {}
-    })
-    const mutationFunction = useCallback((variables: UpdateAnnualIncomeProps) => {
-        return mutate({
-            url: `/api/resource/Guardian/${variables.name}`,
-            method: 'put',
-            values: variables
-        })
-    }, [mutate])
-    const mutationAsyncFunction = useCallback((variables: UpdateAnnualIncomeProps) => {
-        return mutateAsync({
-            url: `/api/resource/Guardian/${variables.name}`,
-            method: 'put',
-            values: variables
-        })
-    }, [mutateAsync])
-    return {
-        ...mutationObjs,
-        mutate: mutationFunction,
-        mutateAsync: mutationAsyncFunction
-    }
-}
+export const guardian_number_update =
+  createMutationHook<GuardianNumberVariables>(
+    (variables) => `/api/resource/Guardian/${variables.name}`
+  );
 
+export const guardian_father_number_update = (fatherGuardian: string) =>
+  createMutationHook<GuardianNumberVariables>(
+    () => `/api/resource/Guardian/${fatherGuardian}`
+  )();
 
+export const guardian_address = createMutationHook<GuardianAddress>(
+  (variables) => `/api/resource/Student/${variables.name}`
+);
 
+export const guardian_address2 = createMutationHook<GuardianAddress2>(
+  (variables) => `/api/resource/Student/${variables.name}`
+);
 
+export const guardian_city = createMutationHook<GuardianCity>(
+  (variables) => `/api/resource/Student/${variables.name}`
+);
 
+export const guardian_pincode = createMutationHook<GuardianPincode>(
+  (variables) => `/api/resource/Student/${variables.name}`
+);
+
+export const updateBloodGroup = createMutationHook<UpdateBloodGroupProps>(
+  (variables) => `/api/resource/Student/${variables.name}`
+);
+
+export const updateAnnualIncome = createMutationHook<UpdateAnnualIncomeProps>(
+  (variables) => `/api/resource/Guardian/${variables.name}`
+);

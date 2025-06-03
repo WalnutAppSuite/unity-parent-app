@@ -1,13 +1,13 @@
-import os
+import os, io
 from frappe.utils.jinja import validate_template
 from frappe.utils.weasyprint import download_pdf, get_html
 import frappe
-from weasyprint import CSS, HTML
+from weasyprint import HTML
 import json
 from PIL import Image
 from pathlib import Path
 from datetime import datetime
-
+from pypdf import PdfReader, PdfWriter
 
 def divide_into_subarrays(arr, max_size):
     result = [arr[i : i + max_size] for i in range(0, len(arr), max_size)]
@@ -125,14 +125,14 @@ def generate(**kwargs):
 
 
 @frappe.whitelist()
-def generate_permanent_id_cards(enrollments):
+def generate_permanent_id_cards(enrollments, print_format=None):
     enrollments = json.loads(enrollments)
     program_enrollment = frappe.db.get_all(
         "Program Enrollment",
         filters=[["name", "in", enrollments]],
         fields=["custom_school", "name", "custom_status", "academic_year", "student"],
     )
-    hash = None
+    _hash = None
     STATUSES = ["Cancelled", "Alumni"]
     for i in program_enrollment:
         student_status = frappe.get_value("Student", i.student, "student_status")
@@ -142,19 +142,19 @@ def generate_permanent_id_cards(enrollments):
             return frappe.throw(
                 f"Cannot Create ID Card for cancelled student or alumni students {name}"
             )
-        if not hash:
-            hash = i
-        elif hash.get("custom_school") != i.get("custom_school"):
+        if not _hash:
+            _hash = i
+        elif _hash.get("custom_school") != i.get("custom_school"):
 
             return frappe.throw(f"School is not same for all selected, in {name}")
-        elif hash.get("academic_year") != i.get("academic_year"):
+        elif _hash.get("academic_year") != i.get("academic_year"):
 
             return frappe.throw(
                 f"Academic Year is not same for all selected, in {name}"
             )
-    frappe.enqueue(
-        generate_permanent_id_cards_async, enrollments=enrollments, queue="long"
-    )
+    
+    # Generate the ID cards and get the output file path
+    frappe.enqueue(generate_id_cards, enrollments=enrollments, print_format=print_format, queue="long")
     return "Enqueued Successfully"
 
 
@@ -254,3 +254,73 @@ def send_id_card_mail(**kwargs):
         frappe.log_error("Sending Id Card Mail", str(e))
         frappe.logger("sending purchase order").exception(e)
         raise e
+
+
+def generate_id_cards(**kwargs):
+    try:
+        # Get necessary parameters
+        enrollments = kwargs.get("enrollments", [])
+        print_format = kwargs.get("print_format")
+
+        # Generate PDFs for each enrollment
+        pdf_list = [
+            frappe.get_print(
+                "Student ID Card",
+                frappe.get_value("Student ID Card", {"program_enrolled_in": enrollment}, "name"),
+                as_pdf=True,
+                no_letterhead=True,
+                print_format=print_format,
+            )
+            for enrollment in enrollments
+        ]
+        
+        # Generate unique file name based on the current datetime
+        current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
+        filename = frappe.scrub(f"{print_format}_{current_datetime}.pdf")
+        
+        # Define the public file path and ensure the directory exists
+        public_path = Path(frappe.get_site_path(), "public")
+        file_path = public_path / "files" / "converted"
+        os.makedirs(file_path, exist_ok=True)
+        file_path = file_path / filename
+        merge_pdfs(pdf_list, str(file_path))
+
+        # Create the Permanent Id Card document and save it
+        doc = frappe.new_doc("Permanent Id Card")
+        for enrollment in enrollments:
+            doc.append(
+                "id_cards",
+                {
+                    "program_enrollment": enrollment,
+                },
+            )
+        
+        # Save the relative path of the file in the document
+        file_path = str(file_path).replace(str(public_path), "")
+        doc.file = file_path
+        doc.save(ignore_permissions=True)
+
+    except Exception as e:
+        # Log error with more context
+        frappe.log_error(message="Permanent Id Card Generation Failed", title=str(e))
+        frappe.logger("permanent_id_card").exception(e)
+
+
+def merge_pdfs(pdf_list, output_path):
+    """
+    Merge multiple PDF byte streams into a single PDF file.
+    
+    Args:
+        pdf_list: List of PDF byte streams to merge
+        output_path: Path where the merged PDF will be saved
+    """
+    pdf_writer = PdfWriter()
+    
+    for pdf in pdf_list:
+        with io.BytesIO(pdf) as pdf_stream:
+            reader = PdfReader(pdf_stream)
+            for page in reader.pages:
+                pdf_writer.add_page(page)
+    
+    with open(output_path, 'wb') as output_file:
+        pdf_writer.write(output_file)

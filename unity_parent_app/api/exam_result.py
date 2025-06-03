@@ -3,7 +3,9 @@ from frappe.query_builder import Field
 from frappe.query_builder.functions import Count, GROUP_CONCAT, Sum
 from edu_quality.public.py.utils import get_div_students as get_div_stud
 from edu_quality.edu_quality.doctype.assessment_group_result.assessment_group_result import (
+    calculate_total_scores,
     update_group_result_scores,
+    calculate_total_scores_composite,
 )
 
 # from nextai.funnel.custom_trigger import trigger_event
@@ -238,7 +240,7 @@ def _process_result(
     if ref_nos:
         if isinstance(ref_nos, list):
             student_list = ref_nos
-        elif school:
+        else:
             student_list = get_ref_nos_from_string(ref_nos, school)
     divisions = get_all_divisions_of_students(student_list, academic_year)
 
@@ -313,7 +315,6 @@ def _process_atomic_exam(
     student_list = create_assessment_group_results(assessment_group, assessment_plans)
 
     calculate_and_save_group_results(assessment_group, student_list)
-
     process_toppers(
         assessment_group, assessment_plans, get_division_set(assessment_plans)
     )
@@ -472,7 +473,6 @@ def calculate_and_save_group_results(assessment_group, student_list):
     group_class_ranks = asses_g_doc.get_group_class_rank()
     group_div_ranks = asses_g_doc.get_group_div_rank()
 
-
     for doc in all_assess_g_docs:
         updates = {}
         if doc in group_class_ranks:
@@ -507,9 +507,8 @@ def process_toppers(assessment_group, assessment_plans, division_set=None):
 
 
 def get_ref_nos_from_string(data, school):
-    if not school or not data:
-        return []
     ref_nos = data.split(",")
+
     student_doc_names = []
     if not any(ref_nos):
         return
@@ -663,23 +662,6 @@ def process_composite_result(
         assessment_group, assessment_plans=assessment_plans
     )
     calculate_and_save_group_results(assessment_group, student_list)
-  
-    composite_results = frappe.get_all(
-        "Assessment Group Result",
-        filters={
-            "assessment_group": assessment_group,
-            "student": ["in", student_list],
-            "is_composite": 1,
-            "docstatus": ["in", [0, 1]]
-        },
-        pluck="name"
-    )
-    
-    for result_name in composite_results:
-        result_doc = frappe.get_doc("Assessment Group Result", result_name)
-        result_doc.load_composite_exams()
-        result_doc.update_annual_result()
-    
     process_toppers(
         assessment_group, assessment_plans, get_division_set(assessment_plans)
     )

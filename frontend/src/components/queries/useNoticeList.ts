@@ -9,13 +9,15 @@ export interface Notice extends BaseRecord {
   is_read?: boolean;
   is_archived?: boolean;
   is_stared?: boolean;
+  is_mandatory_notice?: number;
 }
 
 interface NoticeListProps {
   archivedOnly?: boolean;
   staredOnly?: boolean;
-  search_query?: string;
   limit?: number;
+  category?: string;
+  identity: any;
 }
 
 interface Cursor {
@@ -31,7 +33,14 @@ const useNoticeList = (props: NoticeListProps) => {
       has_more: boolean;
     };
   }>(
-    ["student", "list", props.staredOnly, props.archivedOnly],
+    [
+      "student",
+      "list",
+      props.staredOnly,
+      props.archivedOnly,
+      props.category,
+      props.identity,
+    ],
     async ({ pageParam }) => {
       const response = await fetch(
         `/api/method/unity_parent_app.api.notices.get_all_notices?${new URLSearchParams(
@@ -40,8 +49,8 @@ const useNoticeList = (props: NoticeListProps) => {
             archived_only: props.archivedOnly?.toString() || "",
             cursor_name: pageParam?.name || "",
             cursor_creation: pageParam?.creation || "",
-            search_query: props?.search_query || "",
             // cursor: pageParam ? JSON.stringify(pageParam) : "",
+            category: props.category || "",
             limit: String(props.limit || 10),
           }
         )}`

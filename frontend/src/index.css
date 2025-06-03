@@ -1,5 +1,61 @@
+/* Import color variables */
+@import "./styles/colors.css";
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+body {
+  background-color: var(--walsh-bg);
+  color: var(--walsh-text);
+  font-family: "Inter", sans-serif;
+}
+
+a {
+  color: var(--walsh-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--walsh-primary-light);
+}
+
+/* Button styles */
+.walsh-btn-primary {
+  background-color: var(--walsh-primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.walsh-btn-primary:hover {
+  background-color: var(--walsh-primary-light);
+}
+
+.walsh-btn-secondary {
+  background-color: var(--walsh-secondary);
+  color: var(--walsh-black);
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.walsh-btn-secondary:hover {
+  background-color: var(--walsh-secondary-light);
+}
+
+/* Card styles */
+.walsh-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin-bottom: 16px;
 }

@@ -2,12 +2,14 @@ import json
 import random
 
 import frappe
+import requests
 from frappe.auth import LoginManager
 from nextai.whatsapp_business_api_integration.doctype.whatsapp_message.whatsapp_message import (
     send_templated_message,
 )
 
-from edu_quality.public.py.utils import remove_indian_country_code, sms_otp
+from edu_quality.public.py.utils import remove_indian_country_code
+from sms_integration.utils import send_sms
 
 
 def format_wa_phone_no(phone_no):
@@ -33,7 +35,6 @@ def create_otp(wa_phone_no, custom_key=None, for_appstore_test=False):
     # frappe.cache.delete_value(key)
     if for_appstore_test:
         otp = "1234"
-    # frappe.cache.delete_value(key)
     frappe.logger("otp").exception("generate-" + key)
     frappe.logger("otp").exception(otp)
     cache.set_value(key, otp)
@@ -42,9 +43,9 @@ def create_otp(wa_phone_no, custom_key=None, for_appstore_test=False):
     return otp
 
 
-def match_otp(wa_phone_no, otp):
+def match_otp(wa_phone_no, otp, custom_key=None):
     cache = frappe.cache()
-    key = "wo" + wa_phone_no
+    key = custom_key or ("wo" + wa_phone_no)
     cache_otp = cache.get_value(key)
     frappe.logger("otp").exception("verify-" + key)
     frappe.logger("otp").exception(cache_otp)
@@ -79,6 +80,19 @@ def send_otp_to_whatsapp(wa_phone_no, otp):
         )
     except Exception as e:
         pass
+
+
+def send_otp_to_sms(full_phone_no, otp):
+    """
+    Send OTP to the phone number, Only for Login
+
+    Args:
+        full_phone_no (str): Phone number with country code
+        otp (str): OTP to be sent
+    """
+    context = {"otp": otp}
+    login_otp_template = frappe.get_value("MGR Settings", "MGR Settings", "login_otp")
+    return send_sms(full_phone_no, login_otp_template, context)
 
 
 def save_push_notification_token(push_token, user_id=None):
@@ -128,11 +142,21 @@ def is_disabled(guardian_name, logout_if_defaulter=False):
     return False
 
 
-def get_guardian(guardian_number):
-    if frappe.db.exists("Guardian", {"mobile_number": guardian_number}):
+def get_guardian(guardian_number=None, user_id=None, email=None):
+    if user_id:
+        if user_id and frappe.db.exists("Guardian", {"user": user_id}):
+            guardian = frappe.get_cached_doc("Guardian", {"user": user_id})
+            return guardian
+    if email:
+        if email and frappe.db.exists("Guardian", {"email_address": email}):
+            guardian = frappe.get_cached_doc("Guardian", {"email_address": email})
+            return guardian
+    if guardian_number and frappe.db.exists(
+        "Guardian", {"mobile_number": guardian_number}
+    ):
         guardian = frappe.get_cached_doc("Guardian", {"mobile_number": guardian_number})
         return guardian
-    elif frappe.db.exists(
+    elif guardian_number and frappe.db.exists(
         "Guardian", {"custom_secondary_mobile_number": guardian_number}
     ):
         guardian = frappe.get_cached_doc(
@@ -143,20 +167,30 @@ def get_guardian(guardian_number):
 
 
 @frappe.whitelist(allow_guest=True)
-def send_otp(phone_no):
+def send_otp(phone_no=None, email=None):
     try:
-        wa_phone_no = format_wa_phone_no(phone_no)
-        if not wa_phone_no:
+        wa_phone_no = None
+        guardian_number = None
+        if phone_no:
+            wa_phone_no = format_wa_phone_no(phone_no)
+            if not wa_phone_no:
+                return {
+                    "error": True,
+                    "error_type": "invalid_phone_number",
+                    "error_message": "Invalid Phone Number",
+                }
+
+            phone_with_country_code = "+" + str(wa_phone_no)
+            guardian_number = remove_indian_country_code(phone_with_country_code)
+        guardian = get_guardian(guardian_number, email=email)
+
+        if not guardian:
             return {
                 "error": True,
                 "error_type": "invalid_phone_number",
-                "error_message": "Invalid Phone Number",
+                "error_message": "Invalid Credentials",
             }
 
-        phone_with_country_code = "+" + str(wa_phone_no)
-        guardian_number = remove_indian_country_code(phone_with_country_code)
-
-        guardian = get_guardian(guardian_number)
         students = frappe.get_all(
             "Student", filters={"guardian": guardian.name}, fields=["*"]
         )
@@ -187,27 +221,26 @@ def send_otp(phone_no):
                 "error_type": "user_not_found",
                 "error_message": "User Not Found",
             }
+        if email:
+            otp = create_otp(email, "email")
+        else:
+            otp = create_otp(wa_phone_no)
 
         if "1234567890" in str(wa_phone_no):
             otp = create_otp(wa_phone_no, for_appstore_test=True)
             return {
                 "success": True,
-                "message": "OTP Sent To +" + str(wa_phone_no),
+                "message": "OTP Sent To +" + str(wa_phone_no or email),
             }
-
-        otp = create_otp(wa_phone_no)
-        # send otp to whatsapp
-        send_otp_to_whatsapp(wa_phone_no, otp)
-
-        # send otp to sms
-        sms_otp(phone_with_country_code, otp)
+        if wa_phone_no:
+            send_otp_to_whatsapp(wa_phone_no, otp)
+            send_otp_to_sms(phone_with_country_code, otp)
         frappe.logger("otp").exception("sms sent")
-        # send otp to email
         send_otp_to_email(guardian.email_address, otp)
 
         return {
             "success": True,
-            "message": "Otp Sent To +" + str(wa_phone_no),
+            "message": "Otp Sent To +" + str(wa_phone_no or email),
         }
     except Exception as e:
         frappe.logger("otp").exception(e)
@@ -259,14 +292,21 @@ def get_student_form(doc):
 
 
 @frappe.whitelist(allow_guest=True)
-def verify_otp(otp, phone_no, push_token=None, form_link=None):
+def verify_otp(otp, phone_no=None, push_token=None, form_link=None, email=None):
     try:
-        wa_phone_no = format_wa_phone_no(phone_no)
-        phone_with_country_code = "+" + wa_phone_no
-        guardian_number = remove_indian_country_code(phone_with_country_code)
+        guardian_number = None
+        matched = False
 
-        if match_otp(wa_phone_no, otp):
-            guardian = get_guardian(guardian_number)
+        if not email:
+            wa_phone_no = format_wa_phone_no(phone_no)
+            phone_with_country_code = "+" + wa_phone_no
+            guardian_number = remove_indian_country_code(phone_with_country_code)
+            matched = match_otp(wa_phone_no, otp)
+        else:
+            matched = match_otp(email, otp, "email")
+
+        if matched:
+            guardian = get_guardian(guardian_number, email=email)
             user = frappe.get_cached_doc("User", guardian.user)
             login_manager = LoginManager()
             login_manager.login_as(user.name)
@@ -311,4 +351,166 @@ def logout(push_token=None):
     return {
         "success": True,
         "message": "Logout Successful",
+    }
+
+
+# def set_session_variables():
+#     # Fetch guardian details for the current session user
+#     guardian_name = frappe.db.get_value(
+#         "Guardian", {"user": frappe.session.user}, "name"
+#     )
+#     frappe.local.session["guardian"] = guardian_name
+
+#     # Fetch students associated with the guardian
+#     students = get_students()
+#     student_names = [s.name for s in students]
+#     frappe.local.session.data["students"] = students
+#     frappe.local.session.data["student_names"] = student_names
+
+#     # Fetch program enrollments for the students
+#     enrollments = frappe.db.sql(
+#         """
+#         SELECT DISTINCT student_group AS division, program AS class
+#         FROM `tabProgram Enrollment`
+#         WHERE student IN %(student_names)s
+#         """,
+#         {"student_names": student_names},
+#         as_dict=True,
+#     )
+
+#     # Extract divisions and classes from enrollments
+#     frappe.local.session.data["divisions"] = [e.division for e in enrollments]
+#     frappe.local.session.data["classes"] = [e.get("class") for e in enrollments]
+#     frappe.local.session.data["enrollments"] = enrollments
+#     # Save changes to the database
+
+#     frappe.local.session_obj.update(force=True)
+#     frappe.db.commit()
+
+
+@frappe.whitelist(allow_guest=True)
+def get_logged_user():
+    return frappe.session.user
+
+
+def get_students():
+    user = frappe.session.user
+    guardian = frappe.get_cached_doc("Guardian", {"user": user})
+    students = frappe.get_all(
+        "Student", filters={"guardian": guardian.name}, fields=["enabled"]
+    )
+    student_disabled = all(student.get("enabled") == 0 for student in students)
+    # if all of student disabled log out the parent
+    if student_disabled:
+        logout()
+
+        frappe.throw(("Not permitted"), frappe.PermissionError)
+        return []
+
+    students = frappe.get_all(
+        "Student", filters={"guardian": guardian.name, "enabled": 1}, fields=["*"]
+    )
+    return students
+
+
+@frappe.whitelist(allow_guest=True)
+def user_login(usr, pwd, push_token):
+    login_manager = LoginManager()
+
+    try:
+
+        login_manager.authenticate(usr, pwd)
+        login_manager.post_login()
+        user = frappe.session.user
+        guardian = get_guardian(user_id=user)
+        students = frappe.get_all(
+            "Student", filters={"guardian": guardian.name}, fields=["*"]
+        )
+        all_disabled = all(student["enabled"] == 0 for student in students)
+
+        if not students or all_disabled:
+            return {
+                "error": True,
+                "error_type": "student_disabled",
+                "error_message": "All students for this guardian are disabled.",
+            }
+
+        if not guardian:
+            return {
+                "error": True,
+                "error_type": "invalid_guardian",
+                "error_message": "Invalid Guardian",
+            }
+
+        if push_token:
+            save_push_notification_token(push_token, user)
+
+        # key = "walsh_otp" + wa_phone_no
+        # frappe.cache.delete_value(key)
+
+        return {
+            "success": True,
+            "message": "Login Successful",
+        }
+
+    except Exception as e:
+        return {"error": True, "error_type": "server_error", "error_message": str(e)}
+
+
+@frappe.whitelist(allow_guest=True)
+def get_schools_for_guest():
+    try:
+        schools = frappe.get_all("School", fields=["name"])
+        return {"success": True, "data": schools}
+    except Exception as e:
+        return {"error": True, "error_type": "server_error", "error_message": str(e)}
+
+
+@frappe.whitelist(allow_guest=True)
+def get_programs_for_guest(school):
+    try:
+        programs = frappe.get_all(
+            "Program",
+            filters={
+                "school": school,
+            },
+            fields=["program_name"],
+        )
+        return {"success": True, "data": programs}
+    except Exception as e:
+        return {"error": True, "error_type": "server_error", "error_message": str(e)}
+
+
+@frappe.whitelist()
+def request_account_deletion():
+    user = frappe.session.user
+    guardian = get_guardian(user_id=user)
+    if not guardian:
+        return {
+            "error": True,
+            "error_type": "invalid_guardian",
+            "error_message": "Invalid Guardian",
+        }
+
+    existing_request = frappe.get_all(
+        "Deletion Request", filters={"user": user, "status": "Pending"}, limit=1
+    )
+
+    if existing_request:
+        return {
+            "error": True,
+            "error_type": "request_exists",
+            "error_message": "A deletion request is already pending for this account/Test accounts cant be deleted",
+        }
+
+    deletion_request = frappe.new_doc("Deletion Request")
+    deletion_request.user = user
+    deletion_request.status = "Pending"
+    deletion_request.insert(ignore_permissions=True)
+
+    frappe.local.login_manager.logout()
+
+    return {
+        "success": True,
+        "message": "Account deletion request submitted successfully",
     }

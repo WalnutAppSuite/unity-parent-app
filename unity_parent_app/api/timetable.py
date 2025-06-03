@@ -26,10 +26,9 @@ def get_timetable_data(student_group):
                         custom_day, 
                         JSON_OBJECT(
                             "time", CONCAT(from_time, " - ", to_time),
-                            "instructor", IFNULL(instructor, ""),
-                            "subject", IFNULL(course, ""),
-                            "room", IFNULL(room, ""),
-                            "room_number", IFNULL(room_number, "")
+                            "instructor", instructor,
+                            "subject", course,
+                            "room", room
                         )
                     ) AS day_schedule
                 FROM `tabCourse Schedule`

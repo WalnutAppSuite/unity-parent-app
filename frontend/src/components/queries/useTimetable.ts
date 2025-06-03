@@ -10,7 +10,7 @@ interface TimetableResponse {
         string,
         Record<
           string,
-          { time: string; instructor: string; subject: string; room: string , room_number: string; }[]
+          { time: string; instructor: string; subject: string; room: string }
         >
       >;
     };
@@ -42,12 +42,8 @@ const useFetchTimeTable = (studentGroup: string) => {
     queryKey: ["timetable", studentGroup],
     queryFn: () => fetchTimetable(studentGroup),
     enabled: !!studentGroup,
-    staleTime: 1000 * 60 * 5,
-    cacheTime: 1000 * 60 * 10,
-    retry: 1,
-    refetchOnWindowFocus: false,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    retry: 2, // Retry twice if request fails
   });
 };
 

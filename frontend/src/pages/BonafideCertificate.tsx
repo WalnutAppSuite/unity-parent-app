@@ -34,7 +34,7 @@ export const BonafideCertificate = () => {
     const reGenerateBonafide = () => {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        fetch("/api/method/edu_quality.public.py.walsh.bonafide.send_bonafide", {
+        fetch("/api/method/unity_parent_app.api.bonafide.send_bonafide", {
             method: 'POST',
             headers: myHeaders,
             body: JSON.stringify({
@@ -66,7 +66,7 @@ export const BonafideCertificate = () => {
     const requestBonafide = () => {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        fetch("/api/method/edu_quality.public.py.walsh.bonafide.send_bonafide", {
+        fetch("/api/method/unity_parent_app.api.bonafide.send_bonafide", {
             method: 'POST',
             headers: myHeaders,
             body: JSON.stringify({

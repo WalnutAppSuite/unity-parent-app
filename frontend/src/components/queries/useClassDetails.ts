@@ -1,45 +1,42 @@
 import { useCustom } from "@refinedev/core";
 
 export interface ClassDetails {
-  division: {
-    student_group_name: string;
-    name: string;
-    custom_school: string;
-    academic_year: string;
-    program: string;
-  };
-  program: {
-    program_name: string;
-    name: string;
-    wiki_link ?:string;
-  };
-  class: {
-    subject: [
-      {
-        subject: string;
-      }
-    ];
-    name: string;
-  };
+  "division": {
+    student_group_name: string
+    name: string
+    custom_school: string
+    academic_year: string
+    program: string
+  }
+  "program": {
+    program_name: string
+    name: string
+  }
+  "class": {
+    subject: [{
+      subject: string
+
+    }]
+    name: string
+  }
 }
 
-const useClassDetails = (student: string, academic_year?: any) => {
+const useClassDetails = (student: string) => {
   return useCustom<{ message: ClassDetails }>({
     config: {
       query: {
-        student,
-        academic_year,
-      },
+        student
+      }
     },
     errorNotification: undefined,
     method: "get",
     queryOptions: {
-      queryKey: ["student", "list", student, academic_year],
-      enabled: !!student,
+      queryKey: ["student", 'list', student],
+      enabled : !!student
     },
     successNotification: undefined,
-    url: "/api/method/unity_parent_app.api.cmap.get_student_class_details",
-  });
-};
+    url: '/api/method/unity_parent_app.api.cmap.get_student_class_details',
+  })
+}
 
-export default useClassDetails;
+export default useClassDetails

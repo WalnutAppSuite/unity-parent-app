@@ -1,7 +1,7 @@
 import useStudentList, { Student } from "../queries/useStudentList.ts";
 
-const profileColors = ["#00a8ff", "#019837", "#d21eff", "#fe7f00", "#fdc426"];
-const iconsColors = ["#fdc426"];
+const profileColors = ["#6D3BEA", "#F27841", "#fe7f00", "#ED1651"];
+const iconsColors = ["#005E5F"];
 
 export const getStudentProfileColor = (
   student_id: string | null,

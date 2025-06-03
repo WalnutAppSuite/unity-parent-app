@@ -238,23 +238,3 @@ def student_rte_deactivation(data):
     except Exception as e:
         frappe.log_error("Error While Deactivating RTE", frappe.get_traceback())
         return False
-    
-
-@frappe.whitelist()
-def student_rollover(academic_year, program=None, division=None, student_status=None):
-    try:
-        filters = {"academic_year": academic_year, "docstatus": 0}
-        if program:
-            filters["program"] = program
-        if division:
-            filters["student_group"] = division
-        if student_status:
-            filters["custom_status"] = student_status
-        enrollments = frappe.get_all("Program Enrollment", filters=filters, pluck="name")
-        for enrollment in enrollments:
-            frappe.enqueue_doc(doctype="Program Enrollment", name=enrollment, method="submit")
-        return True
-    except Exception as e:
-        frappe.logger("rollover").exception(e)
-        return False
-    

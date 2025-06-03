@@ -17,9 +17,19 @@ export interface Student {
   enquired_class: string;
   blood_group: string;
   annual_income: string;
+  student_name: string;
+  image: string;
+  student_email_id: string;
+  program: string;
+  custom_division: string;
+  custom_calendar_link?: string | null;
+  pincode: string;
+  school_house: string;
+  nationality: string;
+  city: string;
 }
 
-const useStudentList = () => {
+const useStudentList = ({ enabled }: { enabled?: boolean } = {}) => {
   return useCustom<{ message: Student[] }>({
     url: "/api/method/unity_parent_app.api.cmap.get_students",
     method: "get",
@@ -29,6 +39,7 @@ const useStudentList = () => {
       cacheTime: 1200000,
       refetchOnWindowFocus: true,
       refetchInterval: 600000,
+      enabled,
     },
     config: undefined,
     errorNotification: undefined,

@@ -10,8 +10,8 @@ const PortionCircularList = () => {
   const [searchParams] = useSearchParams();
   const unit = searchParams.get("unit") || "";
   const student = searchParams.get("student") || "";
-  const academic_year = searchParams.get("academic_year") || undefined;
-  const { data: classDetails } = useClassDetails(student,academic_year);
+
+  const { data: classDetails } = useClassDetails(student);
   const {
     data: circularList,
     error,

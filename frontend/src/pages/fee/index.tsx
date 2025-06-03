@@ -57,6 +57,21 @@ const Fees = () => {
     classError ||
     !classDetails?.data?.message ||
     Object.keys(classDetails?.data?.message).length == 0;
+  // Add this useEffect to handle automatic selection of first academic year
+  useEffect(() => {
+    if (
+      academicYearData?.data?.message &&
+      academicYearData?.data?.message?.length > 0 &&
+      !selectedAcademicYear
+    ) {
+      setSelectedAcademicYear(academicYearData.data.message[0]);
+    }
+  }, [academicYearData?.data?.message, selectedAcademicYear]);
+
+  // Also clear selected year when student changes
+  useEffect(() => {
+    setSelectedAcademicYear("");
+  }, [selectedStudent]);
 
   return (
     <Box>
@@ -83,7 +98,10 @@ const Fees = () => {
                 textAlign: "center",
                 minWidth: "33.33%",
               }}
-              onClick={() => setSelectedStudent(student.name)}
+              onClick={() => {
+                setSelectedStudent(student.name);
+                setSelectedAcademicYear("");
+              }}
             >
               <Text
                 sx={{
@@ -206,7 +224,7 @@ const Fees = () => {
               onClick={() => {
                 if (selectedStudent && selectedAcademicYear)
                   navigate(
-                    `/fee/list?academic_year=${encodeURIComponent(
+                    `/fees/list?academic_year=${encodeURIComponent(
                       selectedAcademicYear || ""
                     )}&student=${encodeURIComponent(selectedStudent || "")}`
                   );

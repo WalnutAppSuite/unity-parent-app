@@ -601,12 +601,7 @@ def serialize_lead_to_application(doc: dict):
 
 def append_mother_guardian(doc, guardians):
 
-    if (
-        doc.get("mothers_name")
-        and doc.get("mothers_phone")
-        and doc.get("mothers_phone").strip()
-        and doc.get("mothers_name").strip()
-    ):
+    if doc.get("mothers_name") and doc.get("mothers_name").strip():
         existing_mother = frappe.db.get_value(
             "Guardian",
             filters={"mobile_number": doc.get("mothers_phone")},

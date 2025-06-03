@@ -9,6 +9,7 @@ interface LeaveNoteVariables {
   start_date: string;
   dates: string[];
   program: string;
+  guardian: string;
 }
 
 const useLeaveNote = () => {

@@ -8,27 +8,38 @@ import {
   Stack,
   Text,
   TextInput,
+  SegmentedControl,
 } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { OtpInput } from "../components";
 import { useLogin } from "@refinedev/core";
 import { IconReload } from "@tabler/icons";
+import { Link } from "react-router-dom";
 
 export const Login = () => {
   const { mutateAsync, isLoading } = useLogin();
   const [mode, setMode] = useState<"main" | "otp">("main");
+  const [loginType, setLoginType] = useState<"phone" | "email">("phone");
   const [errorMessage, setErrorMessage] = useState("");
   const [otpMessage, setOtpMessage] = useState("");
   const [sendingOtp, setSendingOtp] = useState(false);
-  const { getInputProps, values, setValues, onSubmit } = useForm(LOGIN_FORM);
+  const { getInputProps, values, setValues, onSubmit } = useForm({
+    ...LOGIN_FORM,
+    initialValues: {
+      ...LOGIN_FORM.initialValues,
+      email: "",
+    },
+  });
 
   const handleSubmit = useMemo(
     () =>
       onSubmit((values) => {
         if (isLoading || sendingOtp) return;
+
         if (mode == "otp") {
           mutateAsync({
-            phone: values.mobile_number,
+            [loginType === "email" ? "email" : "phone"]:
+              loginType === "email" ? values.email : values.mobile_number,
             otp: values.otp,
           })
             .then((r) => r.json())
@@ -43,11 +54,12 @@ export const Login = () => {
         setSendingOtp(true);
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        fetch("/api/method/edu_quality.public.py.walsh.login.send_otp", {
+        fetch("/api/method/unity_parent_app.api.login.send_otp", {
           method: "POST",
           headers: myHeaders,
           body: JSON.stringify({
-            phone_no: values.mobile_number,
+            [loginType === "email" ? "email" : "phone_no"]:
+              loginType === "email" ? values.email : values.mobile_number,
           }),
           redirect: "follow",
         })
@@ -65,13 +77,13 @@ export const Login = () => {
             setSendingOtp(false);
           });
       }),
-    [isLoading, mode, mutateAsync, onSubmit, sendingOtp]
+    [isLoading, mode, mutateAsync, onSubmit, sendingOtp, loginType]
   );
 
   useEffect(() => {
     setErrorMessage("");
     setOtpMessage("");
-  }, [values.mobile_number]);
+  }, [values.mobile_number, values.email]);
 
   return (
     <>
@@ -99,68 +111,102 @@ export const Login = () => {
           <Flex justify={"center"}>
             <Image
               radius={"lg"}
-              width={90}
-              height={90}
-              src="/assets/edu_quality/walsh/images/walnut-logo-2023.svg"
+              width={160}
+              src="/assets/edu_quality/walsh/images/tgaa_logo.jpg"
             />
           </Flex>
           <Stack spacing={2} mt={12} mb={8} align="center">
             <Text
               size={"lg"}
               sx={{
-                fontSize: 20,
+                fontSize: 14,
               }}
               weight={700}
               c="primary.5"
             >
-              {mode !== "otp" ? "Welcome" : "Enter OTP"}
+              {mode !== "otp"
+                ? "Welcome to The Green Acres Academy!"
+                : "Enter OTP"}
             </Text>
             {mode !== "otp" ? (
-              <Text
-                size={"sm"}
-                sx={{
-                  fontSize: 14,
-                  color: "#565766",
-                  marginTop: 10,
-                  marginBottom: 10,
-                }}
-                align="center"
-              >
-                If you are already a parent of Walnut School <br /> Log in below
-              </Text>
+              <>
+                <Text
+                  size={"sm"}
+                  sx={{
+                    fontSize: 12,
+                    color: "#565766",
+                    marginTop: 4,
+                    marginBottom: 10,
+                  }}
+                  align="center"
+                >
+                  Parents can log in using their registered mobile number or
+                  email
+                </Text>
+                <SegmentedControl
+                  value={loginType}
+                  onChange={(value: "phone" | "email") => setLoginType(value)}
+                  data={[
+                    { label: "Phone", value: "phone" },
+                    { label: "Email", value: "email" },
+                  ]}
+                />
+              </>
             ) : (
-              <Text size={"sm"}>Phone No: {values.mobile_number}</Text>
+              <Text size={"sm"}>
+                {loginType === "email" ? "Email" : "Phone No"}:{" "}
+                {loginType === "email" ? values.email : values.mobile_number}
+              </Text>
             )}
           </Stack>
           <Stack spacing={12}>
             {mode !== "otp" ? (
-              <TextInput
-                variant="filled"
-                sx={{
-                  ".mantine-Input-input": {
-                    letterSpacing: 2,
-                    borderRadius: 8,
-                    border: "1px solid rgba(0,0,0,0.1)",
-                    fontSize: 20,
-                    // fontWeight: 'bold',
-                    "::placeholder": {
-                      letterSpacing: 0,
-                      textAlign: "center",
+              loginType === "phone" ? (
+                <TextInput
+                  variant="filled"
+                  sx={{
+                    ".mantine-Input-input": {
+                      letterSpacing: 2,
+                      borderRadius: 8,
+                      border: "1px solid rgba(0,0,0,0.1)",
+                      fontSize: 20,
+                      "::placeholder": {
+                        letterSpacing: 0,
+                        textAlign: "center",
+                      },
                     },
-                  },
-                }}
-                placeholder="Enter Mobile Number"
-                {...getInputProps("mobile_number")}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  const phoneNumberIncompleteRegix = /^\+?[0-9]*$/;
-                  if (!phoneNumberIncompleteRegix.test(value)) return;
-                  setValues({
-                    ...values,
-                    mobile_number: event.target.value,
-                  });
-                }}
-              />
+                  }}
+                  placeholder="Enter Registered Number"
+                  {...getInputProps("mobile_number")}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    const phoneNumberIncompleteRegix = /^\+?[0-9]*$/;
+                    if (!phoneNumberIncompleteRegix.test(value)) return;
+                    setValues({
+                      ...values,
+                      mobile_number: event.target.value,
+                    });
+                  }}
+                />
+              ) : (
+                <TextInput
+                  variant="filled"
+                  sx={{
+                    ".mantine-Input-input": {
+                      letterSpacing: 2,
+                      borderRadius: 8,
+                      border: "1px solid rgba(0,0,0,0.1)",
+                      fontSize: 20,
+                      "::placeholder": {
+                        letterSpacing: 0,
+                        textAlign: "center",
+                      },
+                    },
+                  }}
+                  placeholder="Enter Registered Email"
+                  {...getInputProps("email")}
+                />
+              )
             ) : (
               <Flex
                 justify="center"
@@ -184,17 +230,20 @@ export const Login = () => {
             <Button
               type="submit"
               sx={{
-                backgroundColor: "#00b3ff",
+                backgroundColor: "#005E5F",
                 marginTop: 10,
                 ":hover": {
-                  backgroundColor: "#03a5ea",
+                  backgroundColor: "#005E5F",
+                  opacity: 0.8,
                 },
               }}
             >
               {mode !== "otp" ? "Get OTP" : "Submit OTP"}
             </Button>
 
-            <Box
+            <Flex
+              direction={"column"}
+              align={"center"}
               sx={{
                 textAlign: "center",
               }}
@@ -202,7 +251,7 @@ export const Login = () => {
               <Button
                 sx={{
                   backgroundColor: "transparent",
-                  color: "#03aaf1",
+                  color: "#005E5F",
                   width: "fit-content",
                   ":hover": {
                     backgroundColor: "transparent",
@@ -221,7 +270,27 @@ export const Login = () => {
                   }}
                 />
               </Button>
-            </Box>
+              {mode !== "otp" && (
+                <Button
+                  component={Link}
+                  to="/register"
+                  sx={{
+                    backgroundColor: "transparent",
+                    color: "#005E5F",
+                    width: "fit-content",
+                    ":hover": {
+                      backgroundColor: "transparent",
+                    },
+                    ":active": {
+                      backgroundColor: "transparent",
+                    },
+                  }}
+                >
+                  New here? Sign up to access your child's school updates!
+                </Button>
+              )}
+            </Flex>
+
             {mode === "otp" ? (
               <Text
                 align="center"
@@ -236,26 +305,12 @@ export const Login = () => {
                   setErrorMessage("");
                 }}
               >
-                Didn’t received OTP
+                Resend OTP
               </Text>
             ) : null}
           </Stack>
         </form>
       </Stack>
-      <Box
-        pos="fixed"
-        bottom={0}
-        left={0}
-        right={0}
-        style={{
-          pointerEvents: "none",
-        }}
-      >
-        <Image
-          src={"/assets/edu_quality/walsh/images/walnut-bg-transparent.png"}
-          w={"100%"}
-        />
-      </Box>
     </>
   );
 };

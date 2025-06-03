@@ -1,6 +1,6 @@
-import { IResourceComponentsProps } from "@refinedev/core";
-import React, { useMemo, useState, useEffect, useRef, useCallback } from "react";
-import { Box, Button, Input, Stack, Text, Skeleton } from "@mantine/core";
+import { IResourceComponentsProps, useGetIdentity } from "@refinedev/core";
+import React, { useMemo, useState, useEffect, useRef } from "react";
+import { Box, Button, Flex, Input, Stack, Text } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { IconArchive, IconCalendar, IconSearch, IconStar } from "@tabler/icons";
 import useStudentList from "../../components/queries/useStudentList.ts";
@@ -8,7 +8,7 @@ import { getStudentProfileColor } from "../../components/hooks/useStudentProfile
 import useMarkAsStared from "../../components/queries/useMarkStarMutation.ts";
 import useMarkAsArchived from "../../components/queries/useMarkArchivedMutation.ts";
 import useNoticeList from "../../components/queries/useNoticeList.ts";
-
+import useSchoolNoticeCategory from "../../components/queries/useSchoolNoticeCategory.ts";
 interface StaredNoticeListProps extends IResourceComponentsProps {
   staredOnly?: boolean;
   archivedOnly?: boolean;
@@ -20,12 +20,15 @@ export const NoticeList: React.FC<StaredNoticeListProps> = ({
 }) => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearchActive, setIsSearchActive] = useState(false);
-  const { data } = useStudentList();
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const { data: identity } = useGetIdentity();
+  const { data: studentData } = useStudentList({
+    enabled: !!identity,
+  });
+
   const { mutateAsync: markAsStared } = useMarkAsStared();
   const { mutateAsync: markAsArchived } = useMarkAsArchived();
   const loadMoreRef = useRef(null);
-  const debounceTimerRef = useRef<NodeJS.Timeout>();
   const {
     data: list,
     isLoading,
@@ -33,53 +36,30 @@ export const NoticeList: React.FC<StaredNoticeListProps> = ({
     refetch,
     fetchNextPage,
     hasNextPage,
-    isLoading: isLoadingList,
   } = useNoticeList({
-    staredOnly,
-    archivedOnly,
-    search_query: isSearchActive ? searchQuery : "",
+    staredOnly: identity ? staredOnly : undefined,
+    archivedOnly: identity ? archivedOnly : undefined,
+    category: selectedCategory,
+    identity,
     limit: 10,
   });
 
+  const { data: categories = [] } = useSchoolNoticeCategory({ identity });
   const filteredList = useMemo(() => {
     if (!list?.pages) return [];
-    return list.pages.flatMap(page => page.message.notices || []);
-  }, [list]);
-
-  const debouncedRefetch = useCallback(() => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-    debounceTimerRef.current = setTimeout(() => {
-      refetch();
-    }, 500); // 500ms debounce delay
-  }, [refetch]);
-
-  const handleSearch = () => {
-    setIsSearchActive(!!searchQuery);
-    refetch();
-  };
-
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-    if (!value) {
-      setIsSearchActive(false);
-      debouncedRefetch();
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
-  };
+    if (!searchQuery)
+      return list.pages.flatMap((page) => page.message.notices) || [];
+    return list.pages.flatMap((page) =>
+      page.message.notices.filter((item) => {
+        if (!searchQuery) return true;
+        if (item?.subject?.toLowerCase?.()?.includes(searchQuery.toLowerCase()))
+          return true;
+        if (item?.notice?.toLowerCase?.()?.includes(searchQuery.toLowerCase()))
+          return true;
+        return false;
+      })
+    );
+  }, [list, searchQuery]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -104,159 +84,182 @@ export const NoticeList: React.FC<StaredNoticeListProps> = ({
     };
   }, [hasNextPage, isLoading, fetchNextPage]);
 
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, []);
-
-  const LoadingSkeleton = () => (
-    <Stack spacing="md" p={2}>
-      {[1, 2, 3].map((index) => (
-        <Box
-          key={index}
-          sx={{
-            backgroundColor: "white",
-            marginBottom: 10,
-            border: "1px solid rgba(0,0,0,0.05)",
-            padding: 5,
-            flexDirection: "row",
-            display: "flex",
-            alignItems: "flex-start",
-            gap: 5,
-          }}
-        >
-          <Box p={5} sx={{ width: "calc(100% - 50px)", flexShrink: 0 }}>
-            <Skeleton height={24} width="60%" radius="sm" mb={10} />
-            <Skeleton height={80} radius="sm" mb={10} />
-            <Stack spacing="xs">
-              <Skeleton height={20} width="40%" radius="sm" />
-              <Skeleton height={20} width="30%" radius="sm" />
-            </Stack>
-          </Box>
-          <Box sx={{ padding: 5, paddingRight: 10 }}>
-            <Skeleton height={30} width={30} radius="sm" mb={10} />
-            <Skeleton height={30} width={30} radius="sm" />
-          </Box>
-        </Box>
-      ))}
-    </Stack>
-  );
-
+  const handleToggle = (item: string) => {
+    if (selectedCategory !== item) {
+      setSelectedCategory(item);
+    } else {
+      setSelectedCategory("");
+    }
+  };
+  if ((staredOnly || archivedOnly) && !identity) {
+    navigate("/");
+    return null;
+  }
   return (
     <Box>
-      <Box pb={10} pt={15} px={5} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 5, position: "relative" }}>
+      <Box pb={10} pt={15} px={5}>
         <Input
           mx={5}
-          style={{ flex: 1 }}
-          onChange={handleSearchInputChange}
-          onKeyPress={handleKeyPress}
-          onKeyDown={handleKeyDown}
-          aria-label="Search notices"
+          onChange={(e) => setSearchQuery(e.target.value)}
           value={searchQuery}
-          placeholder="Search... (Press Enter to search)"
+          placeholder="Search..."
+          icon={<IconSearch />}
         />
-        <Button variant="subtle" style={{ position: "absolute", right: 15, padding: 0, margin: 0 }} onClick={handleSearch}>
-          <IconSearch style={{ color: "#666" }} />
-        </Button>
       </Box>
-      <Box p={2}>
-        {isLoadingList ? (
-          <LoadingSkeleton />
-        ) : !filteredList?.length ? (
-          <Text align="center" color="dimmed" weight="bold" my={30}>
-            No Notice Found
-          </Text>
-        ) : (
-          filteredList?.map?.((item) => (
-            <Stack
-              key={item.name + String(item.student || "")}
-              sx={{
-                backgroundColor: item.is_read ? "#F6FAFF" : "white",
-                marginBottom: 10,
-                border: "1px solid rgba(0,0,0,0.05)",
-                padding: 5,
-                flexDirection: "row",
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 5,
-              }}
-            >
+
+      <Flex
+        mx={10}
+        mb={5}
+        display={"flex"}
+        gap={8}
+        px={0}
+        py={8}
+        sx={{
+          overflowX: "auto",
+          whiteSpace: "nowrap",
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "none",
+          "::-webkit-scrollbar": { display: "none" },
+        }}
+      >
+        {categories.map((item, index: number) => (
+          <Button
+            key={index}
+            onClick={() => handleToggle(item.name)}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "10px",
+              border:
+                selectedCategory === item.name
+                  ? `1px solid var(--walsh-primary)`
+                  : "1px solid #ccc",
+              backgroundColor:
+                selectedCategory === item.name
+                  ? "var(--walsh-primary)"
+                  : "#fff",
+              color:
+                selectedCategory === item.name
+                  ? "var(--walsh-white)"
+                  : "var(--walsh-black)",
+              cursor: "pointer",
+              transition:
+                "background-color 0.3s ease, color 0.3s ease, border 0.3s ease",
+              whiteSpace: "nowrap",
+              position: "relative",
+            }}
+          >
+            <Text size={"xs"}>{item.name}</Text>
+            {item.notice_count > 0 && (
               <Box
-                p={5}
-                sx={{
-                  cursor: "pointer",
-                  width: "calc(100% - 50px)",
-                  flexShrink: 0,
-                  ":hover": {
-                    backgroundColor: "rgba(0,0,0,0.02)",
-                  },
-                }}
-                onClick={() => {
-                  if (!item.is_read) {
-                    remove();
-                    refetch().then(undefined);
-                  }
-                  navigate(
-                    `/notice/${item.name}?student=${encodeURIComponent(
-                      item.student
-                    )}`
-                  );
+                style={{
+                  position: "absolute",
+                  top: -8,
+                  right: -8,
+                  backgroundColor: "#ED1651",
+                  color: "white",
+                  borderRadius: "50%",
+                  padding: "4px 4px",
+                  fontSize: "12px",
+                  minWidth: "20px",
+                  textAlign: "center",
                 }}
               >
-                <Text
-                  mih={20}
-                  weight="bold"
-                  size="lg"
-                  sx={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    width: "100%",
-                    // fontSize: 15,
-                  }}
-                >
-                  {item.subject || "-"}
-                </Text>
-                <Box
-                  my={5}
-                  sx={{
-                    overflow: "hidden",
-                    textOverflow: "none",
-                    whiteSpace: "nowrap",
-                    width: "100%",
-                    fontSize: 14,
-                    height: "5em",
-                    pointerEvents: "none",
-                    // borderRadius: '5px',
-                    // color: '#888',
-                  }}
-                >
+                {item.notice_count}
+              </Box>
+            )}
+          </Button>
+        ))}{" "}
+      </Flex>
+
+      <Box p={2}>
+        {!filteredList?.length && (
+          <Text align="center" color="dimmed" weight="bold" my={30}>
+            {isLoading ? "Loading..." : "No Notice Found"}
+          </Text>
+        )}
+        {filteredList?.map?.((item) => (
+          <Stack
+            key={item.name + String(item.student || "")}
+            sx={{
+              backgroundColor: item.is_read ? "#F5F7F8" : "white",
+              marginBottom: 10,
+              border: "1px solid rgba(0,0,0,0.05)",
+              padding: 5,
+              flexDirection: "row",
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 5,
+            }}
+          >
+            <Box
+              p={5}
+              sx={{
+                cursor: "pointer",
+                width: "calc(100% - 50px)",
+                flexShrink: 0,
+                ":hover": {
+                  backgroundColor: "rgba(0,0,0,0.02)",
+                },
+              }}
+              onClick={() => {
+                if (!item.is_read) {
+                  remove();
+                  refetch().then(undefined);
+                }
+                navigate(
+                  `/notice/${item.name}?student=${encodeURIComponent(
+                    item.student
+                  )}`
+                );
+              }}
+            >
+              <Text
+                mih={20}
+                weight="bold"
+                size="sm"
+                sx={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  width: "100%",
+                }}
+              >
+                {item.subject || "-"}
+              </Text>
+              <Box
+                my={5}
+                sx={{
+                  overflow: "hidden",
+                  textOverflow: "none",
+                  whiteSpace: "nowrap",
+                  width: "100%",
+                  fontSize: 14,
+                  height: "2em",
+                  pointerEvents: "none",
+                }}
+              >
+                {item?.is_pdf ? null : (
                   <Box
-                    my={5}
-                    className={!item.is_raw_html ? "ql-editor" : ""}
                     ref={(el) => {
                       if (el) {
-                        // Only create shadow DOM if it doesn't exist
                         if (!el.shadowRoot) {
                           const shadowRoot = el.attachShadow({ mode: "open" });
                           shadowRoot.innerHTML = item.notice || "";
                         } else {
-                          // Update existing shadow root content
                           el.shadowRoot.innerHTML = item.notice || "";
                         }
                       }
                     }}
                   />
-                </Box>
+                )}
+              </Box>
 
+              {
                 <Stack
                   h={35}
                   sx={{
                     flexDirection: "row",
-                    // justifyContent: 'space-between',
                     paddingTop: 5,
                     paddingBottom: 5,
                     borderTop: "1px solid #eee",
@@ -275,14 +278,16 @@ export const NoticeList: React.FC<StaredNoticeListProps> = ({
                       fontSize: 13,
                       backgroundColor: getStudentProfileColor(
                         item.student,
-                        data?.data?.message || []
+                        studentData?.data?.message || []
                       ),
                       color: "white",
                       fontWeight: "bold",
                       borderRadius: 3,
                     }}
                   >
-                    {item?.student_first_name}
+                    {!item?.is_public
+                      ? item?.student_first_name
+                      : "Announcement"}
                   </Stack>
                   <Stack
                     align="center"
@@ -290,10 +295,7 @@ export const NoticeList: React.FC<StaredNoticeListProps> = ({
                     py={4}
                     sx={{
                       display: "inline-flex",
-                      // justifyContent: 'center',
                       flexDirection: "row",
-                      // alignItems: 'center',
-                      // borderRadius: 5,
                       whiteSpace: "nowrap",
                       fontSize: 13,
                       gap: 5,
@@ -307,33 +309,29 @@ export const NoticeList: React.FC<StaredNoticeListProps> = ({
                     </span>
                   </Stack>
                 </Stack>
-              </Box>
-              <Box
-                sx={{
-                  padding: 5,
-                  paddingRight: 10,
-                }}
-              >
+              }
+            </Box>
+            {identity ? (
+              <Box sx={{ padding: 5, paddingRight: 10 }}>
                 <IconStar
                   style={{
-                    marginBottom: 10,
+                    marginBottom: 4,
                   }}
-                  size={30}
+                  size={24}
                   fill={
                     item.is_stared
                       ? getStudentProfileColor(
-                        item.student,
-                        data?.data?.message || []
-                      )
+                          item.student,
+                          studentData?.data?.message || []
+                        )
                       : "white"
                   }
                   color={getStudentProfileColor(
                     item.student,
-                    data?.data?.message || []
+                    studentData?.data?.message || []
                   )}
                   stroke={1}
                   onClick={() => {
-                    console.log("item index", item);
                     markAsStared({
                       notice: item.name,
                       student: item.student,
@@ -343,27 +341,25 @@ export const NoticeList: React.FC<StaredNoticeListProps> = ({
                 />
 
                 <IconArchive
-                  size={30}
+                  size={24}
                   color={
                     item.is_archived
                       ? "white"
                       : getStudentProfileColor(
-                        item.student,
-                        data?.data?.message || []
-                      )
+                          item.student,
+                          studentData?.data?.message || []
+                        )
                   }
                   stroke={1}
                   fill={
                     item.is_archived
                       ? getStudentProfileColor(
-                        item.student,
-                        data?.data?.message || []
-                      )
+                          item.student,
+                          studentData?.data?.message || []
+                        )
                       : "white"
                   }
                   onClick={() => {
-                    console.log("delete index", item);
-
                     markAsArchived({
                       notice: item.name,
                       student: item.student,
@@ -372,9 +368,9 @@ export const NoticeList: React.FC<StaredNoticeListProps> = ({
                   }}
                 />
               </Box>
-            </Stack>
-          ))
-        )}
+            ) : null}
+          </Stack>
+        ))}
         <div ref={loadMoreRef} style={{ height: "20px" }} />
       </Box>
     </Box>

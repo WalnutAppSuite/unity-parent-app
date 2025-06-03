@@ -1,19 +1,20 @@
 import { AuthBindings } from "@refinedev/core";
 
 export const authProvider: AuthBindings = {
-  login: async ({ phone, otp }) => {
+  login: async ({ phone, otp, email }) => {
     // @ts-expect-error undefined
     const pushToken = window.getPushNotificationToken?.();
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     const response = await fetch(
-      "/api/method/edu_quality.public.py.walsh.login.verify_otp",
+      "/api/method/unity_parent_app.api.login.verify_otp",
       {
         method: "POST",
         headers: myHeaders,
         body: JSON.stringify({
           phone_no: phone,
+          email: email,
           otp: otp,
           push_token: pushToken || undefined,
         }),
@@ -46,7 +47,7 @@ export const authProvider: AuthBindings = {
     const pushToken = window.getPushNotificationToken?.();
 
     const response = await fetch(
-      "/api/method/edu_quality.public.py.walsh.login.logout",
+      "/api/method/unity_parent_app.api.login.logout",
       {
         method: "POST",
         headers: myHeaders,
@@ -79,13 +80,21 @@ export const authProvider: AuthBindings = {
     if (authenticated) {
       await sendPushToken();
     }
-    
+
     return {
       authenticated,
     };
   },
   getPermissions: async () => null,
-  getIdentity: async () => {},
+  getIdentity: async () => {
+    const response = await fetch("/api/method/frappe.auth.get_logged_user");
+    if (response.status > 400 && response.status <= 403) {
+      return false;
+    }
+    const data = await response.json();
+    return data;
+  },
+
   onError: async (error) => {
     if (error.statusCode === 401 || error.statusCode === 403) {
       return {
@@ -104,7 +113,7 @@ const sendPushToken = async () => {
   if (pushToken) {
     try {
       const response = await fetch(
-        "/api/method/edu_quality.public.py.walsh.login.register_push_notice",
+        "/api/method/unity_parent_app.api.login.register_push_notice",
         {
           method: "POST",
           headers: {
@@ -119,7 +128,10 @@ const sendPushToken = async () => {
       if (data?.message?.success) {
         console.log("Push token sent successfully");
       } else {
-        console.error("Failed to send push token:", data?.message?.error_message);
+        console.error(
+          "Failed to send push token:",
+          data?.message?.error_message
+        );
       }
     } catch (error) {
       console.error("Error sending push token:", error);

@@ -7,7 +7,7 @@ import useClassDetails from "../components/queries/useClassDetails.ts";
 import useStudentProfileColor from "../components/hooks/useStudentProfileColor.ts";
 import {
   usePTMLinksQuery,
-  useOfflinePTMLinksQuery,
+  useofflinePTMLinksQuery,
 } from "../components/queries/usePTMLinksQuery.tsx";
 
 function timeToMinutes(timeStr: any) {
@@ -130,12 +130,12 @@ export const PtmLinks = () => {
     data: onlinePTM,
     refetch: onlinePTMRefetch,
     isLoading,
-  } = usePTMLinksQuery(selectedStudent || "");
+  } = usePTMLinksQuery(selectedStudent);
   const {
     data: offlinePTM,
     refetch: offlineRefetch,
     isLoading: offlinePtmLoading,
-  } = useOfflinePTMLinksQuery(custom_school || "");
+  } = useofflinePTMLinksQuery(custom_school);
 
   const past_ptms = onlinePTM?.data?.message?.past_ptms;
 
@@ -310,45 +310,11 @@ export const PtmLinks = () => {
       </Stack>
       <Box
         sx={{
-          margin: 10,
-          color: studentProfileColor,
-          borderRadius: 10,
-          padding: "5px 10px",
-          textAlign: "center",
-          background: studentProfileColor + "22",
-          fontSize: 13,
-          fontWeight: "bold",
-        }}
-      >
-        The PTM link becomes active 5 minutes before the scheduled time. If you
-        do not see the link, please reload the app.Once a scheduled PTM is
-        completed (i.e., the date has passed), the link will no longer be
-        visible in the app.
-      </Box>
-      <Box
-        sx={{
           border: "1px solid " + studentProfileColor + "77",
           margin: 20,
           borderRadius: 10,
         }}
       >
-        <Box
-          sx={{
-            margin: 10,
-            color: studentProfileColor,
-            borderRadius: 10,
-            padding: "5px 10px",
-            textAlign: "center",
-            background: studentProfileColor + "22",
-            fontSize: 13,
-            fontWeight: "bold",
-          }}
-        >
-          The PTM link becomes active 5 minutes before the scheduled time. If you
-          do not see the link, please reload the app.Once a scheduled PTM is
-          completed (i.e., the date has passed), the link will no longer be
-          visible in the app.
-        </Box>
         <Stack
           sx={{
             borderBottom: "1px solid " + studentProfileColor + "77",
@@ -378,27 +344,27 @@ export const PtmLinks = () => {
           </Text>
           {students.find((student) => student.name === selectedStudent)
             ?.reference_number && (
-              <Text
-                sx={{
-                  borderRadius: 50,
-                  backgroundColor: studentProfileColor + "22",
-                  padding: "1px 5px",
-                  fontSize: 10,
-                  display: "inline-block",
-                  height: "1.4em",
-                  lineHeight: 1.4,
-                  color: studentProfileColor,
-                  fontWeight: "bold",
-                  letterSpacing: 0.5,
-                  textTransform: "uppercase",
-                }}
-              >
-                {
-                  students.find((student) => student.name === selectedStudent)
-                    ?.reference_number
-                }
-              </Text>
-            )}
+            <Text
+              sx={{
+                borderRadius: 50,
+                backgroundColor: studentProfileColor + "22",
+                padding: "1px 5px",
+                fontSize: 10,
+                display: "inline-block",
+                height: "1.4em",
+                lineHeight: 1.4,
+                color: studentProfileColor,
+                fontWeight: "bold",
+                letterSpacing: 0.5,
+                textTransform: "uppercase",
+              }}
+            >
+              {
+                students.find((student) => student.name === selectedStudent)
+                  ?.reference_number
+              }
+            </Text>
+          )}
         </Stack>
         {isLoading ? (
           <Text align="center" color="dimmed" weight="bold" my={30}>
@@ -472,27 +438,27 @@ export const PtmLinks = () => {
           </Text>
           {students.find((student) => student.name === selectedStudent)
             ?.reference_number && (
-              <Text
-                sx={{
-                  borderRadius: 50,
-                  backgroundColor: studentProfileColor + "22",
-                  padding: "1px 5px",
-                  fontSize: 10,
-                  display: "inline-block",
-                  height: "1.4em",
-                  lineHeight: 1.4,
-                  color: studentProfileColor,
-                  fontWeight: "bold",
-                  letterSpacing: 0.5,
-                  textTransform: "uppercase",
-                }}
-              >
-                {
-                  students.find((student) => student.name === selectedStudent)
-                    ?.reference_number
-                }
-              </Text>
-            )}
+            <Text
+              sx={{
+                borderRadius: 50,
+                backgroundColor: studentProfileColor + "22",
+                padding: "1px 5px",
+                fontSize: 10,
+                display: "inline-block",
+                height: "1.4em",
+                lineHeight: 1.4,
+                color: studentProfileColor,
+                fontWeight: "bold",
+                letterSpacing: 0.5,
+                textTransform: "uppercase",
+              }}
+            >
+              {
+                students.find((student) => student.name === selectedStudent)
+                  ?.reference_number
+              }
+            </Text>
+          )}
         </Stack>
         {offlinePtmLoading ? (
           <Text align="center" color="dimmed" weight="bold" my={30}>
@@ -614,7 +580,7 @@ const Rows = ({
         >
           <Text
             sx={{
-              backgroundColor: isLinkedEnable ? studentProfileColor : "gray",
+              backgroundColor: studentProfileColor,
               borderRadius: "25px",
             }}
             style={{ color: "white", padding: "1px" }}

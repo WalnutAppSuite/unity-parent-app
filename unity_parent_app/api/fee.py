@@ -23,7 +23,6 @@ def get_academic_year_with_fees(student):
 
 @frappe.whitelist()
 def get_student_fee_schedule(student, academic_year):
-    academic_year = academic_year
 
     fee_advance = (
         frappe.get_all(
@@ -68,13 +67,14 @@ def get_student_fee_schedule(student, academic_year):
 
     combined_schedule = fee_advance + fee_schedule
     unique_terms = {}
-    
+
     for item in combined_schedule:
         term = item["payment_term"]
         if term not in unique_terms:
             unique_terms[term] = item
-            
+
     return list(unique_terms.values())
+
 
 def get_fees(student, acad_year):
     stud_qb = frappe.qb.DocType("Student")

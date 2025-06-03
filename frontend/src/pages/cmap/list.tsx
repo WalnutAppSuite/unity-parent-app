@@ -42,9 +42,9 @@ const CmapList = () => {
   const unit = searchParams.get('unit') || ''
   const student = searchParams.get('student') || ''
   const subject = searchParams.get('subject') || ''
-  const academic_year = searchParams.get('academic_year') || ''
+
   const {data: studentsList} = useStudentList()
-  const {data: classDetails} = useClassDetails(student,academic_year)
+  const {data: classDetails} = useClassDetails(student)
   const {data: cmapList, isLoading} = useCmapList(subject, unit, classDetails?.data?.message?.division?.name || '')
 
   const studentProfileColor = useStudentProfileColor(student)

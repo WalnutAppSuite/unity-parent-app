@@ -3,12 +3,12 @@ import { useCallback } from "react";
 
 interface EarlyPickUpNoteVariables {
   note?: string;
-  status: "early_pickup";
+  status: string;
   student: string;
-  dates: string[];
   date: string;
   time: string;
   program: string;
+  guardian: string;
 }
 
 const useEarlyPickUpMutation = () => {
