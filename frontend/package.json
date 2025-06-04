@@ -4,12 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc && refine build --base=/assets/edu_quality/walsh/ && yarn copy-html-entry",
+    "build": "tsc && refine build --base=/assets/edu_quality/frontend/ && yarn copy-html-entry",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "refine start",
     "dev": "vite dev",
     "refine": "refine",
-    "copy-html-entry": "cp ../edu_quality/public/walsh/index.html ../edu_quality/www/walsh.html"
+    "copy-html-entry": "cp ../edu_quality/public/frontend/index.html ../edu_quality/www/frontend.html"
   },
   "dependencies": {
     "@emotion/react": "^11.8.2",
