@@ -16,7 +16,7 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: '../edu_quality/public/frontend',
+    outDir: '../unity_parent_app/public/frontend',
     emptyOutDir: true,
     target: 'es2015',
   },
