@@ -238,4 +238,7 @@ app_license = "mit"
 # }
 
 
-website_route_rules = [{'from_route': '/walsh/<path:app_path>', 'to_route': 'walsh'},]
+website_route_rules = [
+    {'from_route': '/walsh/<path:app_path>', 'to_route': 'walsh'},
+    {'from_route': '/parent-app/<path:app_path>', 'to_route': 'parent-app'},
+]

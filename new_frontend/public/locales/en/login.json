@@ -1,0 +1,7 @@
+{
+  "label": "Sign in your account",
+  "input_placeholder": "Mobile Number",
+  "input_span": "+91",
+  "button": "SIGN IN",
+  "subtitle": "An OTP will be sent on given phone number for verification. Standard message charges and data may apply."
+}
