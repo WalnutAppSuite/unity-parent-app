@@ -1,0 +1,30 @@
+{
+    "menu": "Menu",
+    "login": "Login",
+    "home": "Home",
+    "messages": "Messages",
+    "starredMessages": "Starred Messages",
+    "archivedMessages": "Archived Messages",
+    "curriculumUpdates": "Curriculum Updates",
+    "curriculumUpdatesSub": {
+      "dailyUpdates": "Daily Updates",
+      "portion": "Portion",
+      "weeklyUpdates": "Weekly Updates"
+    },
+    "absentNote": "Absent Note",
+    "earlyPickup": "Early Pick up",
+    "events": "Events",
+    "ptmLinks": "PTM Links",
+    "studentProfile": "Student Profile",
+    "fee": "Fee",
+    "resultObservation": "Result/Observation",
+    "resultObservationSub": {
+      "result": "Result",
+      "observation": "Observation"
+    },
+    "schoolCalendar": "School Calendar",
+    "bonafideCertificate": "Bonafide Certificate",
+    "helpdesk": "Helpdesk",
+    "reload": "Reload",
+    "logout": "Logout"
+  }

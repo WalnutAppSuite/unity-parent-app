@@ -1,8 +1,10 @@
 import Header from '@/pages/header';
 import Navbar from '@/pages/navbar';
 import { Outlet } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
+import { basePath } from '@/constants';
 
 const navbarVariants = {
   closed: {
@@ -39,6 +41,33 @@ const overlayVariants = {
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [headerTitle, setHeaderTitle] = useState('Notices');
+  const { t } = useTranslation('dashboard');
+
+  // Map each path to a translation key
+  const pathTitleMap: Record<string, string> = {
+    '/notices': 'notices',
+    '/absent-note': 'absentNote',
+    '/weekly': 'weeklyUpdates',
+    '/pickup': 'earlyPickup',
+    '/events': 'events',
+    '/ptm': 'ptmLinks',
+    '/daily': 'dailyUpdates',
+    '/portion': 'portion',
+    '/result': 'result',
+    '/observation': 'observation',
+    '/school-calendar': 'schoolCalendar',
+    '/bonafide-certificate': 'bonafideCertificate',
+    '/helpdesk': 'helpdesk',
+  };
+
+  useEffect(() => {
+    let path = window.location.pathname;
+    if (path.startsWith(basePath)) {
+      path = path.slice(basePath.length) || '/';
+    }
+    const titleKey = pathTitleMap[path] || 'dashboard';
+    setHeaderTitle(t(titleKey));
+  }, [window.location.pathname, t]);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 

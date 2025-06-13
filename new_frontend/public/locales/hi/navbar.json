@@ -1,0 +1,30 @@
+{
+    "menu": "मेनू",
+    "login": "लॉगिन",
+    "home": "होम",
+    "messages": "संदेश",
+    "starredMessages": "चिह्नित संदेश",
+    "archivedMessages": "संग्रहीत संदेश",
+    "curriculumUpdates": "पाठ्यक्रम अपडेट्स",
+    "curriculumUpdatesSub": {
+      "dailyUpdates": "दैनिक अपडेट्स",
+      "portion": "पाठ्यक्रम",
+      "weeklyUpdates": "साप्ताहिक अपडेट्स"
+    },
+    "absentNote": "अनुपस्थित नोट",
+    "earlyPickup": "जल्दी पिकअप",
+    "events": "इवेंट्स",
+    "ptmLinks": "पीटीएम लिंक",
+    "studentProfile": "छात्र प्रोफ़ाइल",
+    "fee": "शुल्क",
+    "resultObservation": "परिणाम/अवलोकन",
+    "resultObservationSub": {
+      "result": "परिणाम",
+      "observation": "अवलोकन"
+    },
+    "schoolCalendar": "स्कूल कैलेंडर",
+    "bonafideCertificate": "बोनाफाइड प्रमाणपत्र",
+    "helpdesk": "हेल्पडेस्क",
+    "reload": "रीलोड",
+    "logout": "लॉगआउट"
+  }

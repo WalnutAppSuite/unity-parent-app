@@ -3,6 +3,7 @@ import Home from '@/pages/home';
 import Login from '@/pages/login';
 import NoticeListingPage from '@/pages/notices/home';
 import DashboardLayout from '@/pages/layout/Dashboard';
+import Absent from '@/pages/absent';
 
 function AppRoutes() {
   return (
@@ -14,6 +15,7 @@ function AppRoutes() {
       {/* Protected/dashboard routes */}
       <Route element={<DashboardLayout />}>
         <Route path="/notices" element={<NoticeListingPage />} />
+        <Route path="/absent-note" element={<Absent />} />
         {/* Add more dashboard routes here */}
       </Route>
     </Routes>

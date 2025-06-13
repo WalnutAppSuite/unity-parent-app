@@ -12,6 +12,7 @@
     "copy-html-entry": "cp ../unity_parent_app/public/new_frontend/index.html ../unity_parent_app/www/parent-app.html"
   },
   "dependencies": {
+    "@radix-ui/react-popover": "^1.1.14",
     "@radix-ui/react-slot": "^1.2.2",
     "@tanstack/react-query": "^5.76.0",
     "class-variance-authority": "^0.7.1",
