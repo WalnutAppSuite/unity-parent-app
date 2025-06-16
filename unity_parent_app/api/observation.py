@@ -16,56 +16,57 @@ def get_observations(student_id, unit=None):
     if not program_enrollment:
         frappe.throw(_("No program enrollment found for this student"))
     
-    program = program_enrollment[0].program
-    program_doc = frappe.get_doc("Program", program)
-    
-    course_marks = {
-        course.course: {
-            "homework": course.get("custom_homework_total_marks", 0) or 0,
-            "classroom": course.get("custom_classroom_total_marks", 0) or 0,
-            "attendance": course.get("custom_attendance_total_marks", 0) or 0
-        }
-        for course in program_doc.get("courses", [])
-    }
+    program = program_enrollment[0]["program"]
+    course_marks = get_course_marks(program)
 
     filters = {
-        "program_enrollment": program_enrollment[0].name,
+        "program_enrollment": program_enrollment[0]["name"],
     }
     if unit:
         filters["unit"] = unit
 
     observation_data = frappe.get_all("Observation Data",
         filters=filters,
-        fields=["name", "subject", "observation_type", "average_marks", "unit"]
+        fields=["*"]
     )
 
     for obs in observation_data:
-        obs_marks = frappe.get_all(
+        obs_type = (obs.observation_type or "").lower()
+        
+        if "attendance" in obs_type:
+            continue
+        
+        obs_marks_sorted = frappe.get_all(
             "Observation Marks",
-            filters={"parent": obs.name},
-            fields=["name","docstatus","idx","date","period_number","grade","remarks"]
+            filters={"parent": obs["name"]},
+            fields=["name","docstatus","idx","date","period_number","grade","remarks"],
+            order_by="period_number asc"
         )
 
         # Get total marks for this subject's observation type
         subject_marks = course_marks.get(obs.subject, {})
         total_marks = 0
+        obs_type_label = ""
         
         # Determine which marks to use based on observation type
         obs_type = (obs.observation_type or "").lower()
         if "homework" in obs_type:
             total_marks = subject_marks.get("homework", 0)
+            obs_type_label = "Homework"
         elif "classroom" in obs_type:
             total_marks = subject_marks.get("classroom", 0)
+            obs_type_label = "Class Observation"
         elif "attendance" in obs_type:
             total_marks = subject_marks.get("attendance", 0)
-
+            obs_type_label = "Attendance"
+        
         observation_details = {
             "name": obs.name,
             "subject": obs.subject,
-            "observation_type": obs.observation_type,
+            "observation_type": obs_type_label,
             "observation_label": (obs.observation_type or "").split()[0] if obs.observation_type and obs.observation_type.strip() else "Unknown",
             "marks": obs.average_marks,
-            "Table": obs_marks,
+            "Table": obs_marks_sorted,
             "total_marks": total_marks
         }
 
@@ -76,6 +77,26 @@ def get_observations(student_id, unit=None):
         response["observations_by_subject"][subject_key].append(observation_details)
 
     return response
+
+def get_course_marks(program):
+    """
+    Memoizes course_marks for a program using frappe.cache to reduce DB reads.
+    """
+    cache_key = f"course_marks::{program}"
+    course_marks = frappe.cache.get_value(cache_key)
+    if course_marks is not None:
+        return course_marks
+    program_doc = frappe.get_doc("Program", program)
+    course_marks = {
+        course.course: {
+            "homework": course.get("custom_homework_total_marks", 0) or 0,
+            "classroom": course.get("custom_classroom_total_marks", 0) or 0,
+            "attendance": course.get("custom_attendance_total_marks", 0) or 0
+        }
+        for course in program_doc.get("courses", [])
+    }
+    frappe.cache.set_value(cache_key, course_marks, expires_in_sec=600)  # 10 min cache
+    return course_marks
 
 def get_current_academic_year(program_data=None):
     """
@@ -101,7 +122,7 @@ def get_current_academic_year(program_data=None):
                    
         if current_year:
             frappe.cache.set_value(
-                cache_key, current_year, expires_in_sec=60
-            )  # 1 minute cache
+                cache_key, current_year, expires_in_sec=600
+            )  # 10 minute cache
 
     return current_year
