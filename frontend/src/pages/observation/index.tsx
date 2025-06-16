@@ -19,10 +19,10 @@ const Observation = () => {
 
   const students = studentsList?.data?.message || [];
 
-  const handleStudentSelection = useCallback(
-    (studentName: string) => setSelectedStudent(studentName),
-    []
-  );
+  const handleStudentSelection = useCallback((studentName: string) => {
+    setSelectedStudent(studentName);
+    setSelectedUnit("");
+  }, []);
 
   const unitListData = useMemo(() => {
     return unitList?.data?.data?.map((unit) => ({
