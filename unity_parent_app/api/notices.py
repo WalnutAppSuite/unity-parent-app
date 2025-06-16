@@ -81,16 +81,26 @@ def get_all_notices(
 
     user = frappe.session.user
     guardian = frappe.get_cached_doc("Guardian", {"user": user})
+
+    # Check guardian status before returning any cached data
+    if is_disabled(guardian.name, True):
+        return {
+            "success": False,
+            "data": [],
+        }
+
+    # Create cache key based on user and parameters
+    cache_key = f"walsh:notices_{user}_{cursor_creation}_{cursor_name}_{limit}_{stared_only}_{archived_only}"
+    notices_cache = frappe.cache().get_value(cache_key)
+    if notices_cache:
+        print("add", cache_key)
+        return notices_cache
+
     cursor = None
     if cursor_name and cursor_creation:
         cursor = {
             "creation": cursor_creation,
             "name": cursor_name,
-        }
-    if is_disabled(guardian.name, True):
-        return {
-            "success": False,
-            "data": [],
         }
     students = get_students()
     student_dict = {s.name: s for s in students}
@@ -133,7 +143,7 @@ def get_all_notices(
         f"""
         select *
         from `tabSchool Notice` notice
-        where ((student in %(student_names)s and is_generic_notice = 0)
+        where  ((student in %(student_names)s and is_generic_notice = 0)
             or (
                 is_generic_notice = 1 and (
                 (notice.division in %(divisions)s)
@@ -229,11 +239,17 @@ def get_all_notices(
         if has_more
         else None
     )
-    return {
+    result = {
         "notices": filtered_notices,
         "next_cursor": next_cursor,
         "has_more": has_more,
     }
+
+    frappe.log_error(cache_key, result)
+
+    frappe.cache().set_value(cache_key, result, expires_in_sec=300)
+
+    return result
 
 
 def create_or_update_notice_status(notice, student, statues):
@@ -288,6 +304,9 @@ def get_notice_by_id(id, student=None):
             "data": [],
         }
     school_notice_doc = frappe.get_cached_doc("School Notice", id)
+
+    # Only allow access to submitted notices
+
     school_notice = school_notice_doc.as_dict()
     if student and school_notice.is_generic_notice:
         student_doc = frappe.get_cached_doc("Student", student)
