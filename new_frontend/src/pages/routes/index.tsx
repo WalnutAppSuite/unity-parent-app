@@ -4,6 +4,16 @@ import Login from '@/pages/login';
 import NoticeListingPage from '@/pages/notices/home';
 import DashboardLayout from '@/pages/layout/Dashboard';
 import Absent from '@/pages/absent';
+import EarlyPickup from '@/pages/early pickup';
+import Event from '@/pages/events';
+import PTM from '@/pages/ptm';
+import StudentProfile from '@/pages/student profile';
+import Fee from '@/pages/fee';
+import Result from '@/pages/result';
+import Observation from '@/pages/observation';
+import SchoolCalendar from '@/pages/school calendar';
+import Certificate from '@/pages/bonafide certificate';
+import HelpDesk from '@/pages/helpdesk';
 
 function AppRoutes() {
   return (
@@ -16,7 +26,17 @@ function AppRoutes() {
       <Route element={<DashboardLayout />}>
         <Route path="/notices" element={<NoticeListingPage />} />
         <Route path="/absent-note" element={<Absent />} />
-        {/* Add more dashboard routes here */}
+        <Route path="/pickup" element={<EarlyPickup />} />
+        <Route path="/events" element={<Event />} />
+        <Route path="/ptm" element={<PTM />} />
+        <Route path="/profile" element={<StudentProfile />} />
+        <Route path="/fee" element={<Fee />} />
+        <Route path="/result" element={<Result />} />
+        <Route path="/observation" element={<Observation />} />
+        <Route path="/calendar" element={<SchoolCalendar />} />
+        <Route path="/certificate" element={<Certificate />} />
+        <Route path="/helpdesk" element={<HelpDesk />} /> 
+        
       </Route>
     </Routes>
   );
