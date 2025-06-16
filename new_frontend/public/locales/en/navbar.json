@@ -22,6 +22,8 @@
       "result": "Result",
       "observation": "Observation"
     },
+    "timetable": "Timetable",
+    "knowledgeBase": "Knowledge Base",
     "schoolCalendar": "School Calendar",
     "bonafideCertificate": "Bonafide Certificate",
     "helpdesk": "Helpdesk",

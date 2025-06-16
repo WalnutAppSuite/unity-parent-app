@@ -15,5 +15,7 @@
     "observation": "Observation",
     "schoolCalendar": "School Calendar",
     "bonafideCertificate": "Bonafide Certificate",
-    "helpdesk": "Helpdesk"
+    "helpdesk": "Helpdesk",
+    "knowledgeBase": "Knowledge Base",
+    "timetable": "Timetable"
 }

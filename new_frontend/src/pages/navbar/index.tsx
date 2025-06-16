@@ -42,6 +42,8 @@ const menuItems: MenuItem[] = [
       { title: "resultObservationSub.observation", path: "/observation" },
     ],
   },
+  { title: "timetable", path: "/timetable" },
+  { title: "knowledgeBase", path: "/knowledge-base" },
   { title: "schoolCalendar", path: "/calendar" },
   { title: "bonafideCertificate", path: "/certificate" },
   { title: "helpdesk", path: "/helpdesk" },

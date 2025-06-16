@@ -47,17 +47,23 @@ const DashboardLayout = () => {
   const pathTitleMap: Record<string, string> = {
     '/notices': 'notices',
     '/absent-note': 'absentNote',
-    '/weekly': 'weeklyUpdates',
     '/pickup': 'earlyPickup',
     '/events': 'events',
     '/ptm': 'ptmLinks',
-    '/daily': 'dailyUpdates',
+    '/daily': 'daily',
     '/portion': 'portion',
+    '/weekly': 'weekly',
     '/result': 'result',
     '/observation': 'observation',
     '/school-calendar': 'schoolCalendar',
     '/bonafide-certificate': 'bonafideCertificate',
     '/helpdesk': 'helpdesk',
+    '/timetable': 'timetable',
+    '/profile': 'studentProfile',
+    '/fee': 'fee',
+    '/knowledge-base': 'knowledgeBase',
+    '/starred': 'starredMessages',
+    '/archived': 'archivedMessages',
   };
 
   useEffect(() => {
@@ -65,7 +71,7 @@ const DashboardLayout = () => {
     if (path.startsWith(basePath)) {
       path = path.slice(basePath.length) || '/';
     }
-    const titleKey = pathTitleMap[path] || 'dashboard';
+    const titleKey = pathTitleMap[path] || '';
     setHeaderTitle(t(titleKey));
   }, [window.location.pathname, t]);
 
