@@ -7,7 +7,8 @@ import {
   SquareChevronRight,
   Star,
   Archive,
-} from 'lucide-react';
+} 
+from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';

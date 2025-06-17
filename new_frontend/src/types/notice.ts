@@ -2,7 +2,7 @@ export interface Notice {
   // Basic identification
   name: string;
   subject: string;
-  notice: string; // HTML content
+  notice: string;
   
   // Timestamps
   creation: string; // ISO timestamp like "2025-05-11 15:04:05.850981"

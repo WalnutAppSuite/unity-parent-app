@@ -27,7 +27,7 @@ function NoticeListingPage() {
     setSubmittedQuery(searchQuery);
   };
 
-  // Flatten all notices from all pages into a single array
+  
   const allNotices = data?.pages.flatMap(page => page.message.notices) || [];
 
 

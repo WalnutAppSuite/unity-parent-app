@@ -1,7 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import type { Notice } from '@/types/notice'; 
 
-
 interface NoticeListProps {
   archivedOnly?: boolean;
   staredOnly?: boolean;

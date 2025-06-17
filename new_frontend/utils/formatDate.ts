@@ -8,4 +8,4 @@ export const formatDate = (dateString: string) => {
     } catch {
       return new Date().toLocaleDateString('en-GB');
     }
-  };
+};
