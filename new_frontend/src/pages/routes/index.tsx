@@ -15,12 +15,7 @@ import Observation from '@/pages/observation';
 import SchoolCalendar from '@/pages/school calendar';
 import Certificate from '@/pages/bonafide certificate';
 import HelpDesk from '@/pages/helpdesk';
-import Daily from '@/pages/daily/index';
-import Portion from '@/pages/portion/index';
-import Weekly from '@/pages/weekly/index';
-import DailyListing from '@/pages/daily/listing';
-import WeeklyListing from '@/pages/weekly/listing'; 
-import PortionListing from '@/pages/portion/listing';
+import Cmap from '@/pages/cmap';
 import Timetable from '@/pages/timetable/index';
 import KnowledgeBase from '@/pages/knowledge base/index';
 import StarredMessages from '@/pages/starred/index';
@@ -37,12 +32,7 @@ function AppRoutes() {
       <Route element={<DashboardLayout />}>
         <Route path="/notices" element={<NoticeListingPage />} />
         <Route path="/notices/:noticeId" element={<DetailedNotices />} />
-        <Route path="/daily" element={<Daily />} />
-        <Route path="/daily/list" element={<DailyListing />} />
-        <Route path="/portion" element={<Portion />} />
-        <Route path="/portion/list" element={<PortionListing />} />
-        <Route path="/weekly" element={<Weekly />} />
-        <Route path="/weekly/list" element={<WeeklyListing />} />
+        <Route path="/cmap" element={<Cmap />} />
         <Route path="/absent-note" element={<Absent />} />
         <Route path="/pickup" element={<EarlyPickup />} />
         <Route path="/events" element={<Event />} />

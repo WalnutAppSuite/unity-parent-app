@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import pencil from "../../../public/images/57558fc7d7ca03a8dac4c1f84e489c69.png";
 import student from "../../../public/images/ab30fa66a226dda26c05b92b28df05d0.png";
-// import WalmikiLogo from "../../components/walmikiLogo";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";

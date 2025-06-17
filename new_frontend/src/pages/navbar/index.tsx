@@ -21,14 +21,7 @@ const menuItems: MenuItem[] = [
   { title: "messages", path: "/notices" },
   { title: "starredMessages", path: "/starred" },
   { title: "archivedMessages", path: "/archived" },
-  {
-    title: "curriculumUpdates",
-    children: [
-      { title: "curriculumUpdatesSub.dailyUpdates", path: "/daily" },
-      { title: "curriculumUpdatesSub.portion", path: "/portion" },
-      { title: "curriculumUpdatesSub.weeklyUpdates", path: "/weekly" }
-    ],
-  },
+  { title: "curriculumUpdates", path: "/cmap" },
   { title: "absentNote", path: "/absent-note" },
   { title: "earlyPickup", path: "/pickup" },
   { title: "events", path: "/events" },

@@ -29,6 +29,20 @@ def get_students():
 
     students = [student for student in all_student_data if student.get("enabled")]
 
+    program_codes = set(student.get("program") for student in students if student.get("program"))
+    program_name_map = {}
+    if program_codes:
+        programs = frappe.get_all(
+            "Program",
+            filters={"name": ("in", list(program_codes))},
+            fields=["name", "program_name"]
+        )
+        program_name_map = {p["name"]: p["program_name"] for p in programs}
+
+    # Add program_name to each student
+    for student in students:
+        student["program_name"] = program_name_map.get(student.get("program"), "")
+
     # Cache the results for 10 minutes
     frappe.cache().set_value(cache_key, students, expires_in_sec=600)
     return students
