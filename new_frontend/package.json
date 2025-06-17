@@ -7,7 +7,7 @@
     "build": "vite build --base=/assets/unity_parent_app/new_frontend/ && yarn copy-html-entry",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "refine start",
-    "dev": "vite dev",
+    "dev": "vite dev --host",
     "refine": "refine",
     "copy-html-entry": "cp ../unity_parent_app/public/new_frontend/index.html ../unity_parent_app/www/parent-app.html"
   },

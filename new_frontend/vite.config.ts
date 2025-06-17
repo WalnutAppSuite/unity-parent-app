@@ -7,7 +7,7 @@ import proxyOptions from './proxyOptions';
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 8080,
+    port: 2301,
     proxy: proxyOptions
   },
   resolve: {
