@@ -110,7 +110,7 @@ const DashboardLayout = () => {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 1000 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="tw-w-full"
+        className="tw-w-full tw-bg-background-asscent"
       >
         <Outlet />
       </motion.div>
