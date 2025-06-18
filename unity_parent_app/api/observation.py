@@ -40,7 +40,7 @@ def get_observations(student_id, unit=None):
             "Observation Marks",
             filters={"parent": obs["name"]},
             fields=["name","docstatus","idx","date","period_number","grade","remarks"],
-            order_by="period_number asc"
+            order_by="period_number desc"
         )
 
         # Get total marks for this subject's observation type
