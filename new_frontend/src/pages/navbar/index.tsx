@@ -129,7 +129,7 @@ const Navbar = ({ onClose, setHeaderTitle }: NavbarProps) => {
   };
 
   return (
-    <div className="tw-w-full tw-h-screen tw-bg-[#07183C] tw-text-white tw-flex tw-flex-col">
+    <div className="tw-w-full tw-h-screen tw-bg-primary tw-text-white tw-flex tw-flex-col">
       <div className="tw-p-6">
         <div className="tw-flex tw-items-center tw-justify-center tw-relative">
           <button

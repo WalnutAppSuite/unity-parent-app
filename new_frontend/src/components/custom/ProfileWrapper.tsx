@@ -15,6 +15,7 @@ export default function ProfileWrapper({
   first_name = 'Adarsh',
   last_name = 'Tiwari',
   custom_division = '10-B',
+  program_name = "10"
 }: {
   name : string;
   classSection?: string;
@@ -25,6 +26,7 @@ export default function ProfileWrapper({
   first_name?: string;
   last_name?: string;
   custom_division?: string;
+  program_name?: string;
 }) {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -109,7 +111,7 @@ export default function ProfileWrapper({
 
                 <div className="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-mb-4">
                   <Badge className="tw-bg-white/80 !tw-text-blue-500 !tw-rounded-full tw-px-3 tw-py-1 tw-text-xs tw-font-medium tw-shadow-none">
-                    {custom_division}
+                    {program_name}-{custom_division}
                   </Badge>
                   <Badge className="tw-bg-white/80 !tw-text-blue-500 !tw-rounded-full tw-px-3 tw-py-1 tw-text-xs tw-font-medium tw-shadow-none">
                     {reference_number}

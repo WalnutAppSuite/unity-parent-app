@@ -22,8 +22,6 @@ export default function AnimatedTabs() {
 
     const [students] = useAtom(studentsAtom);
 
-    console.log("Students :", students);
-
     useEffect(() => {
         const currentRef = tabRefs.current[selectedTab];
         if (currentRef) {
@@ -57,9 +55,9 @@ export default function AnimatedTabs() {
     return (
         <div className="tw-p-4">
             <div className="tw-flex tw-justify-center tw-mb-6">
-                <div className="tw-relative tw-inline-flex tw-bg-white tw-rounded-full tw-p-1 tw-shadow-lg tw-border tw-border-gray-200">
+                <div className="tw-relative tw-inline-flex tw-bg-secondary tw-rounded-full tw-p-1 tw-shadow-lg tw-border tw-border-gray-200">
                     <motion.div
-                        className="tw-absolute tw-top-1 tw-bottom-1 tw-bg-gradient-to-r tw-from-purple-500 tw-to-indigo-600 tw-rounded-full tw-shadow-md"
+                        className="tw-absolute tw-top-1 tw-bottom-1 tw-bg-primary tw-rounded-full tw-shadow-md"
                         layout
                         transition={{
                             type: "spring",
@@ -81,8 +79,8 @@ export default function AnimatedTabs() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             className={`tw-relative tw-z-10 tw-px-6 tw-py-2.5 tw-rounded-full tw-font-medium tw-text-sm tw-transition-colors tw-duration-200 ${selectedTab === tab.id
-                                ? "tw-text-white"
-                                : "tw-text-gray-600 hover:tw-text-gray-800"
+                                ? "tw-text-secondary"
+                                : "tw-text-primary"
                                 }`}
                         >
                             {tab.label}

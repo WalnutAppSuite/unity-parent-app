@@ -230,3 +230,67 @@ def get_portion_circulars(unit, division):
             subject_hash[subject][textbook][chapter].append(i)
 
     return subject_hash
+
+@frappe.whitelist(allow_guest=True)
+def get_cmap_filters(type, studentIds):
+    try:
+        if not type:
+            frappe.throw("Parameter 'type' is required.", title="Missing Parameter")
+
+        if not studentIds or not isinstance(studentIds, list):
+            frappe.throw("Parameter 'studentIds' must be a non-empty list.", title="Missing Parameter")
+
+        results = {}
+
+        for studentId in studentIds:
+            if not studentId:
+                frappe.throw("One of the provided student IDs is empty.", title="Invalid Input")
+
+            if not frappe.db.exists("Student", studentId):
+                frappe.throw(f"Student '{studentId}' does not exist.", title="Invalid Student")
+
+            student_doc = frappe.get_cached_doc("Student", studentId)
+
+            if not student_doc.program:
+                frappe.throw(f"Student '{studentId}' does not have a program assigned.", title="Missing Program")
+
+            if not frappe.db.exists("Program", student_doc.program):
+                frappe.throw(f"Program '{student_doc.program}' does not exist.", title="Invalid Program")
+
+            program_doc = frappe.get_doc("Program", student_doc.program)
+
+            if not hasattr(program_doc, "courses"):
+                frappe.throw(f"Program '{student_doc.program}' has no courses defined.", title="Missing Courses")
+
+            subjects = program_doc.courses
+            
+            subject_list = [
+                {"course": s.course, "course_name": s.course_name}
+                for s in subjects
+            ]
+            
+            program_doc = frappe.get_all("Program Enrollment", filters={"student": studentId , "docstatus": 1}, fields=["academic_year","student_group","program"])            
+            units = frappe.get_all("Unit")    
+
+            if type == 'portion':
+                filters = {
+                    "academic_years": program_doc,
+                    "units": units
+                }
+            elif type == 'daily':
+                filters = {
+                    "academic_years": program_doc,
+                    "subjects": subject_list,
+                    "units": units
+                }
+            else:
+                frappe.throw("Invalid type. Supported types: 'portion', 'daily'", title="Invalid Parameter")
+
+            results[studentId] = filters
+
+        return results
+
+    except Exception as e:
+        # Logs full traceback to Error Log
+        frappe.log_error(frappe.get_traceback(), "get_cmap_filters Error")
+        raise e

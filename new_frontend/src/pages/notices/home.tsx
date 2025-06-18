@@ -3,10 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Search } from 'lucide-react';
 import NoticeCard from '@/components/custom/notice card/index';
 import NoticeCardSkeleton from '@/components/custom/notice card/skeleton';
-import { useState, useEffect } from 'react';
-import { useStudents } from '@/hooks/useStudentList';
-import { studentsAtom } from '@/store/studentAtoms';
-import { useSetAtom } from 'jotai';
+import { useState } from 'react';
+
 
 function NoticeListingPage() {
   const { t } = useTranslation('notice_listing');
@@ -18,16 +16,6 @@ function NoticeListingPage() {
     console.log(searchQuery);
     // add the search logic here
   };
-
-  const { data: students, isLoading } = useStudents();
-
-  const setStudents = useSetAtom(studentsAtom)
-
-  useEffect(() => {
-    if (students) setStudents(students);
-  }, [students, setStudents]);
-
-  console.log("Data :", students);
 
   const handleSearchClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

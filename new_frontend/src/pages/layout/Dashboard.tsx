@@ -42,6 +42,7 @@ const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [headerTitle, setHeaderTitle] = useState('Notices');
   const { t } = useTranslation('dashboard');
+  const [isDarkHeader, setIsDarkHeader] = useState(false);
 
   // Map each path to a translation key
   const pathTitleMap: Record<string, string> = {
@@ -50,10 +51,10 @@ const DashboardLayout = () => {
     '/pickup': 'earlyPickup',
     '/events': 'events',
     '/ptm': 'ptmLinks',
-    '/cmap' : 'Curriculum Updates',
+    '/cmap': 'Curriculum Updates',
     '/result': 'result',
     '/observation': 'observation',
-    '/school-calendar': 'schoolCalendar',
+    '/calendar': 'schoolCalendar',
     '/bonafide-certificate': 'bonafideCertificate',
     '/helpdesk': 'helpdesk',
     '/timetable': 'timetable',
@@ -73,11 +74,19 @@ const DashboardLayout = () => {
     setHeaderTitle(t(titleKey));
   }, [window.location.pathname, t]);
 
+  useEffect(() => {
+    if (headerTitle === 'Messages' || headerTitle === 'School Calendar') {
+      setIsDarkHeader(false);
+    } else {
+      setIsDarkHeader(true);
+    }
+  }, [headerTitle]);
+
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
     <div className="tw-w-full tw-h-screen tw-flex tw-flex-col">
-      <Header onMenuClick={toggleSidebar} headerTitle={headerTitle} className="tw-h-14" />
+      <Header onMenuClick={toggleSidebar} headerTitle={headerTitle} className="tw-h-14" isDarkHeader={!isDarkHeader}/>
       {/* Overlay */}
       <AnimatePresence>
         {isSidebarOpen && (
