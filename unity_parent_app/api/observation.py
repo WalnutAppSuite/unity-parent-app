@@ -1,10 +1,16 @@
 import frappe
 from frappe import _
 @frappe.whitelist()
-def get_observations(student_id, unit=None):
+def get_observations(student_id, unit):
     response = {
         "observations_by_subject": {}
     }
+    
+    if not student_id:
+        frappe.throw(_("Student ID is required"))
+    
+    if not unit:
+        frappe.throw(_("Unit is required"))
     
     current_academic_year = get_current_academic_year()
 
@@ -21,9 +27,8 @@ def get_observations(student_id, unit=None):
 
     filters = {
         "program_enrollment": program_enrollment[0]["name"],
+        "unit" : unit,
     }
-    if unit:
-        filters["unit"] = unit
 
     observation_data = frappe.get_all("Observation Data",
         filters=filters,
@@ -33,7 +38,8 @@ def get_observations(student_id, unit=None):
     for obs in observation_data:
         obs_type = (obs.observation_type or "").lower()
         
-        if "attendance" in obs_type:
+        # Skip observations where observation type is "attendance" or status is "Failed"
+        if "attendance" in obs_type or obs.status == "Failed":
             continue
         
         obs_marks_sorted = frappe.get_all(
@@ -47,6 +53,8 @@ def get_observations(student_id, unit=None):
         subject_marks = course_marks.get(obs.subject, {})
         total_marks = 0
         obs_type_label = ""
+        
+        print(f"Subject : {subject_marks}")
         
         # Determine which marks to use based on observation type
         obs_type = (obs.observation_type or "").lower()

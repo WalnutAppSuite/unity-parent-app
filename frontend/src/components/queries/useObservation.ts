@@ -31,19 +31,19 @@ export interface ObservationResponse {
   };
 }
 
-const useObservationList = (studentId: string, unit?: string) => {
+const useObservationList = (studentId: string, unit: string) => {
   return useCustom<ObservationResponse>({
     url: "/api/method/unity_parent_app.api.observation.get_observations",
     method: "get",
     config: {
       query: {
-        student_id: studentId,
-        ...(unit && { unit }),
+        student_id: studentId ,
+        unit: unit,
       },
     },
     queryOptions: {
       queryKey: ["observations", studentId, unit],
-      enabled: !!studentId,
+      enabled: !!studentId  && !!unit,
     },
   });
 };

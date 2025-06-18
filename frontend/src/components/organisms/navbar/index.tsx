@@ -182,7 +182,7 @@ const Navbar: React.FC<NavbarProps> = ({ setIsOpen, isOpen }) => {
           },
 
           {
-            label: "Result/Observation",
+            label: "Result/Class Participation",
             icon: IconReport,
             location: "/result",
             subRoutes: [
@@ -192,7 +192,7 @@ const Navbar: React.FC<NavbarProps> = ({ setIsOpen, isOpen }) => {
                 location: "/result",
               },
               {
-                label: "Observation",
+                label: "Class Participation",
                 icon: IconReport,
                 location: "/observation",
               },

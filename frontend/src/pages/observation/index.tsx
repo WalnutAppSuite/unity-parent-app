@@ -132,33 +132,41 @@ const Observation = () => {
               })}
             />
           </Box>
-          {observationLoading ? (
-            <Center sx={{ width: "100%" }}>
-              <Loader size="lg" color={studentProfileColor} sx={{ marginTop: 20 }} />
-            </Center>
-          ) : observationError ? (
-            <Text align="center" color="dimmed" weight="bold" my={30}>
-              Error loading observations
-            </Text>
-          ) : observationList?.data?.message?.observations_by_subject ? (
-            <Flex direction={"column"} gap={20} w={"100%"}>
-              {Object.entries(observationList.data.message.observations_by_subject).map(
-                ([subject, observations]) => (
-                  <ObservationAccordion
-                    key={subject}
-                    subject={subject}
-                    observations={observations}
-                  />
-                )
-              )}
-            </Flex>
-          ) : (
-            <Center sx={{ width: "100%" }}>
+          {
+            !selectedUnit ? (
+              <Center sx={{ width: "100%" }}>
+                <Text align="center" color="dimmed" weight="bold" my={30}>
+                  Please select a unit to view observations.
+                </Text>
+              </Center>
+            ) : observationLoading ? (
+              <Center sx={{ width: "100%" }}>
+                <Loader size="lg" color={studentProfileColor} sx={{ marginTop: 20 }} />
+              </Center>
+            ) : observationError ? (
               <Text align="center" color="dimmed" weight="bold" my={30}>
-                No observations available for the selected student.
+                Error loading observations
               </Text>
-            </Center>
-          )}
+            ) : observationList?.data?.message?.observations_by_subject ? (
+              <Flex direction={"column"} gap={20} w={"100%"}>
+                {Object.entries(observationList.data.message.observations_by_subject).map(
+                  ([subject, observations]) => (
+                    <ObservationAccordion
+                      key={subject}
+                      subject={subject}
+                      observations={observations}
+                    />
+                  )
+                )}
+              </Flex>
+            ) : (
+              <Center >
+                <Text align="center" color="dimmed" weight="bold" my={30}>
+                  No observations available for the selected student.
+                </Text>
+              </Center>
+            )
+          }
         </Flex>
       )}
     </Box>

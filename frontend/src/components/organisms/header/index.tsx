@@ -80,7 +80,7 @@ export const Header: React.FC<HeaderProps> = ({ setNavbarOpen }) => {
             : location.pathname === "/result"
             ? "Result"
             :location.pathname === "/observation"
-            ? "Observation"
+            ? "Class Participation"
             : location.pathname === "/wiki"
             ? "Knowledge Base"
             : location.pathname === "/leave-note"
