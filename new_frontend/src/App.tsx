@@ -15,9 +15,7 @@ function App() {
   useEffect(() => {
     if (students) setStudents(students);
   }, [students, setStudents]);
-
-  console.log("Data :", students);
-
+  
   return (
     <BrowserRouter basename={basePath}>
       <WalshRoute />

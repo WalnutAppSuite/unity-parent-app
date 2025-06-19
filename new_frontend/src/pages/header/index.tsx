@@ -8,8 +8,6 @@ interface HeaderProps {
 }
 
 function Header({ onMenuClick, headerTitle, className, isDarkHeader }: HeaderProps) {
-  console.log({ isDarkHeader });
-
   return (
     <div
       className={

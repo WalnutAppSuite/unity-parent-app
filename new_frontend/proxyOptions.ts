@@ -6,15 +6,15 @@ const uat = "https://uat.unityedu.tech";
 
 export default {
   '^/(app|api|assets|files|private)': {
-    // target: `http://127.0.0.1:${webserver_port}`,
-    target: uat,
+    target: `http://127.0.0.1:${webserver_port}`,
+    // target: uat,
     ws: true,
     changeOrigin: true,
     router: function (req: any) {
       const site_name = req.headers.host.split(':')[0];
       console.log(req)
-      // return `http://${site_name}:${webserver_port}`;
-      return uat;
+      return `http://${site_name}:${webserver_port}`;
+      // return uat;
     }
   }
 };

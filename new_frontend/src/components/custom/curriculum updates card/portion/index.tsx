@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import DocCard from '@/components/custom/doc card/index';
 
-function Portion() {
+function Portion({ item }: { item: any }) {
   return (
     <Card
       className="tw-w-full tw-px-5 tw-py-3 !tw-rounded-3xl tw-text-primary/70 tw-flex tw-flex-col tw-gap-[10px] tw-cursor-pointer"

@@ -1,13 +1,18 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CalendarDays, CircleArrowRight } from 'lucide-react';
+import { CalendarDays, CircleChevronRight } from 'lucide-react';
 import DocCard from '@/components/custom/doc card/index';
-
+import type { Cmap } from '@/hooks/useCmapList';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatDate } from '@/utils/formatDate';
 
-function Daily() {
+function Daily({ data }: { data: Cmap }) {
   const [open, setOpen] = useState(false);
+
+  console.log('Daily Data:',data.products);
+
+  const formattedDate = formatDate(data.real_date);
 
   return (
     <motion.div layout initial={false} className="tw-w-full">
@@ -23,20 +28,25 @@ function Daily() {
             className="tw-text-xs !tw-px-3 !tw-py-1 !tw-rounded-full !tw-bg-[#544DDB]/10 !tw-text-[#544DDB]"
             variant="secondary"
           >
-            Period 1
+            Period {data.period}
           </Badge>
           <span className="tw-flex tw-items-center tw-gap-2">
-            <CalendarDays /> 6-2-2025
+            <CalendarDays /> {formattedDate}
           </span>
         </div>
-        <div>Unit 1 : Unit Test</div>
+        <div>{data.products[0].chapter}</div>
         <div
           className="tw-flex tw-items-center tw-gap-1 tw-overflow-x-scroll"
           id="doc-card"
         >
-          <DocCard />
-          <DocCard />
-          <DocCard />
+          {data.products.map((product, index) => (
+            <DocCard
+              key={product.name + index}
+              name={product.item_data?.item_name}
+              url={product.item_data?.custom_product_url}
+              type={product.item_data?.item_group}
+            />
+          ))}
         </div>
         <div className="tw-flex tw-items-center tw-justify-between tw-mt-2">
           <p className="tw-text-[18px] tw-font-semibold tw-text-primary">Notes</p>
@@ -44,7 +54,7 @@ function Daily() {
             animate={{ rotate: open ? 90 : 0 }}
             transition={{ duration: 0.45, ease: [0.42, 0, 0.58, 1] }}
           >
-            <CircleArrowRight />
+            <CircleChevronRight />
           </motion.div>
         </div>
         <AnimatePresence initial={false}>

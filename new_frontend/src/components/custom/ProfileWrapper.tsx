@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import profile from '../../../public/images/profile.png';
 
 export default function ProfileWrapper({
+  isLoading = true,
   children = <></>,
   name = 'AB12',
   classSection = '10-B',
@@ -17,6 +18,7 @@ export default function ProfileWrapper({
   custom_division = '10-B',
   program_name = "10"
 }: {
+  isLoading?: boolean;
   name : string;
   classSection?: string;
   children?: React.ReactNode;
@@ -55,7 +57,7 @@ export default function ProfileWrapper({
   }, []);
 
   // Decide whether to show skeleton or content
-  const showSkeleton = !isVisible;
+  const showSkeleton = isLoading || !isVisible;
 
   return (
     <div id="profile-wrapper">
@@ -69,7 +71,7 @@ export default function ProfileWrapper({
           {/* Profile Image with Lazy Loading */}
           <div className="tw-absolute tw--top-10 tw-left-1/2 tw--translate-x-1/2 tw-z-10">
             {showSkeleton ? (
-              <div className="tw-w-24 tw-h-24 tw-rounded-3xl tw-shadow-lg tw-border-[3px] tw-border-white tw-overflow-hidden">
+              <div className="tw-w-24 tw-h-24 tw-bg-white/50 tw-rounded-3xl tw-shadow-lg tw-border-[3px] tw-border-white tw-overflow-hidden">
                 <Skeleton className="tw-w-full tw-h-full" />
               </div>
             ) : (

@@ -20,6 +20,9 @@ import Timetable from '@/pages/timetable/index';
 import KnowledgeBase from '@/pages/knowledge base/index';
 import StarredMessages from '@/pages/starred/index';
 import ArchivedMessages from '@/pages/archived/index';
+import DailyListing from '@/pages/daily/listing';
+import WeeklyListing from '@/pages/weekly/listing';
+import PortionListing from '@/pages/portion/listing';
 
 function AppRoutes() {
   return (
@@ -33,6 +36,9 @@ function AppRoutes() {
         <Route path="/notices" element={<NoticeListingPage />} />
         <Route path="/notices/:noticeId" element={<DetailedNotices />} />
         <Route path="/cmap" element={<Cmap />} />
+        <Route path="/daily/list" element={<DailyListing />} />
+        <Route path="/weekly/list" element={<WeeklyListing />} />
+        <Route path="/portion/list" element={<PortionListing />} />
         <Route path="/absent-note" element={<Absent />} />
         <Route path="/pickup" element={<EarlyPickup />} />
         <Route path="/events" element={<Event />} />
