@@ -89,7 +89,7 @@ function NoticeCard({ notice }: NoticeCardProps) {
             {notice.student_first_name}
           </Badge>
 
-          {/* New badge for unread notices - using 1/0 check */}
+          {/* New badge for unread notices - using 1/0 check
           {!isRead && (
             <Badge
               variant="secondary"
@@ -97,7 +97,7 @@ function NoticeCard({ notice }: NoticeCardProps) {
             >
               New
             </Badge>
-          )}
+          )} */}
         </div>
         
         <Popover>
