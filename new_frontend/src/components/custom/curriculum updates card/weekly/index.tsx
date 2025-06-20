@@ -1,36 +1,47 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays } from 'lucide-react';
-import DocCard from '@/components/custom/doc card/index';
+import { formatDate } from '@/utils/formatDate';
+import DocCard from '../../doc card';
+import { getChapterName } from "@/utils/trimChapterName";
 
-function Weekly() {
+function Weekly({ data }: { data: any[] }) {
   return (
-    <Card
-      className="tw-w-full tw-px-5 tw-py-3 !tw-rounded-3xl tw-text-primary/70 tw-flex tw-flex-col tw-gap-[10px] tw-cursor-pointer"
-      tabIndex={0}
-      role="button"
-    >
-      <div className="tw-flex tw-items-center tw-justify-between">
-        <Badge
-          className="tw-text-xs !tw-px-3 !tw-py-1 !tw-rounded-full !tw-bg-[#544DDB]/10 !tw-text-[#544DDB]"
-          variant="secondary"
+    <>
+      {data.map((item) => (
+        <Card
+          key={item.name}
+          className="tw-w-full tw-px-5 tw-py-3 !tw-rounded-3xl tw-text-primary tw-flex tw-flex-col tw-gap-2 tw-shadow-md"
+          tabIndex={0}
+          role="region"
         >
-          Period 1
-        </Badge>
-        <span className="tw-flex tw-items-center tw-gap-2">
-          <CalendarDays /> 6-2-2025
-        </span>
-      </div>
-      <div>Unit 1 : Unit Test</div>
-      <div
-        className="tw-flex tw-items-center tw-gap-1 tw-overflow-x-scroll"
-        id="doc-card"
-      >
-        <DocCard />
-        <DocCard />
-        <DocCard />
-      </div>
-    </Card>
+          <div className="tw-flex tw-items-center tw-justify-between">
+            <div className="tw-flex tw-items-center tw-gap-2">
+              <Badge
+                className="tw-text-xs !tw-px-3 !tw-py-1 !tw-rounded-full !tw-bg-[#544DDB]/10 !tw-text-[#544DDB]"
+                variant="secondary"
+              >
+                Period {item.period}
+              </Badge>
+            </div>
+            <span className="tw-flex tw-items-center tw-gap-2 tw-text-primary/70">
+              <CalendarDays /> {formatDate(item.real_date)}
+            </span>
+          </div>
+          <div className="tw-text-lg tw-mt-2"> Unit {item.unit} : {getChapterName(item.products?.[0]?.chapter)}</div>
+          <div className="tw-flex tw-gap-2 tw-overflow-x-scroll">
+            {item.products.map((product: any) => (
+              <DocCard
+                key={product.name}
+                name={product.item}
+                url={product.item_data?.custom_product_url}
+                type={product.item_group}
+              />
+            ))}
+          </div>
+        </Card>
+      ))}
+    </>
   );
 }
 

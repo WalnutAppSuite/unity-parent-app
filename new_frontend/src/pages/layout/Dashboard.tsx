@@ -85,7 +85,7 @@ const DashboardLayout = () => {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div className="tw-w-full tw-h-screen tw-flex tw-flex-col">
+    <div className="tw-w-full tw-h-screen tw-flex tw-flex-col tw-bg-background-asscent">
       <Header onMenuClick={toggleSidebar} headerTitle={headerTitle} className="tw-h-14" isDarkHeader={!isDarkHeader}/>
       {/* Overlay */}
       <AnimatePresence>
@@ -119,7 +119,7 @@ const DashboardLayout = () => {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 1000 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="tw-w-full tw-bg-background-asscent"
+        className="tw-w-full tw-bg-background-asscent tw-min-h-[calc(100vh-56px)] tw-overflow-y-scroll"
       >
         <Outlet />
       </motion.div>

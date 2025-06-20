@@ -13,6 +13,7 @@ import { useCmapFilters } from '@/hooks/useCmapList';
 import type { Unit, AcademicYear } from '@/hooks/useCmapList';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useClassDetails } from '@/hooks/useClassDetails';
 
 function Daily({ students }: { students: Student[] }) {
   return (
@@ -26,6 +27,13 @@ function Daily({ students }: { students: Student[] }) {
 
 function StudentProfileWithFilters({ student }: { student: Student }) {
   const { data, isLoading, error } = useCmapFilters({ type: 'portion', studentId: student.name });
+
+  const { data: classDetails , isLoading : classLoading } = useClassDetails(student.name);
+
+  if (!classDetails || (Array.isArray(classDetails) && classDetails.length === 0) || (typeof classDetails === "object" && Object.keys(classDetails).length === 0)) {
+    return null;
+  }
+
 
   if (error) return (
     <div className="tw-text-red-500 tw-text-center tw-p-4">
@@ -44,7 +52,7 @@ function StudentProfileWithFilters({ student }: { student: Student }) {
       first_name={student.first_name}
       last_name={student.last_name}
       program_name={student.program_name}
-      isLoading={isLoading}
+      isLoading={isLoading || classLoading}
       children={
         !isLoading && data ? <PortionChildren data={data} first_name={student.first_name} /> : null
       }

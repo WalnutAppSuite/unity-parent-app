@@ -6,12 +6,10 @@ import type { Cmap } from '@/hooks/useCmapList';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDate } from '@/utils/formatDate';
+import { getChapterName } from '@/utils/trimChapterName';
 
 function Daily({ data }: { data: Cmap }) {
   const [open, setOpen] = useState(false);
-
-  console.log('Daily Data:',data.products);
-
   const formattedDate = formatDate(data.real_date);
 
   return (
@@ -34,7 +32,7 @@ function Daily({ data }: { data: Cmap }) {
             <CalendarDays /> {formattedDate}
           </span>
         </div>
-        <div>{data.products[0].chapter}</div>
+        <div>Chapter : {getChapterName(data.products[0].chapter)}</div>
         <div
           className="tw-flex tw-items-center tw-gap-1 tw-overflow-x-scroll"
           id="doc-card"

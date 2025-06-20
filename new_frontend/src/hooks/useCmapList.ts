@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import type { MainData } from '@/types/weekly';
 
 export interface Subject {
   course: string;
@@ -127,13 +128,33 @@ async function fetchCmapPortion(unit: string, division: string): Promise<CmapLis
     division,
   });
   return response.data.message as CmapListType;
-  }
+}
 
 export function useCmapPortion(unit: string, division: string) {
   return useQuery({
     queryKey: ['cmap', 'portion', unit, division],
     queryFn: () => fetchCmapPortion(unit, division),
     enabled: !!unit && !!division,
+    staleTime: 5 * 60 * 1000,
+    retry: 2,
+  });
+}
+
+async function fetchCmapWeekly(date: string, division: string){
+  const response = await axios.get('/api/method/unity_parent_app.api.cmap.get_all_cmap_in_range', {
+    params: {
+      date,
+      division,
+    },
+  });
+  return response.data.message as  MainData;
+}
+
+export function useCmapWeekly(date: string, division: string) {
+  return useQuery({
+    queryKey: ['cmap', 'weekly', date, division],
+    queryFn: () => fetchCmapWeekly(date, division),
+    enabled: !!date && !!division,
     staleTime: 5 * 60 * 1000,
     retry: 2,
   });

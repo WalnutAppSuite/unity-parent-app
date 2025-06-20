@@ -9,11 +9,12 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: 'en',
+    lng : "en",
     debug: true,
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json'
     },
-    ns: ['home', 'login', 'notice_listing','navbar','dashboard',"daily","portion","weekly"],
+    ns: ['home', 'login', 'notice_listing', 'navbar', 'dashboard', "daily", "portion", "weekly", "weekly_listing", "daily_listing", "portion_listing"],
     defaultNS: 'home',
     interpolation: {
       escapeValue: false

@@ -11,7 +11,7 @@ function App() {
   const { data: students } = useStudents();
 
   const setStudents = useSetAtom(studentsAtom)
-
+  
   useEffect(() => {
     if (students) setStudents(students);
   }, [students, setStudents]);
