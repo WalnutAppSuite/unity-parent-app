@@ -1,0 +1,9 @@
+{
+    "pickupDateLable" : "Date",
+    "pickDatePlaceholder" : "Set pick date",
+    "pickTimeLable" : "Time",
+    "pickTimePlaceholder" : "Set pick time",
+    "textAreaLable" : "Reason",
+    "textAreaPlaceholder" : "Reason (max 140 characters)",
+    "button" : "Save"
+}
