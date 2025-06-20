@@ -5,7 +5,7 @@ import { useAtom } from 'jotai';
 import { studentsAtom } from '@/store/studentAtoms';
 import { Button } from '@/components/ui/button';
 import { Calendar } from 'lucide-react';
-import { useBonafideList } from '@/hooks/useBonifideList';
+import { useBonafideList } from '@/hooks/useBonafideList';
 import { useBonafideMutation } from '@/hooks/useBonafideMutation';
 import { formatDate } from '@/utils/formatDate';
 import type { BonafideCertificate } from '@/types/bonafides';

@@ -9,6 +9,7 @@ export const useBonafideMutation = (onSuccess: () => void) => {
         student_id: studentId,
       }, {
         headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
       });
       const data = response.data;
       if (!data?.message) {
