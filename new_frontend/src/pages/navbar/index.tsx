@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import i18n from '@/i18n/index';
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
@@ -139,6 +140,17 @@ const Navbar = ({ onClose, setHeaderTitle }: NavbarProps) => {
             <ChevronLeft size={30} className="tw-text-[#7E848D]" />
           </button>
           <span className="tw-text-xl">{t("menu")}</span>
+        </div>
+        {/* Language Switcher */}
+        <div className="tw-mt-4 tw-flex tw-justify-center">
+          <select
+            value={i18n.language}
+            onChange={e => i18n.changeLanguage(e.target.value)}
+            className="tw-bg-white/10 tw-text-white tw-rounded tw-px-3 tw-py-1 tw-outline-none"
+          >
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+          </select>
         </div>
       </div>
 

@@ -7,10 +7,12 @@ import { useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 import { useNavigate } from 'react-router-dom';
 import { useClassDetails } from '@/hooks/useClassDetails';
+import CmapInstruction from '@/components/custom/instruction/cmap';
 
 function Weekly({ students }: { students: Student[] }) {
   return (
     <div className="tw-flex tw-flex-col tw-gap-4">
+      <CmapInstruction />
       {students.map((student) => (
         <StudentProfileWithFilters key={student.name} student={student} />
       ))}
@@ -20,7 +22,7 @@ function Weekly({ students }: { students: Student[] }) {
 
 function StudentProfileWithFilters({ student }: { student: Student }) {
 
-  const { data: classDetails, isLoading : classLoading } = useClassDetails(student.name);
+  const { data: classDetails, isLoading: classLoading } = useClassDetails(student.name);
 
   if (!classDetails || (Array.isArray(classDetails) && classDetails.length === 0) || (typeof classDetails === "object" && Object.keys(classDetails).length === 0)) {
     return null;
@@ -38,13 +40,13 @@ function StudentProfileWithFilters({ student }: { student: Student }) {
       last_name={student.last_name}
       program_name={student.program_name}
       isLoading={classLoading}
-      children={<WeeklyChildren name={student.first_name} division={classDetails.division.name}/>}
+      children={<WeeklyChildren name={student.first_name} division={classDetails.division.name} />}
     />
   );
 }
 
 
-function WeeklyChildren({ name , division }: { name: string , division: string }) {
+function WeeklyChildren({ name, division }: { name: string, division: string }) {
   const { t } = useTranslation('weekly');
   const [date, setDate] = useState<DateRange | undefined>(undefined);
 
@@ -62,13 +64,14 @@ function WeeklyChildren({ name , division }: { name: string , division: string }
       const formatted = formatDateRange(date);
       console.log('Selected Date Range:', formatted);
 
-      navigate('/weekly/list', { state: { date: formatted , name , division } });
+      navigate('/weekly/list', { state: { date: formatted, name, division } });
     }
   };
 
   return (
     <div className="tw-flex tw-flex-col tw-gap-3">
       <DateRangePicker
+        placeholder={t('weekly')}
         className="tw-w-full"
         value={date}
         onChange={(range: DateRange | undefined) => setDate(range)}

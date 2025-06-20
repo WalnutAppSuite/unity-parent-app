@@ -15,9 +15,11 @@ export function DateRangePicker({
   className,
   value,
   onChange,
+  placeholder
 }: React.HTMLAttributes<HTMLDivElement> & {
   value: DateRange | undefined;
   onChange: (range: DateRange | undefined) => void;
+  placeholder?: string;
 }) {
   const handleClear = () => onChange(undefined);
 
@@ -30,7 +32,7 @@ export function DateRangePicker({
             variant={"outline"}
             className="tw-w-full tw-justify-start tw-text-left tw-font-normal tw-bg-black/10 tw-border tw-text-secondary"
           >
-            <CalendarIcon className="tw-mr-2 tw-h-4 tw-w-4" />
+            <CalendarIcon className="tw-h-4 tw-w-4" />
             {value?.from ? (
               value.to ? (
                 <>
@@ -40,7 +42,7 @@ export function DateRangePicker({
                 format(value.from, "LLL dd, y")
               )
             ) : (
-              <span>Pick a date range</span>
+              <span>{placeholder}</span>
             )}
           </Button>
         </PopoverTrigger>

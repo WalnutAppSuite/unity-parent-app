@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "react-i18next";
 import useEarlyPickUpMutation from '@/hooks/useEarlyPickup';
 import { toast } from "sonner";
+import EarlyPickupInstruction from "@/components/custom/instruction/earlyPickup"
 
 function EarlyPickup() {
 
@@ -18,6 +19,7 @@ function EarlyPickup() {
 
   return (
     <div className="tw-p-4">
+      <EarlyPickupInstruction />
       {students.map((student) => (
         <StudentProfileWithFilters key={student.name} student={student} />
       ))}
