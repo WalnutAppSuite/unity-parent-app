@@ -32,9 +32,9 @@ const BonafideChildComponent = ({ student }: BonafideChildProps) => {
         {(bonafideList ?? []).length > 0 ? t('regenerateButton') : t('generateButton')}
       </Button>
 
-      <p className="tw-text-white tw-text-[14px] tw-opacity-90 tw-mb-2 tw-text-left tw-self-start">
+      {(bonafideList ?? []).length > 0 && <p className="tw-text-white tw-text-[14px] tw-opacity-90 tw-mb-2 tw-text-left tw-self-start">
         {t("bonafideHistory")}
-      </p>
+      </p>}
 
       {bonafideList?.map((bonafide: any, index: number) => (
         <div key={bonafide.name || index} className="tw-mb-4">
