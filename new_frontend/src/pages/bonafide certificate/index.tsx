@@ -20,24 +20,29 @@ const BonafideChildComponent = ({ student }: BonafideChildProps) => {
   const { data: bonafideList, refetch } = useBonafideList(student.name);
   const bonafideMutation = useBonafideMutation(refetch);
 
-  const handleBonafideGenerateClick = () => {
-    bonafideMutation.mutate(student.name);
+  const handleBonafideGenerateClick = async () => {
+    try {
+      await bonafideMutation.mutateAsync(student.name);
+    } catch (error) {
+      console.error('Failed to generate/regenerate bonafide:', error);
+    }
   };
 
   return (
     <div className="tw-flex tw-flex-col tw-gap-3">
       <Button
-        className="!tw-text-secondary !tw-bg-secondary/15 tw-text-4 tw-font-semibold tw-rounded-xl" onClick={handleBonafideGenerateClick}
+        className="!tw-text-secondary !tw-bg-secondary/15 tw-text-4 tw-font-semibold tw-rounded-xl hover:!tw-bg-secondary/25"
+        onClick={handleBonafideGenerateClick}
       >
         {(bonafideList ?? []).length > 0 ? t('regenerateButton') : t('generateButton')}
       </Button>
 
-      {(bonafideList ?? []).length > 0 && <p className="tw-text-white tw-text-[14px] tw-opacity-90 tw-mb-2 tw-text-left tw-self-start">
+      {(bonafideList ?? []).length > 0 && <p className="tw-text-white tw-text-[14px] tw-opacity-90 tw-mb-1 tw-text-left tw-self-start">
         {t("bonafideHistory")}
       </p>}
 
-      {bonafideList?.map((bonafide: any, index: number) => (
-        <div key={bonafide.name || index} className="tw-mb-4">
+      {bonafideList?.map((bonafide: BonafideCertificate, index: number) => (
+        <div key={bonafide.name || index} className="tw-mb-2.5">
           <div className="tw-bg-white/10 tw-rounded-lg tw-px-4 tw-py-2 tw-flex tw-items-center tw-justify-between tw-space-x-3 tw-border tw-border-white/20">
             <div className="tw-flex tw-items-center tw-space-x-3">
               <Calendar size={14} className="tw-text-white" />
@@ -47,7 +52,7 @@ const BonafideChildComponent = ({ student }: BonafideChildProps) => {
             </div>
             <a href={bonafide.bonafide_pdf} download={bonafide?.bonafide_pdf}>
               <Button
-                className="tw-bg-secondary !tw-text-primary tw-text-4 tw-font-semibold tw-rounded-xl tw-mt-2"
+                className="tw-bg-secondary !tw-text-primary tw-text-4 tw-font-semibold tw-rounded-xl tw-mt-1"
               >
                 {t('downloadButton')}
               </Button>
@@ -59,13 +64,12 @@ const BonafideChildComponent = ({ student }: BonafideChildProps) => {
   );
 };
 
-function BonafideCertificate() {
+function BonafideCertificatePage() {
   const [students] = useAtom(studentsAtom);
 
   return (
     <div className="tw-space-y-6 tw-max-w-md tw-mx-auto">
       {students.map((student) => {
-        console.log('Rendering student:', student.id);
         return (
           <div key={student.id} className="tw-border tw-p-4 tw-rounded-md">
             <ProfileWrapper
@@ -88,4 +92,4 @@ function BonafideCertificate() {
   );
 }
 
-export default BonafideCertificate;
+export default BonafideCertificatePage;
