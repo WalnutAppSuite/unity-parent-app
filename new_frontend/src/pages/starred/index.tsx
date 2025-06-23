@@ -4,12 +4,13 @@ import { Search } from 'lucide-react';
 import NoticeCard from '@/components/custom/notice card/index';
 import NoticeCardSkeleton from '@/components/custom/notice card/skeleton';
 import { useState, useEffect, useRef } from 'react';
-import useNoticeList from '@/hooks/useNotice';
+import useNotice from '@/hooks/useNotice';
 
 function NoticeListingPage() {
   const { t } = useTranslation('notice_listing');
   const [searchQuery, setSearchQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   const {
     data,
@@ -19,17 +20,27 @@ function NoticeListingPage() {
     isFetchingNextPage,
     isLoading,
     refetch,
-  } = useNoticeList({
+  } = useNotice({
     search_query: submittedQuery,
     staredOnly: true, 
     archivedOnly: false,
     limit: 10,
   });
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+   const handleSearch = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
+  e.preventDefault();
+  
+  
+  if (timeoutRef.current) {
+    clearTimeout(timeoutRef.current);
+  }
+  
+ 
+  timeoutRef.current = setTimeout(() => {
+    console.log("search clicked")
     setSubmittedQuery(searchQuery);
-  };
+  }, 500);
+};
 
   // Flatten all notices from all pages into a single array
   const allNotices = data?.pages.flatMap(page => page.message.notices) || [];

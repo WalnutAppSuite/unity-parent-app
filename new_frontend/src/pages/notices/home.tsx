@@ -10,6 +10,8 @@ function NoticeListingPage() {
   const { t } = useTranslation('notice_listing');
   const [searchQuery, setSearchQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const {
     data,
     fetchNextPage,
@@ -23,10 +25,19 @@ function NoticeListingPage() {
   });
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  e.preventDefault();
+  
+  
+  if (timeoutRef.current) {
+    clearTimeout(timeoutRef.current);
+  }
+  
+ 
+  timeoutRef.current = setTimeout(() => {
+    console.log("search clicked")
     setSubmittedQuery(searchQuery);
-    console.log(searchQuery)
-  };
+  }, 500);
+};
 
   // Flatten all notices from all pages into a single array
   const allNotices = data?.pages.flatMap(page => page.message.notices) || [];
