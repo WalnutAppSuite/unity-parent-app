@@ -13,7 +13,7 @@ i18n
     backend: {
       loadPath: '/public/locales/{{lng}}/{{ns}}.json'
     },
-    ns: ['home', 'login', 'notice_listing', 'navbar', 'dashboard', "daily", "portion", "weekly", "weekly_listing", "daily_listing", "portion_listing", "early_pickup", "cmap_instructions", "early_instructions", "class_participation", "ptm_instruction"],
+    ns: ['home', 'login', 'notice_listing', 'navbar', 'dashboard', "daily", "portion", "weekly", "weekly_listing", "daily_listing", "portion_listing", "early_pickup", "cmap_instructions", "early_instructions", "class_participation", "ptm_instruction", "absent", "create_absent"],
     defaultNS: 'home',
     interpolation: {
       escapeValue: false

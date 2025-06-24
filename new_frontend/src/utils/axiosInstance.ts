@@ -1,9 +1,9 @@
 import axios, { AxiosError } from 'axios';
-import { basePath } from '@/constants/index';
+// import { basePath } from '@/constants/index';
 
 // Create an Axios instance
 const axiosInstance = axios.create({
-  baseURL : basePath,
+  // baseURL : basePath,
   // baseURL: 'https://api.example.com',
   // Add other default configs if needed
 });

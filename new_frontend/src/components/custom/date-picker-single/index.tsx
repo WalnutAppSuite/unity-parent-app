@@ -14,13 +14,15 @@ interface SingleDatePickerProps {
     value: Date | undefined;
     onChange: (date: Date | undefined) => void;
     placeHolder?: string;
+    minDate?: Date;
 }
 
 export function SingleDatePicker({
     className,
     value,
     onChange,
-    placeHolder
+    placeHolder,
+    minDate
 }: SingleDatePickerProps) {
     const handleClear = () => onChange(undefined);
 
@@ -51,6 +53,7 @@ export function SingleDatePicker({
                         selected={value}
                         onSelect={onChange}
                         numberOfMonths={1}
+                        disabled={minDate ? (date => date < minDate) : undefined}
                     />
                 </PopoverContent>
             </Popover>
