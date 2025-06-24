@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
-import { PortionSkeleton } from '@/components/custom/curriculum updates card/portion/skeleton';
-import PortionCard from '@/components/custom/curriculum updates card/portion';
+import { PortionSkeleton } from '@/components/custom/curriculum-updates-card/portion/skeleton';
+import PortionCard from '@/components/custom/curriculum-updates-card/portion';
 import { useCmapPortion } from '@/hooks/useCmapList';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@/components/ui/skeleton';

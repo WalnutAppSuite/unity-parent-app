@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
-import DailyCard from '@/components/custom/curriculum updates card/daily/index';
+import DailyCard from '@/components/custom/curriculum-updates-card/daily/index';
 import { useCmapList } from '@/hooks/useCmapList';
-import { DailySkeleton } from '@/components/custom/curriculum updates card/daily/skeleton';
+import { DailySkeleton } from '@/components/custom/curriculum-updates-card/daily/skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTranslation } from 'react-i18next';
 

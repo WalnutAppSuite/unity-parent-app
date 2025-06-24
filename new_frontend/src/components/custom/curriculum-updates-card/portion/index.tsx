@@ -1,17 +1,22 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import DocCard from '@/components/custom/doc card/index';
-import { getChapterName } from '@/utils/trimChapterName';
+import DocCard from '@/components/custom/doc-card/index';
 
 function Portion({ item, textbook }: { item: any; textbook: string }) {
+
+  console.log(item);
+  
+
   const chapterMap: { [chapter: string]: any[] } = {};
   let totalFiles = 0;
-  Object.entries(item).forEach(([chapter, cmapItems]: [string, any[]]) => {
-    cmapItems.forEach((cmapItem) => {
-      if (!chapterMap[cmapItem.chapter]) chapterMap[cmapItem.chapter] = [];
-      chapterMap[cmapItem.chapter].push(cmapItem);
-      totalFiles += cmapItem.count || 0;
-    });
+  Object.entries(item).forEach(([_, cmapItems]: [string, unknown]) => {
+    if (Array.isArray(cmapItems)) {
+      cmapItems.forEach((cmapItem) => {
+        if (!chapterMap[cmapItem.chapter]) chapterMap[cmapItem.chapter] = [];
+        chapterMap[cmapItem.chapter].push(cmapItem);
+        totalFiles += cmapItem.count || 0;
+      });
+    }
   });
 
   return (
@@ -24,7 +29,7 @@ function Portion({ item, textbook }: { item: any; textbook: string }) {
       </div>
       {Object.entries(chapterMap).map(([chapter, cmapItems]) => (
         <div key={chapter} className="tw-mb-2">
-          <div className="tw-text-base tw-font-semibold tw-mb-1 tw-text-primary">Chapter : {getChapterName(chapter)}</div>
+          <div className="tw-text-base tw-font-semibold tw-mb-1 tw-text-primary">Chapter : {cmapItems[0]?.chapter_name || chapter}</div>
           <div className="tw-flex tw-gap-2 tw-overflow-x-scroll">
             {cmapItems.map((cmapItem, idx) =>
               (cmapItem.products || []).map((product: any, pIdx: number) => (

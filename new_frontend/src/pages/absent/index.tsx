@@ -1,8 +1,11 @@
 
+
 function Absent() {
   return (
-    <div>index</div>
+    <div>
+
+    </div>
   )
 }
 
-export default Absent
+export default Absent;

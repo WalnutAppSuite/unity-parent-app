@@ -2,8 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays } from 'lucide-react';
 import { formatDate } from '@/utils/formatDate';
-import DocCard from '../../doc card';
-import { getChapterName } from "@/utils/trimChapterName";
+import DocCard from '../../doc-card';
 
 function Weekly({ data }: { data: any[] }) {
   return (
@@ -28,7 +27,7 @@ function Weekly({ data }: { data: any[] }) {
               <CalendarDays /> {formatDate(item.real_date)}
             </span>
           </div>
-          <div className="tw-text-lg tw-mt-2"> Unit {item.unit} : {getChapterName(item.products?.[0]?.chapter)}</div>
+          <div className="tw-text-lg tw-mt-2"> Unit {item.unit} : {item.products?.[0]?.chapter_name}</div>
           <div className="tw-flex tw-gap-2 tw-overflow-x-scroll">
             {item.products.map((product: any) => (
               <DocCard

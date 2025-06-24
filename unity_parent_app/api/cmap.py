@@ -170,6 +170,14 @@ def generate_cmap_data_from_query(cmaps):
             if parentnote == product.parent_note:
                 product["parentnote_description"] = parentnote
 
+    for product in all_products:
+        chapter_id = product.get("chapter")
+        if chapter_id:
+            topic_name = frappe.get_value("Topic", chapter_id, "topic_name")
+            product["chapter_name"] = topic_name
+        else:
+            product["chapter_name"] = None
+
     for cmap in cmaps:
         cmap.products = []
         for product in all_products:
@@ -215,6 +223,12 @@ def get_portion_circulars(unit, division):
         item_names = i["item_names"].split(",") or []
         item_urls = i["item_urls"].split(",") or []
         products = i["products"]
+
+        # Add chapter_name (topic_name from Topic doctype)
+        chapter_name = None
+        if chapter:
+            chapter_name = frappe.get_value("Topic", chapter, "topic_name")
+        i["chapter_name"] = chapter_name
 
         if subject not in subject_hash:
             subject_hash[subject] = {textbook: {chapter: [i]}}

@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom"
-import { WeeklySkeleton } from "@/components/custom/curriculum updates card/weekly/skeleton";
-import Weeklycard from "@/components/custom/curriculum updates card/weekly";
+import { WeeklySkeleton } from "@/components/custom/curriculum-updates-card/weekly/skeleton";
+import Weeklycard from "@/components/custom/curriculum-updates-card/weekly";
 import { useCmapWeekly } from '@/hooks/useCmapList';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTranslation } from "react-i18next";

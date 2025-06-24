@@ -3,7 +3,7 @@ import { studentsAtom } from "@/store/studentAtoms";
 import { useClassDetails } from '@/hooks/useClassDetails';
 import type { Student } from "@/types/students";
 import ProfileWrapper from "@/components/custom/ProfileWrapper";
-import { SingleDatePicker } from "@/components/custom/date picker single";
+import { SingleDatePicker } from "@/components/custom/date-picker-single";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";

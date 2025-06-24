@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import axiosInstance from "@/utils/axiosInstance";
 
 interface LoginResponse {
   message: string;
@@ -13,7 +13,7 @@ interface LoginPayload {
 export default function useAuth() {
   const mutation = useMutation<LoginResponse, Error, LoginPayload>({
     mutationFn: async ({ usr, pwd }) => {
-      const response = await axios.post("/api/method/login", {
+      const response = await axiosInstance.post("/api/method/login", {
         usr,
         pwd,
       });

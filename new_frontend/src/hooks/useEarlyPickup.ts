@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import axiosInstance from "@/utils/axiosInstance";
 
 interface EarlyPickUpNoteVariables {
   note?: string;
@@ -12,7 +12,7 @@ interface EarlyPickUpNoteVariables {
 }
 
 const addEarlyPickUp = async (data: EarlyPickUpNoteVariables) => {
-  const response = await axios.post(
+  const response = await axiosInstance.post(
     "/api/method/unity_parent_app.api.leave.add_early_pick_up",
     data
   );

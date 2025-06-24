@@ -1,12 +1,11 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, CircleChevronRight } from 'lucide-react';
-import DocCard from '@/components/custom/doc card/index';
+import DocCard from '@/components/custom/doc-card/index';
 import type { Cmap } from '@/hooks/useCmapList';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDate } from '@/utils/formatDate';
-import { getChapterName } from '@/utils/trimChapterName';
 
 function Daily({ data }: { data: Cmap }) {
   const [open, setOpen] = useState(false);
@@ -32,7 +31,7 @@ function Daily({ data }: { data: Cmap }) {
             <CalendarDays /> {formattedDate}
           </span>
         </div>
-        <div>Chapter : {getChapterName(data.products[0].chapter)}</div>
+        <div>Chapter : {data.products[0].chapter_name}</div>
         <div
           className="tw-flex tw-items-center tw-gap-1 tw-overflow-x-scroll"
           id="doc-card"
