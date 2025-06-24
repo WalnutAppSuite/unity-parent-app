@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { motion } from 'framer-motion';
 import type { Notice } from '@/types/notice';
 import { formatDate } from '@/utils/formatDate';
-import useNoticeActions from '../../../hooks/useNoticeActions';
+import useNoticeActions from '@/hooks/useNoticeActions';
 
 interface NoticeCardProps {
   notice: Notice;
