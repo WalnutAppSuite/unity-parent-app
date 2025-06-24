@@ -1,3 +1,19 @@
 {
-    "search": "खोज"
+  "search": "खोजें",
+  "search_in_all_notices": "सभी नोटिसों में खोजें...",
+  "search_in_starred_notices": "तारांकित नोटिसों में खोजें...",
+  "search_in_archived_notices": "संग्रहीत नोटिसों में खोजें...",
+  "end_of_all_notices": "सभी नोटिसों का अंत हो गया है",
+  "end_of_starred_notices": "आपके तारांकित नोटिसों का अंत हो गया है",
+  "end_of_archived_notices": "आपके संग्रहीत नोटिसों का अंत हो गया है",
+  "no_all_notices_match": "कोई नोटिस \"{{query}}\" से मेल नहीं खाता",
+  "no_starred_notices_match": "कोई तारांकित नोटिस \"{{query}}\" से मेल नहीं खाता",
+  "no_archived_notices_match": "कोई संग्रहीत नोटिस \"{{query}}\" से मेल नहीं खाता",
+  "try_different_search_all": "एक अलग खोज शब्द आज़माएं या सभी नोटिस देखने के लिए खोज साफ़ करें।",
+  "try_different_search_starred": "एक अलग खोज शब्द आज़माएं या अपने सभी तारांकित नोटिस देखने के लिए खोज साफ़ करें।",
+  "try_different_search_archived": "एक अलग खोज शब्द आज़माएं या अपने सभी संग्रहीत नोटिस देखने के लिए खोज साफ़ करें।",
+  "clear_search": "खोज साफ़ करें",
+  "no_notices_yet": "अभी तक कोई नोटिस नहीं",
+  "no_starred_notices_yet": "अभी तक कोई तारांकित नोटिस नहीं",
+  "no_archived_notices_yet": "अभी तक कोई संग्रहीत नोटिस नहीं"
 }

@@ -4,7 +4,7 @@ import { Search } from 'lucide-react';
 import NoticeCard from '@/components/custom/notice card/index';
 import NoticeCardSkeleton from '@/components/custom/notice card/skeleton';
 import { useState, useEffect, useRef } from 'react';
-import useNotice from '@/hooks/useNotice';
+import useNoticeList from '@/hooks/useNoticeList';
 
 function NoticeListingPage() {
   const { t } = useTranslation('notice_listing');
@@ -20,7 +20,7 @@ function NoticeListingPage() {
     isFetchingNextPage,
     isLoading,
     refetch,
-  } = useNotice({
+  } = useNoticeList({
     search_query: submittedQuery,
     staredOnly: true, 
     archivedOnly: false,
@@ -107,7 +107,7 @@ function NoticeListingPage() {
         )}
 
         {/* Render all starred notices */}
-        {allNotices.map((notice) => (
+        {!isLoading && allNotices.map((notice) => (
           <NoticeCard key={notice.name} notice={notice} />
         ))}
 
@@ -128,7 +128,7 @@ function NoticeListingPage() {
           <div className="tw-text-center tw-text-gray-500 tw-py-8">
             <div className="tw-flex tw-items-center tw-justify-center tw-gap-2">
              
-              <p>You've reached the end of your starred notices</p>
+             <p>{t('end_of_starred_notices')}</p>
             </div>
           </div>
         )}
@@ -142,10 +142,10 @@ function NoticeListingPage() {
               {submittedQuery ? (
                 <>
                   <h3 className="tw-text-lg tw-font-medium tw-text-gray-700">
-                    No starred notices match "{submittedQuery}"
+                     {t('no_starred_notices_match', { query: submittedQuery })}
                   </h3>
                   <p className="tw-text-sm tw-max-w-sm tw-mx-auto tw-text-gray-500">
-                    Try a different search term or clear the search to see all your starred notices.
+                    {t('try_different_search_starred')}
                   </p>
                   <button
                     onClick={() => {
@@ -154,13 +154,13 @@ function NoticeListingPage() {
                     }}
                     className="tw-mt-2 tw-px-4 tw-py-2 tw-bg-[#544DDB] tw-text-white tw-rounded-full tw-text-sm hover:tw-bg-[#544DDB]/90 tw-transition-colors"
                   >
-                    Clear Search
+                  {t('clear_search')}
                   </button>
                 </>
               ) : (
                 <>
                   <h3 className="tw-text-lg tw-font-medium tw-text-gray-700">
-                    No starred notices yet
+                    {t('no_starred_notices_yet')}
                   </h3>
                 </>
               )}

@@ -1,3 +1,19 @@
 {
-    "search": "Search"
+  "search": "Search",
+  "search_in_all_notices": "Search in all notices...",
+  "search_in_starred_notices": "Search in starred notices...",
+  "search_in_archived_notices": "Search in archived notices...",
+  "end_of_all_notices": "You've reached the end of all notices",
+  "end_of_starred_notices": "You've reached the end of your starred notices",
+  "end_of_archived_notices": "You've reached the end of your archived notices",
+  "no_all_notices_match": "No notices match \"{{query}}\"",
+  "no_starred_notices_match": "No starred notices match \"{{query}}\"",
+  "no_archived_notices_match": "No archived notices match \"{{query}}\"",
+  "try_different_search_all": "Try a different search term or clear the search to see all notices.",
+  "try_different_search_starred": "Try a different search term or clear the search to see all your starred notices.",
+  "try_different_search_archived": "Try a different search term or clear the search to see all your archived notices.",
+  "clear_search": "Clear Search",
+  "no_notices_yet": "No notices yet",
+  "no_starred_notices_yet": "No starred notices yet",
+  "no_archived_notices_yet": "No archived notices yet"
 }

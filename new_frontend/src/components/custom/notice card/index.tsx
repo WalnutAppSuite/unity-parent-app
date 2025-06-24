@@ -1,9 +1,6 @@
 import {
   CalendarDays,
-  Camera,
-  Clock,
   EllipsisVertical,
-  Image,
   SquareChevronRight,
   Star,
   Archive,
@@ -13,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { motion } from 'framer-motion';
 import type { Notice } from '@/types/notice';
-import { formatDate } from '../../../../utils/formatDate';
+import { formatDate } from '@/utils/formatDate';
 import useNoticeActions from '../../../hooks/useNoticeActions';
 
 interface NoticeCardProps {
@@ -217,25 +214,6 @@ function NoticeCard({ notice }: NoticeCardProps) {
         </span>
         
         <span className="tw-flex tw-w-fit tw-gap-4">
-          {/* Show camera icon if notice mentions photo/image */}
-          {(noticeText.includes('photo') || 
-            noticeText.includes('image') ||
-            noticeText.includes('picture')) && (
-            <Camera className="tw-w-5 tw-h-5 tw-text-gray-500" />
-          )}
-          
-          {/* Show image icon if there's HTML content */}
-          {notice.html && (
-            <Image className="tw-w-5 tw-h-5 tw-text-gray-500" />
-          )}
-          
-          {/* Show clock if notice mentions time/deadline */}
-          {(noticeText.includes('deadline') || 
-            noticeText.includes('time') ||
-            noticeText.includes('due')) && (
-            <Clock className="tw-w-5 tw-h-5 tw-text-gray-500" />
-          )}
-          
           <SquareChevronRight className="tw-w-5 tw-h-5 tw-text-gray-500 tw-cursor-pointer" />
         </span>
       </div>
