@@ -2,5 +2,7 @@
     "button" : "Show Curriculum",
     "academicYear" : "Academic Year",
     "subject" : "Subject",
-    "unit" : "Unit"
+    "unit" : "Unit",
+    "error" : "Something went wrong, please try again later.",
+    "noData" : "No data available, please try again later."
 }

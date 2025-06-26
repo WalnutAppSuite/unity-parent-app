@@ -14,8 +14,20 @@ import type { Unit, Subject, AcademicYear } from '@/hooks/useCmapList';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import CmapInstruction from "@/components/custom/instruction/cmap"
+import { Skeleton } from '@/components/ui/skeleton';
 
 function Daily({ students }: { students: Student[] }) {
+  if (!students || students.length === 0) {
+    return (
+      <div className="tw-flex tw-flex-col tw-gap-4">
+        <CmapInstruction />
+        <div className="tw-text-center tw-p-4 tw-text-primary/50">
+          No students available
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="tw-flex tw-flex-col tw-gap-4">
       <CmapInstruction />
@@ -27,13 +39,9 @@ function Daily({ students }: { students: Student[] }) {
 }
 
 function StudentProfileWithFilters({ student }: { student: Student }) {
-  const { data, isLoading, error } = useCmapFilters({ type: 'daily', studentId: student.name });
-
-  if (error) return (
-    <div className="tw-text-red-500 tw-text-center tw-p-4">
-      {'An error occurred while fetching data.'}
-    </div>
-  );
+  if (!student || !student.name) {
+    return null;
+  }
 
   return (
     <ProfileWrapper
@@ -46,22 +54,52 @@ function StudentProfileWithFilters({ student }: { student: Student }) {
       first_name={student.first_name}
       last_name={student.last_name}
       program_name={student.program_name}
-      isLoading={isLoading}
-      children={
-        !isLoading && data ? <DailyChildren data={data} first_name={student.first_name} /> : null
-      }
+      isLoading={false}
+      children={<DailyChildren studentId={student.name} first_name={student.first_name} />}
     />
   );
 }
 
-function DailyChildren({ data, first_name }: { data: any, first_name: string }) {
+function DailyChildren({ studentId, first_name }: { studentId: string, first_name: string }) {
   const { t } = useTranslation('daily');
   const [selectDivision, setSelectDivision] = useState('');
   const [selectSubject, setSelectSubject] = useState('');
   const [selectUnit, setSelectUnit] = useState('');
-  const { academic_years, subjects, units } = data;
   const navigate = useNavigate();
 
+  const { data, isLoading, error } = useCmapFilters({ 
+    type: 'daily', 
+    studentId: studentId || '' 
+  });
+
+  if (isLoading) {
+    return (
+      <div className="tw-flex tw-flex-col tw-gap-3">
+        <Skeleton className="tw-h-8 tw-w-full" />
+        <Skeleton className="tw-h-8 tw-w-full" />
+        <Skeleton className="tw-h-8 tw-w-full" />
+        <Skeleton className="tw-h-8 tw-w-full" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="tw-text-red-500 tw-text-center tw-p-4 tw-bg-primary/10 tw-rounded-xl">
+        {t('error')}
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="tw-text-primary/50 tw-text-center tw-p-4 tw-bg-primary/10 tw-rounded-xl">
+        {t('noData')}
+      </div>
+    );
+  }
+
+  const { academic_years, subjects, units } = data;
 
   const handleDailyButtonClick = () => {
     navigate('/daily/list', {

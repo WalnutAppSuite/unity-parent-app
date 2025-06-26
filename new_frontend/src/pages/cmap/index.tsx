@@ -36,21 +36,30 @@ export default function AnimatedTabs() {
     }, [selectedTab]);
 
     const renderContent = () => {
-        switch (selectedTab) {
-            case "daily":
-                return (
-                    <Daily students={students} />
-                );
-            case "weekly":
-                return (
-                    <Weekly students={students} />
-                );
-            case "portion":
-                return (
-                    <Portion students={students} />
-                );
-            default:
-                return null;
+        try {
+            switch (selectedTab) {
+                case "daily":
+                    return (
+                        <Daily students={students || []} />
+                    );
+                case "weekly":
+                    return (
+                        <Weekly students={students || []} />
+                    );
+                case "portion":
+                    return (
+                        <Portion students={students || []} />
+                    );
+                default:
+                    return null;
+            }
+        } catch (error) {
+            console.error('Error rendering content:', error);
+            return (
+                <div className="tw-text-center tw-p-4 tw-text-red-500">
+                    Something went wrong while loading the content.
+                </div>
+            );
         }
     };
 

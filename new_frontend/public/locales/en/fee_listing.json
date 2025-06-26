@@ -1,0 +1,12 @@
+{
+  "term": "Term",
+  "dueDate": "Due Date",
+  "amount": "Amount",
+  "status": "Status",
+  "notDue": "Not Due",
+  "download": "Download",
+  "payRemaining": "Pay Remaining",
+  "payNow": "Pay Now",
+  "error": "Something went wrong while fetching fee data",
+  "noData": "No fee data available"
+} 

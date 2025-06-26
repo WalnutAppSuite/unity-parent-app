@@ -1,4 +1,4 @@
-import * as React from "react"
+
 import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -11,16 +11,19 @@ import { CalendarIcon, X } from "lucide-react"
 import type { DateRange } from "react-day-picker"
 import { cn } from "@/lib/utils"
 
+interface DateRangePickerProps {
+  className?: string;
+  value: DateRange | undefined;
+  onChange: (range: DateRange | undefined) => void;
+  placeholder?: string;
+}
+
 export function DateRangePicker({
   className,
   value,
   onChange,
   placeholder
-}: React.HTMLAttributes<HTMLDivElement> & {
-  value: DateRange | undefined;
-  onChange: (range: DateRange | undefined) => void;
-  placeholder?: string;
-}) {
+}: DateRangePickerProps) {
   const handleClear = () => onChange(undefined);
 
   return (

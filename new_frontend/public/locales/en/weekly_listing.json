@@ -1,3 +1,4 @@
 {
-    "error" : "An error occurred while fetching weekly data , please try again later"
+    "error" : "An error occurred while fetching weekly data , please try again later",
+    "noData" : "No data available, please try again later"
 }

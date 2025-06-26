@@ -41,13 +41,13 @@ function StudentProfileWithFilters({ student }: { student: Student }) {
             last_name={student.last_name}
             program_name={student.program_name}
             isLoading={classLoading}
-            children={<WeeklyChildren name={student.first_name} division={classDetails.division.name} />}
+            children={<CreateNoteChild name={student.name} division={classDetails.division.name} />}
         />
     );
 }
 
 
-function WeeklyChildren({ name, division }: { name: string, division: string }) {
+function CreateNoteChild({ name, division }: { name: string, division: string }) {
     const { t } = useTranslation('create_absent');
     const [fromDate, setFromDate] = useState<Date | undefined>();
     const [toDate, setToDate] = useState<Date | undefined>();
