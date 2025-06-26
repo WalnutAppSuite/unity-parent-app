@@ -80,23 +80,31 @@ const DashboardLayout = () => {
     if (path.startsWith(basePath)) {
       path = path.slice(basePath.length) || '/';
     }
-    const titleKey = pathTitleMap[path] || '';
-    setHeaderTitle(t(titleKey));
-  }, [location.pathname, t]);
 
-  useEffect(() => {
-    if (headerTitle === 'Messages' || headerTitle === 'School Calendar') {
+    let titleKey = pathTitleMap[path];
+
+    // Detect dynamic notice details route
+    const isNoticeDetails = /^\/notices\/[^/]+$/.test(path);
+
+    if (isNoticeDetails) {
+      titleKey = 'noticeDetails';
+      setIsDarkHeader(true);
+    } 
+    
+    if (titleKey === 'notices' || titleKey === 'schoolCalendar' || titleKey === 'noticeDetails') {
       setIsDarkHeader(false);
     } else {
       setIsDarkHeader(true);
     }
-  }, [headerTitle]);
+
+    setHeaderTitle(t(titleKey || ''));
+  }, [location.pathname, t]);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
     <div className="tw-w-full tw-h-screen tw-flex tw-flex-col tw-bg-background-asscent">
-      <Header onMenuClick={toggleSidebar} headerTitle={headerTitle} className="tw-h-14" isDarkHeader={!isDarkHeader}/>
+      <Header onMenuClick={toggleSidebar} headerTitle={headerTitle} className="tw-h-14" isDarkHeader={!isDarkHeader} />
       {/* Overlay */}
       <AnimatePresence>
         {isSidebarOpen && (

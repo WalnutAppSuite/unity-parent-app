@@ -7,14 +7,15 @@ import {
   SquareChevronRight,
   Star,
   Archive,
-} 
-from 'lucide-react';
+}
+  from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { motion } from 'framer-motion';
 import type { Notice } from '@/types/notice';
-import {formatDate} from '../../../../utils/formatDate';
+import { formatDate } from '@/utils/formatDate';
+import { useNavigate } from 'react-router-dom';
 
 interface NoticeCardProps {
   notice: Notice;
@@ -31,31 +32,26 @@ function NoticeCard({ notice, onArchive, onStar }: NoticeCardProps) {
     onStar?.(notice);
   };
 
-  // Format date from creation timestamp
-  
+  const navigate = useNavigate();
 
-  // Strip HTML tags from notice content for display
   const stripHtml = (html: string) => {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = html;
     return tempDiv.textContent || tempDiv.innerText || '';
   };
 
-  // Extract registration info from notice content (simple keyword check)
   const noticeText = stripHtml(notice.notice).toLowerCase();
-  const requiresRegistration = noticeText.includes('registration') || 
-                              noticeText.includes('register');
-  
-  const requiresSubmission = noticeText.includes('submit') || 
-                            noticeText.includes('submission');
+  const requiresRegistration = noticeText.includes('registration') ||
+    noticeText.includes('register');
 
-  // Truncate notice content for preview
+  const requiresSubmission = noticeText.includes('submit') ||
+    noticeText.includes('submission');
+
   const truncateText = (text: string, maxLength: number = 100) => {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
   };
 
-  // Get notification type color
   const getNotificationTypeColor = (type: string) => {
     switch (type.toLowerCase()) {
       case 'everyone':
@@ -68,12 +64,20 @@ function NoticeCard({ notice, onArchive, onStar }: NoticeCardProps) {
         return '!tw-text-[#544DDB] !tw-bg-[#544DDB]/10';
     }
   };
+  const handleRedirect = () => {
+    navigate(`/notices/${notice.name}`, {
+      state: {
+        notice: notice.name,
+        studentId: notice.student,
+      }
+    });
+  }
 
   return (
-    <Card className={`tw-w-full tw-px-5 tw-py-4 !tw-rounded-3xl tw-text-primary/70` 
+    <Card onClick={handleRedirect} className={`tw-w-full tw-px-5 tw-py-4 !tw-rounded-3xl tw-text-primary/70`
       // ${
       // !notice.is_read ? 'tw-border-l-4 tw-border-l-blue-500' : ''
-    // }`
+      // }`
     }>
       <div className="tw-flex tw-items-center tw-justify-between tw-gap-2 tw-mb-2">
         <div className="tw-flex tw-gap-2 tw-flex-wrap">
@@ -82,10 +86,10 @@ function NoticeCard({ notice, onArchive, onStar }: NoticeCardProps) {
             variant="secondary"
             className="!tw-rounded-full !tw-px-3 !tw-py-1 tw-text-xs tw-font-medium !tw-text-[#544DDB] !tw-bg-[#544DDB]/10"
           >
-            {notice.student_first_name} 
+            {notice.student_first_name}
             {/* ({notice.student}) */}
           </Badge>
-          
+
           {/* Notification type badge */}
           {/* <Badge
             variant="secondary"
@@ -93,7 +97,7 @@ function NoticeCard({ notice, onArchive, onStar }: NoticeCardProps) {
           >
             {notice.type_of_notifications}
           </Badge> */}
-          
+
           {/* New badge for unread notices */}
           {/* {!notice.is_read && (
             <Badge
@@ -104,7 +108,7 @@ function NoticeCard({ notice, onArchive, onStar }: NoticeCardProps) {
             </Badge>
           )} */}
         </div>
-        
+
         <Popover>
           <PopoverTrigger>
             <EllipsisVertical className="tw-cursor-pointer" />
@@ -117,28 +121,28 @@ function NoticeCard({ notice, onArchive, onStar }: NoticeCardProps) {
               transition={{ duration: 0.18 }}
               className="tw-flex tw-flex-col tw-gap-1"
             >
-              <button 
+              <button
                 onClick={handleArchive}
                 className="tw-py-1 tw-px-2 tw-text-left tw-rounded hover:tw-bg-gray-100 tw-transition tw-flex tw-items-center tw-gap-2"
               >
                 <Archive className="tw-w-4 tw-h-4" />
                 {notice.is_archived ? 'Unarchive' : 'Archive'}
               </button>
-              <button 
+              <button
                 onClick={handleStar}
                 className="tw-py-1 tw-px-2 tw-text-left tw-rounded hover:tw-bg-gray-100 tw-transition tw-flex tw-items-center tw-gap-2"
               >
-                {/* <Star className={`tw-w-4 tw-h-4 ${notice.is_stared ? 'tw-fill-yellow-400 tw-text-yellow-400' : ''}`} /> */}
+                <Star className={`tw-w-4 tw-h-4 ${notice.is_stared ? 'tw-fill-yellow-400 tw-text-yellow-400' : ''}`} />
                 {notice.is_stared ? 'Unstar' : 'Star'}
               </button>
             </motion.div>
           </PopoverContent>
         </Popover>
       </div>
-      
+
       <div className="tw-flex tw-flex-col tw-gap-[6px]">
         <h2 className="tw-text-primary tw-font-medium tw-text-xl">{notice.subject}</h2>
-        
+
         {/* Show class and division if available */}
         {(notice.class || notice.division) && (
           <div className="tw-flex tw-gap-2 tw-mb-1">
@@ -160,7 +164,7 @@ function NoticeCard({ notice, onArchive, onStar }: NoticeCardProps) {
             )}
           </div>
         )}
-        
+
         {/* Requirements section */}
         {(requiresRegistration || requiresSubmission) && (
           <span className="tw-flex tw-justify-between tw-items-center tw-gap-[6px] tw-mb-2">
@@ -185,41 +189,38 @@ function NoticeCard({ notice, onArchive, onStar }: NoticeCardProps) {
             </span>
           </span>
         )}
-        
+
         {/* Notice content */}
         <p className="tw-mb-2 tw-text-sm tw-text-gray-600">
           {truncateText(stripHtml(notice.notice))}
         </p>
       </div>
-      
+
       <div className="tw-flex tw-justify-between tw-items-center tw-border-t tw-border-[#544DDB]/10 tw-pt-2">
         <span className="tw-flex tw-w-fit tw-gap-1 tw-items-center tw-text-sm">
           <CalendarDays className="tw-w-4 tw-h-4" />
           <p>{formatDate(notice.creation)}</p>
         </span>
-        
-        <span className="tw-flex tw-w-fit tw-gap-4">
-          {/* Show camera icon if notice mentions photo/image */}
-          {(noticeText.includes('photo') || 
+
+        {/* <span className="tw-flex tw-w-fit tw-gap-4">
+          {(noticeText.includes('photo') ||
             noticeText.includes('image') ||
             noticeText.includes('picture')) && (
-            <Camera className="tw-w-5 tw-h-5 tw-text-gray-500" />
-          )}
-          
-          {/* Show image icon if there's HTML content */}
+              <Camera className="tw-w-5 tw-h-5 tw-text-gray-500" />
+            )}
+
           {notice.html && (
             <Image className="tw-w-5 tw-h-5 tw-text-gray-500" />
           )}
-          
-          {/* Show clock if notice mentions time/deadline */}
-          {(noticeText.includes('deadline') || 
+
+          {(noticeText.includes('deadline') ||
             noticeText.includes('time') ||
             noticeText.includes('due')) && (
-            <Clock className="tw-w-5 tw-h-5 tw-text-gray-500" />
-          )}
-          
+              <Clock className="tw-w-5 tw-h-5 tw-text-gray-500" />
+            )}
+
           <SquareChevronRight className="tw-w-5 tw-h-5 tw-text-gray-500 tw-cursor-pointer" />
-        </span>
+        </span> */}
       </div>
     </Card>
   );

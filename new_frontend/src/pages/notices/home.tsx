@@ -14,10 +14,8 @@ function NoticeListingPage() {
     data,
     fetchNextPage,
     hasNextPage,
-    isFetching,
     isFetchingNextPage,
     isLoading,
-    refetch,
   } = useNoticeList({
     search_query: submittedQuery,
   });
