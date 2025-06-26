@@ -6,7 +6,14 @@ import './i18n/index.ts';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 // import { FrappeProvider } from 'frappe-react-sdk'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  },
+})
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

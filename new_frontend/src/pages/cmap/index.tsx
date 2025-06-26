@@ -5,14 +5,17 @@ import Portion from "@/pages/portion";
 import Daily from "@/pages/daily";
 import { useAtom } from "jotai";
 import { studentsAtom } from "@/store/studentAtoms";
-
-const tabs = [
-    { id: "daily", label: "Daily" },
-    { id: "weekly", label: "Weekly" },
-    { id: "portion", label: "Portion" }
-];
+import { useTranslation } from "react-i18next";
 
 export default function AnimatedTabs() {
+
+    const { t } = useTranslation('cmap')
+
+    const tabs = [
+        { id: "daily", label: t('dailyLable') },
+        { id: "weekly", label: t('weeklyLable') },
+        { id: "portion", label: t('portionLable') }
+    ];
     const [selectedTab, setSelectedTab] = useState("daily");
     const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
     const [indicatorStyle, setIndicatorStyle] = useState({
@@ -33,21 +36,30 @@ export default function AnimatedTabs() {
     }, [selectedTab]);
 
     const renderContent = () => {
-        switch (selectedTab) {
-            case "daily":
-                return (
-                    <Daily students={students}/>
-                );
-            case "weekly":
-                return (
-                    <Weekly students={students}/>
-                );
-            case "portion":
-                return (
-                    <Portion students={students}/>
-                );
-            default:
-                return null;
+        try {
+            switch (selectedTab) {
+                case "daily":
+                    return (
+                        <Daily students={students || []} />
+                    );
+                case "weekly":
+                    return (
+                        <Weekly students={students || []} />
+                    );
+                case "portion":
+                    return (
+                        <Portion students={students || []} />
+                    );
+                default:
+                    return null;
+            }
+        } catch (error) {
+            console.error('Error rendering content:', error);
+            return (
+                <div className="tw-text-center tw-p-4 tw-text-red-500">
+                    Something went wrong while loading the content.
+                </div>
+            );
         }
     };
 

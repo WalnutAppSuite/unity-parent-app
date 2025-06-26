@@ -1,8 +1,8 @@
 import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
 import { Search } from 'lucide-react';
-import NoticeCard from '@/components/custom/notice card/index';
-import NoticeCardSkeleton from '@/components/custom/notice card/skeleton';
+import NoticeCard from '@/components/custom/notice-card/index';
+import NoticeCardSkeleton from '@/components/custom/notice-card/skeleton';
 import { useState } from 'react';
 
 

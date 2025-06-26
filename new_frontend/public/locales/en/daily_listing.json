@@ -1,0 +1,6 @@
+{
+"error" : "An error occurred while fetching daily data , please try again later",
+"noData" : "No data available, please try again later",
+"unit" : "Unit",
+"subject" : "Subject"
+}

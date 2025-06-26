@@ -1,0 +1,9 @@
+{
+    "fromLable": "से",
+    "fromPlaceholder": "तारीख चुनें",
+    "toLable": "तक",
+    "toPlaceholder": "तारीख चुनें",
+    "notesLable": "आपका नोट",
+    "notesPlaceholder": "आपका नोट (अधिकतम 140 अक्षर)",
+    "button" : "बचाना"
+}

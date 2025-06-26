@@ -12,10 +12,10 @@
     "ptmLinks": "PTM Links",
     "studentProfile": "Student Profile",
     "fee": "Fee",
-    "resultObservation": "Result/Observation",
+    "resultObservation": "Result/Class Participation",
     "resultObservationSub": {
       "result": "Result",
-      "observation": "Observation"
+      "observation": "Class Participation"
     },
     "timetable": "Timetable",
     "knowledgeBase": "Knowledge Base",

@@ -1,0 +1,9 @@
+{
+    "pickupDateLable": "तारीख",
+    "pickDatePlaceholder": "पिकअप की तारीख सेट करें",
+    "pickTimeLable": "समय",
+    "pickTimePlaceholder": "पिकअप का समय सेट करें",
+    "textAreaLable": "कारण",
+    "textAreaPlaceholder": "कारण (अधिकतम 140 अक्षर)",
+    "button" : "बचाना"
+}

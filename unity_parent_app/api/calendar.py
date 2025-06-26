@@ -50,5 +50,5 @@ def get_calender_events(school):
 
         return event_list
     except:
-        frappe.log_error('Bonafide Certificate Sending Failed', frappe.get_traceback())
+        frappe.log_error('Calendar Events Fetching Failed', frappe.get_traceback())
         frappe.response['message'] = "Error occurred while fetching calendar events"

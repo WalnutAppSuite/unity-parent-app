@@ -4,6 +4,7 @@ from datetime import datetime
 from edu_quality.public.py.walsh.login import logout
 from edu_quality.public.py.utils import get_previous_academic_year
 
+
 @frappe.whitelist()
 def get_students():
     user = frappe.session.user
@@ -29,45 +30,33 @@ def get_students():
 
     students = [student for student in all_student_data if student.get("enabled")]
 
-    program_codes = set(student.get("program") for student in students if student.get("program"))
-    program_name_map = {}
-    if program_codes:
-        programs = frappe.get_all(
-            "Program",
-            filters={"name": ("in", list(program_codes))},
-            fields=["name", "program_name"]
-        )
-        program_name_map = {p["name"]: p["program_name"] for p in programs}
-
-    # Add program_name to each student
-    for student in students:
-        student["program_name"] = program_name_map.get(student.get("program"), "")
-        current_year_doc = frappe.db.get_value("Academic Year", {"custom_current_academic_year": 1}, ["name", "custom_kg_rolled_over"], as_dict=True)
-        
     # Cache the results for 10 minutes
     frappe.cache().set_value(cache_key, students, expires_in_sec=600)
     return students
 
 
 @frappe.whitelist(allow_guest=True)
-def get_student_class_details(student,academic_year=None):
+def get_student_class_details(student, academic_year=None):
     dynamic_doc = None
     if academic_year:
-        dynamic_doc = frappe.get_cached_doc("Academic Year",academic_year)
+        dynamic_doc = frappe.get_cached_doc("Academic Year", academic_year)
 
     current_year_doc = dynamic_doc or frappe.db.get_value(
-        "Academic Year", {"custom_current_academic_year": 1},["name","custom_kg_rolled_over"],as_dict=True
+        "Academic Year",
+        {"custom_current_academic_year": 1},
+        ["name", "custom_kg_rolled_over"],
+        as_dict=True,
     )
     current_yr = current_year_doc.name
-    class_group = frappe.db.get_value("Student",student,"program.class_group")
+    class_group = frappe.db.get_value("Student", student, "program.class_group")
     if class_group and "kg" in class_group.lower():
 
         if not current_year_doc.custom_kg_rolled_over:
             current_yr = get_previous_academic_year(current_year_doc.name)
-    
+
     program_enrollments = frappe.get_all(
         "Program Enrollment",
-        filters={"student": student, "academic_year":current_yr, "docstatus": 1},
+        filters={"student": student, "academic_year": current_yr, "docstatus": 1},
         fields=["program", "student_group"],
     )
     if not len(program_enrollments):
@@ -121,7 +110,6 @@ def get_all_cmap_in_range(date, division):
             result_hash[subject][unit].append(cmap)
     return result_hash
 
-
 def generate_cmap_data_from_query(cmaps):
     cmap_names = [cmap.name for cmap in cmaps]
     all_products = frappe.get_all(
@@ -170,6 +158,14 @@ def generate_cmap_data_from_query(cmaps):
             if parentnote == product.parent_note:
                 product["parentnote_description"] = parentnote
 
+    for product in all_products:
+        chapter_id = product.get("chapter")
+        if chapter_id:
+            topic_name = frappe.get_value("Topic", chapter_id, "topic_name")
+            product["chapter_name"] = topic_name
+        else:
+            product["chapter_name"] = None
+
     for cmap in cmaps:
         cmap.products = []
         for product in all_products:
@@ -177,7 +173,6 @@ def generate_cmap_data_from_query(cmaps):
                 cmap.products.append(product)
 
     return cmaps
-
 
 @frappe.whitelist()
 def get_all_cmaps(subject, unit, division):
@@ -216,6 +211,12 @@ def get_portion_circulars(unit, division):
         item_urls = i["item_urls"].split(",") or []
         products = i["products"]
 
+        # Add chapter_name (topic_name from Topic doctype)
+        chapter_name = None
+        if chapter:
+            chapter_name = frappe.get_value("Topic", chapter, "topic_name")
+        i["chapter_name"] = chapter_name
+
         if subject not in subject_hash:
             subject_hash[subject] = {textbook: {chapter: [i]}}
 
@@ -232,6 +233,7 @@ def get_portion_circulars(unit, division):
 
     return subject_hash
 
+
 @frappe.whitelist(allow_guest=True)
 def get_cmap_filters(type, studentId):
     try:
@@ -239,62 +241,87 @@ def get_cmap_filters(type, studentId):
             frappe.throw("Parameter 'type' is required.", title="Missing Parameter")
 
         if not studentId:
-            frappe.throw("Parameter 'studentId' is required.", title="Missing Parameter")
+            frappe.throw(
+                "Parameter 'studentId' is required.", title="Missing Parameter"
+            )
 
         results = {}
 
         if not frappe.db.exists("Student", studentId):
-            frappe.throw(f"Student '{studentId}' does not exist.", title="Invalid Student")
+            frappe.throw(
+                f"Student '{studentId}' does not exist.", title="Invalid Student"
+            )
 
         student_doc = frappe.get_cached_doc("Student", studentId)
 
         if not student_doc.program:
-            frappe.throw(f"Student '{studentId}' does not have a program assigned.", title="Missing Program")
+            frappe.throw(
+                f"Student '{studentId}' does not have a program assigned.",
+                title="Missing Program",
+            )
 
         if not frappe.db.exists("Program", student_doc.program):
-            frappe.throw(f"Program '{student_doc.program}' does not exist.", title="Invalid Program")
+            frappe.throw(
+                f"Program '{student_doc.program}' does not exist.",
+                title="Invalid Program",
+            )
 
         program_doc = frappe.get_doc("Program", student_doc.program)
 
         if not hasattr(program_doc, "courses"):
-            frappe.throw(f"Program '{student_doc.program}' has no courses defined.", title="Missing Courses")
+            frappe.throw(
+                f"Program '{student_doc.program}' has no courses defined.",
+                title="Missing Courses",
+            )
 
         subjects = program_doc.courses
-            
+
         subject_list = [
-            {"course": s.course, "course_name": s.course_name}
-            for s in subjects
+            {"course": s.course, "course_name": s.course_name} for s in subjects
         ]
-        
+
         current_year = frappe.db.get_value(
             "Academic Year", {"custom_current_academic_year": 1}, "name"
         )
-        
+
         if type == "daily":
-            program_doc = frappe.get_all("Program Enrollment", filters={"student": studentId , "docstatus": 1}, fields=["academic_year","student_group","program"]) 
-        
+            program_doc = frappe.get_all(
+                "Program Enrollment",
+                filters={"student": studentId, "docstatus": 1},
+                fields=["academic_year", "student_group", "program"],
+            )
+
         if type == "portion":
-            program_doc = frappe.get_all("Program Enrollment", filters={"student": studentId , "docstatus": 1 , "academic_year" : current_year}, fields=["academic_year","student_group","program"])
-        
-        units_raw = frappe.get_all("Unit")           
+            program_doc = frappe.get_all(
+                "Program Enrollment",
+                filters={
+                    "student": studentId,
+                    "docstatus": 1,
+                    "academic_year": current_year,
+                },
+                fields=["academic_year", "student_group", "program"],
+            )
+
+        units_raw = frappe.get_all("Unit")
         units = [
-            {"name": f"Unit {u['name']}", "value": u['name']}
-            for u in units_raw if 'name' in u
+            {"name": f"Unit {u['name']}", "value": u["name"]}
+            for u in units_raw
+            if "name" in u
         ]
-        
-        if type == 'portion':
-            filters = {
-                "academic_years": program_doc,
-                "units": units
-            }
-        elif type == 'daily':
+
+        if type == "portion":
+            filters = {"academic_years": program_doc, "units": units}
+        elif type == "daily":
             filters = {
                 "academic_years": program_doc,
                 "subjects": subject_list,
-                "units": units
+                "units": units,
             }
         else:
-            frappe.throw("Invalid type. Supported types: 'portion', 'daily'", title="Invalid Parameter")
+            frappe.throw(
+                "Invalid type. Supported types: 'portion', 'daily'",
+                title="Invalid Parameter",
+            )
 
         return filters
 

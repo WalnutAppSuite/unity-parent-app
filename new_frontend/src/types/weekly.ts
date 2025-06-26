@@ -1,0 +1,194 @@
+// Interface for item_data inside each product
+export interface ItemData {
+  name: string;
+  creation: string;
+  modified: string;
+  modified_by: string;
+  owner: string;
+  docstatus: number;
+  idx: number;
+  naming_series: string;
+  item_code: string;
+  item_name: string;
+  item_group: string;
+  stock_uom: string;
+  disabled: number;
+  allow_alternative_item: number;
+  is_stock_item: number;
+  has_variants: number;
+  opening_stock: number;
+  valuation_rate: number;
+  standard_rate: number;
+  is_fixed_asset: number;
+  auto_create_assets: number;
+  is_grouped_asset: number;
+  asset_category: string | null;
+  asset_naming_series: string | null;
+  over_delivery_receipt_allowance: number;
+  over_billing_allowance: number;
+  image: string | null;
+  description: string;
+  brand: string | null;
+  shelf_life_in_days: number;
+  end_of_life: string;
+  default_material_request_type: string;
+  valuation_method: string;
+  warranty_period: string | null;
+  weight_per_unit: number;
+  weight_uom: string | null;
+  allow_negative_stock: number;
+  has_batch_no: number;
+  create_new_batch: number;
+  batch_number_series: string | null;
+  has_expiry_date: number;
+  retain_sample: number;
+  sample_quantity: number;
+  has_serial_no: number;
+  serial_no_series: string | null;
+  variant_of: string | null;
+  variant_based_on: string;
+  enable_deferred_expense: number;
+  no_of_months_exp: number;
+  enable_deferred_revenue: number;
+  no_of_months: number;
+  purchase_uom: string | null;
+  min_order_qty: number;
+  safety_stock: number;
+  is_purchase_item: number;
+  lead_time_days: number;
+  last_purchase_rate: number;
+  is_customer_provided_item: number;
+  customer: string | null;
+  delivered_by_supplier: number;
+  country_of_origin: string | null;
+  customs_tariff_number: string | null;
+  sales_uom: string | null;
+  grant_commission: number;
+  is_sales_item: number;
+  max_discount: number;
+  inspection_required_before_purchase: number;
+  quality_inspection_template: string | null;
+  inspection_required_before_delivery: number;
+  include_item_in_manufacturing: number;
+  is_sub_contracted_item: number;
+  default_bom: string | null;
+  customer_code: string;
+  default_item_manufacturer: string | null;
+  default_manufacturer_part_no: string | null;
+  published_in_website: number;
+  total_projected_qty: number;
+  _user_tags: string | null;
+  _comments: string | null;
+  _assign: string | null;
+  _liked_by: string | null;
+  custom_is_cmap: number;
+  custom_subject: string;
+  custom_textbook: string;
+  custom_product_status: string;
+  custom_upload_date_on_drive: string | null;
+  custom_class: string;
+  custom_chapter: string;
+  custom_sheet_number: number;
+  custom_product_url: string;
+  custom_qr_code: string | null;
+  custom_print_ready: number;
+  custom_product_folder: string | null;
+  custom_class_subject_folder: string | null;
+  custom_import_file_synced: number;
+  custom_is_imported: number;
+  custom_import_sync_url: string | null;
+  custom_hide_in_walsh: number;
+  is_test: number;
+  upload_to_erp: string | null;
+  workflow_state: string | null;
+  custom_item_group_name: string | null;
+  custom_item_subgroup: string | null;
+  custom_item_type: string | null;
+  custom_reorder_level: string | null;
+  custom_quiz_id: string | null;
+}
+
+// Interface for each product in the products array
+export interface Product {
+  name: string;
+  creation: string;
+  modified: string;
+  modified_by: string;
+  owner: string;
+  docstatus: number;
+  idx: number;
+  item_group: string;
+  item: string;
+  parent: string;
+  parentfield: string;
+  parenttype: string;
+  textbook: string;
+  chapter: string;
+  broadcast: string | null;
+  parent_note: string | null;
+  home_work: string | null;
+  class_work: string | null;
+  material_required: string | null;
+  hide_in_portion_circular: number;
+  hide_in_walsh: boolean;
+  item_data: ItemData;
+}
+
+// Interface for each lesson/unit object
+export interface LessonUnit {
+  name: string;
+  creation: string;
+  modified: string;
+  modified_by: string;
+  owner: string;
+  docstatus: number;
+  idx: number;
+  plan_date: string;
+  class: string;
+  worksheet_code: string | null;
+  ppt_code: string | null;
+  broadcast: string | null;
+  homework: string | null;
+  period: string;
+  lesson_plan: string | null;
+  e_learning: string | null;
+  audio_code: string | null;
+  mcq_test: string | null;
+  assignment: string | null;
+  grading: string | null;
+  _user_tags: string | null;
+  _comments: string | null;
+  _assign: string | null;
+  _liked_by: string | null;
+  subject: string;
+  texbook: string | null;
+  academic_year: string;
+  unit: string;
+  chapter: string | null;
+  home_work: string | null;
+  material_required: string | null;
+  parent_note: string | null;
+  class_work: string | null;
+  solve_assignment_instructions: string | null;
+  assignment_instructions_footer: string | null;
+  comment: string | null;
+  broadcast_text: string | null;
+  parent_notes: string | null;
+  amended_from: string | null;
+  workflow_state: string | null;
+  item_code_field: string | null;
+  reserved_for_portion_circular: number;
+  last_period_of_the_unit: number;
+  cmap_code: string;
+  real_date: string;
+  products: Product[];
+}
+
+// The main data structure interface
+export interface SubjectData {
+  [unit: string]: LessonUnit[];
+}
+
+export interface MainData {
+  [subject: string]: SubjectData;
+}

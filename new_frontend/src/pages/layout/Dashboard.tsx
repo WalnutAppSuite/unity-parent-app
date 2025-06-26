@@ -1,6 +1,6 @@
 import Header from '@/pages/header';
 import Navbar from '@/pages/navbar';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -43,36 +43,46 @@ const DashboardLayout = () => {
   const [headerTitle, setHeaderTitle] = useState('Notices');
   const { t } = useTranslation('dashboard');
   const [isDarkHeader, setIsDarkHeader] = useState(false);
+  const location = useLocation();
 
   // Map each path to a translation key
   const pathTitleMap: Record<string, string> = {
     '/notices': 'notices',
+    '/notices/:noticeId': 'noticeDetails',
+    '/cmap': 'curriculumUpdates',
+    '/daily/list': 'dailyListing',
+    '/weekly/list': 'weeklyListing',
+    '/portion/list': 'portionListing',
     '/absent-note': 'absentNote',
     '/pickup': 'earlyPickup',
     '/events': 'events',
     '/ptm': 'ptmLinks',
-    '/cmap': 'Curriculum Updates',
-    '/result': 'result',
-    '/observation': 'observation',
-    '/calendar': 'schoolCalendar',
-    '/bonafide-certificate': 'bonafideCertificate',
-    '/helpdesk': 'helpdesk',
-    '/timetable': 'timetable',
+    '/ptm/online': 'ptmOnline',
+    '/ptm/offline': 'ptmOffline',
     '/profile': 'studentProfile',
     '/fee': 'fee',
+    '/fee/list': 'feeListing',
+    '/result': 'result',
+    '/observation': 'observation',
+    '/observation/list': 'observationListing',
+    '/calendar': 'schoolCalendar',
+    '/certificate': 'bonafideCertificate',
+    '/helpdesk': 'helpdesk',
     '/knowledge-base': 'knowledgeBase',
+    '/timetable': 'timetable',
     '/starred': 'starredMessages',
     '/archived': 'archivedMessages',
+    '*': 'notFound'
   };
 
   useEffect(() => {
-    let path = window.location.pathname;
+    let path = location.pathname;
     if (path.startsWith(basePath)) {
       path = path.slice(basePath.length) || '/';
     }
     const titleKey = pathTitleMap[path] || '';
     setHeaderTitle(t(titleKey));
-  }, [window.location.pathname, t]);
+  }, [location.pathname, t]);
 
   useEffect(() => {
     if (headerTitle === 'Messages' || headerTitle === 'School Calendar') {
@@ -85,7 +95,7 @@ const DashboardLayout = () => {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div className="tw-w-full tw-h-screen tw-flex tw-flex-col">
+    <div className="tw-w-full tw-h-screen tw-flex tw-flex-col tw-bg-background-asscent">
       <Header onMenuClick={toggleSidebar} headerTitle={headerTitle} className="tw-h-14" isDarkHeader={!isDarkHeader}/>
       {/* Overlay */}
       <AnimatePresence>
@@ -119,7 +129,7 @@ const DashboardLayout = () => {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 1000 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="tw-w-full tw-bg-background-asscent"
+        className="tw-w-full tw-bg-background-asscent tw-min-h-[calc(100vh-56px)] tw-overflow-y-scroll"
       >
         <Outlet />
       </motion.div>

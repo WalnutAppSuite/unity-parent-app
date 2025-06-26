@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import axiosInstance from "@/utils/axiosInstance";
+import type { MainData } from '@/types/weekly';
 
 export interface Subject {
   course: string;
@@ -85,7 +86,7 @@ export type CmapListType = {
 };
 
 async function fetchCmapFilters({ type, studentId }: UseCmapListProps): Promise<CmapFilters> {
-  const response = await axios.post('/api/method/unity_parent_app.api.cmap.get_cmap_filters', {
+  const response = await axiosInstance.post('/api/method/unity_parent_app.api.cmap.get_cmap_filters', {
     type,
     studentId,
   });
@@ -103,7 +104,7 @@ export function useCmapFilters({ type, studentId }: UseCmapListProps) {
 }
 
 async function fetchCmapList(subject: string, unit: string, division: string): Promise<Cmap[]> {
-  const response = await axios.post('/api/method/unity_parent_app.api.cmap.get_all_cmaps', {
+  const response = await axiosInstance.post('/api/method/unity_parent_app.api.cmap.get_all_cmaps', {
     subject,
     unit,
     division,
@@ -122,18 +123,38 @@ export function useCmapList(subject: string, unit: string, division: string) {
 }
 
 async function fetchCmapPortion(unit: string, division: string): Promise<CmapListType> {
-  const response = await axios.post('/api/method/unity_parent_app.api.cmap.get_portion_circulars', {
+  const response = await axiosInstance.post('/api/method/unity_parent_app.api.cmap.get_portion_circulars', {
     unit,
     division,
   });
   return response.data.message as CmapListType;
-  }
+}
 
 export function useCmapPortion(unit: string, division: string) {
   return useQuery({
     queryKey: ['cmap', 'portion', unit, division],
     queryFn: () => fetchCmapPortion(unit, division),
     enabled: !!unit && !!division,
+    staleTime: 5 * 60 * 1000,
+    retry: 2,
+  });
+}
+
+async function fetchCmapWeekly(date: string, division: string){
+  const response = await axiosInstance.get('/api/method/unity_parent_app.api.cmap.get_all_cmap_in_range', {
+    params: {
+      date,
+      division,
+    },
+  });
+  return response.data.message as  MainData;
+}
+
+export function useCmapWeekly(date: string, division: string) {
+  return useQuery({
+    queryKey: ['cmap', 'weekly', date, division],
+    queryFn: () => fetchCmapWeekly(date, division),
+    enabled: !!date && !!division,
     staleTime: 5 * 60 * 1000,
     retry: 2,
   });
