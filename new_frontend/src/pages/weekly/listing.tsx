@@ -9,7 +9,9 @@ function WeeklyListing() {
   const location = useLocation();
   const { t } = useTranslation('weekly_listing')
   const { date, name, division } = location.state || {};
-  const { data, isLoading, error } = useCmapWeekly(date, division);
+  
+  // Add validation for required parameters
+  const { data, isLoading, error } = useCmapWeekly(date || '', division || '');
 
   if (isLoading) {
     return (
@@ -29,8 +31,22 @@ function WeeklyListing() {
 
   if (error) {
     return (
-      <div className="tw-text-center tw-h-full tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-3">
-        <p className="tw-text-red-500">{t("error")}</p>
+      <div className="tw-text-center tw-text-primary tw-font-semibold tw-h-full tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-3">
+        <div className="tw-flex tw-flex-col tw-items-center">
+          <h2 className="tw-text-[18px]">{name || ''}</h2>
+        </div>
+        <div className="tw-text-red-500 tw-w-full tw-text-center tw-flex tw-justify-center tw-items-center tw-items-center tw-justify-center tw-h-[80%]">{t('error')}</div>
+      </div>
+    );
+  }
+
+  if (!data || Object.keys(data).length === 0) {
+    return (
+      <div className="tw-text-center tw-text-primary tw-font-semibold tw-h-full tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-3">
+        <div className="tw-flex tw-flex-col tw-items-center">
+          <h2 className="tw-text-[18px]">{name || ''}</h2>
+        </div>
+        <div className="tw-w-full tw-font-normal tw-text-center tw-flex tw-justify-center tw-items-center tw-items-center tw-justify-center tw-h-[80%]">{t('noData')}</div>
       </div>
     );
   }
@@ -48,9 +64,14 @@ function WeeklyListing() {
                 {subject}
               </h3>
               <div className='tw-flex tw-flex-col tw-gap-3'>
-                {Object.values(items).map((item: any) => (
-                  <Weeklycard key={item.name} data={item} />
-                ))}
+                {Array.isArray(items) ? 
+                  items.map((item: any, index: number) => (
+                    <Weeklycard key={item.name || `item-${index}`} data={item} />
+                  )) :
+                  Object.values(items).map((item: any, index: number) => (
+                    <Weeklycard key={item.name || `item-${index}`} data={item} />
+                  ))
+                }
               </div>
             </div>
           ))}

@@ -67,7 +67,7 @@ export default function ProfileWrapper({
         transition={{ duration: 0.4 }}
         className="tw-pt-12"
       >
-        <Card className="!tw-bg-blue-500 !tw-rounded-3xl tw-relative tw-pb-5 tw-pt-16 tw-px-5 tw-flex tw-flex-col tw-items-center tw-shadow-xl tw-overflow-visible">
+        <Card className="!tw-bg-blue-500 !tw-rounded-3xl tw-relative tw-pb-8 tw-pt-16 tw-px-5 tw-flex tw-flex-col tw-items-center tw-shadow-xl tw-overflow-visible">
           {/* Profile Image with Lazy Loading */}
           <div className="tw-absolute tw--top-10 tw-left-1/2 tw--translate-x-1/2 tw-z-10">
             {showSkeleton ? (

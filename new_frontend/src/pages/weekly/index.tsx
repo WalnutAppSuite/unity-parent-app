@@ -10,6 +10,18 @@ import { useClassDetails } from '@/hooks/useClassDetails';
 import CmapInstruction from '@/components/custom/instruction/cmap';
 
 function Weekly({ students }: { students: Student[] }) {
+  // Handle case where students might be undefined or empty
+  if (!students || students.length === 0) {
+    return (
+      <div className="tw-flex tw-flex-col tw-gap-4">
+        <CmapInstruction />
+        <div className="tw-text-center tw-p-4 tw-text-primary/50">
+          No students available
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="tw-flex tw-flex-col tw-gap-4">
       <CmapInstruction />
@@ -21,6 +33,10 @@ function Weekly({ students }: { students: Student[] }) {
 }
 
 function StudentProfileWithFilters({ student }: { student: Student }) {
+  // Validate student data before rendering
+  if (!student || !student.name) {
+    return null;
+  }
 
   const { data: classDetails, isLoading: classLoading } = useClassDetails(student.name);
 
@@ -74,7 +90,7 @@ function WeeklyChildren({ name, division }: { name: string, division: string }) 
         placeholder={t('weekly')}
         className="tw-w-full"
         value={date}
-        onChange={(range: DateRange | undefined) => setDate(range)}
+        onChange={setDate}
       />
       <Button
         className="tw-bg-secondary !tw-text-primary tw-text-4 tw-font-semibold tw-rounded-xl"

@@ -1,0 +1,7 @@
+{
+  "period": "Period",
+  "chapter": "Chapter",
+  "notes": "Notes",
+  "accordionContent": "This is the content inside the accordion. You can add any HTML or components here.",
+  "noNotes": "No additional notes"
+} 

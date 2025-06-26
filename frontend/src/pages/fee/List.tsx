@@ -323,7 +323,6 @@ type FeeRowProps =
     };
 function FeeRow({
   data,
-
   studentProfileColor,
   paymentLinkGenerated,
 }: FeeRowProps) {

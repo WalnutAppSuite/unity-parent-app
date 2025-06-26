@@ -29,10 +29,24 @@ function PortionListing() {
 
   if (error) {
     return (
-      <div className="tw-text-center tw-h-full tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-3">
-        <p className="tw-text-red-500">{t("error")}</p>
+      <div className="tw-text-center tw-text-primary tw-font-semibold tw-h-full tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-3">
+        <div className="tw-flex tw-flex-col tw-items-center">
+          <h2 className="tw-text-[18px]">{student_name || ''}</h2>
+        </div>
+        <div className="tw-text-red-500 tw-font-normal tw-w-full tw-text-center tw-flex tw-justify-center tw-items-center tw-items-center tw-justify-center tw-h-[80%]">{t('error')}</div>
       </div>
     )
+  }
+
+  if (!data || Object.keys(data).length === 0) {
+    return (
+      <div className="tw-text-center tw-h-full tw-text-primary tw-font-semibold tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-3">
+        <div className="tw-flex tw-flex-col tw-items-center">
+          <h2 className="tw-text-[18px]">{student_name || ''}</h2>
+        </div>
+        <div className="tw-w-full tw-font-normal tw-text-center tw-flex tw-justify-center tw-items-center tw-items-center tw-justify-center tw-h-[80%]">{t('noData')}</div>
+      </div>
+    );
   }
 
   return (
@@ -46,14 +60,13 @@ function PortionListing() {
             Object.entries(data).map(([subject]) => (
               <div key={subject} className="tw-mb-2">
                 <h3 className="tw-text-lg tw-font-semibold tw-mb-2 tw-text-center tw-text-primary">
-                  {subject} : Unit {unit}
+                  {subject} : {t('unit')} {unit}
                 </h3>
                 <div className='tw-flex tw-flex-col tw-gap-3'>
                   {Object.entries(data[subject]).map(([textbook]) => (
                     <PortionCard
                       key={textbook}
                       item={data[subject][textbook]}
-                      subject={subject}
                       textbook={textbook}
                     />
                   ))}

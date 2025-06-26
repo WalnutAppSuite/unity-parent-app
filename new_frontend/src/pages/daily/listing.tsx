@@ -27,8 +27,28 @@ function DailyListing() {
 
   if (error) {
     return (
-      <div className="tw-text-center tw-h-full tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-3">
-        <p className="tw-text-red-500">{t('error')}</p>
+      <div className="tw-text-center tw-text-primary tw-font-semibold tw-h-full tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-3">
+        <div className="tw-flex tw-flex-col tw-items-center">
+          <h2 className="tw-text-[18px]">{student_name || ''}</h2>
+          <p className="tw-text-[14px]">
+            {subject + " " || ''}:{" " + t('unit') + ' ' + unit}
+          </p>
+        </div>
+        <div className="tw-text-red-500 tw-w-full tw-text-center tw-flex tw-justify-center tw-items-center tw-items-center tw-justify-center tw-h-[80%]">{t('error')}</div>
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="tw-text-center tw-h-full tw-text-primary tw-font-semibold tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-3">
+        <div className="tw-flex tw-flex-col tw-items-center">
+          <h2 className="tw-text-[18px]">{student_name || ''}</h2>
+          <p className="tw-text-[14px]">
+            {subject + " " || ''}:{" " + t('unit') + ' ' + unit}
+          </p>
+        </div>
+        <div className="tw-w-full tw-font-normal tw-text-center tw-flex tw-justify-center tw-items-center tw-items-center tw-justify-center tw-h-[80%]">{t('noData')}</div>
       </div>
     );
   }
@@ -38,7 +58,7 @@ function DailyListing() {
       <div className="tw-flex tw-flex-col tw-items-center">
         <h2 className="tw-text-[18px]">{student_name || ''}</h2>
         <p className="tw-text-[14px]">
-          {subject || ''}:{'Unit ' + unit}
+          {subject + " " || ''}:{" " + t('unit') + ' ' + unit}
         </p>
       </div>
       <div className="tw-flex tw-flex-col tw-w-full tw-h-full tw-gap-3 tw-p-4">

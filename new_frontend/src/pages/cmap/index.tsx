@@ -25,6 +25,10 @@ export default function AnimatedTabs() {
 
     const [students] = useAtom(studentsAtom);
 
+    if (!students || students.length === 0) {
+        return <div className="tw-text-center tw-p-4">Loading students...</div>;
+    }
+
     useEffect(() => {
         const currentRef = tabRefs.current[selectedTab];
         if (currentRef) {
@@ -36,21 +40,30 @@ export default function AnimatedTabs() {
     }, [selectedTab]);
 
     const renderContent = () => {
-        switch (selectedTab) {
-            case "daily":
-                return (
-                    <Daily students={students} />
-                );
-            case "weekly":
-                return (
-                    <Weekly students={students} />
-                );
-            case "portion":
-                return (
-                    <Portion students={students} />
-                );
-            default:
-                return null;
+        try {
+            switch (selectedTab) {
+                case "daily":
+                    return (
+                        <Daily students={students || []} />
+                    );
+                case "weekly":
+                    return (
+                        <Weekly students={students || []} />
+                    );
+                case "portion":
+                    return (
+                        <Portion students={students || []} />
+                    );
+                default:
+                    return null;
+            }
+        } catch (error) {
+            console.error('Error rendering content:', error);
+            return (
+                <div className="tw-text-center tw-p-4 tw-text-red-500">
+                    Something went wrong while loading the content.
+                </div>
+            );
         }
     };
 
@@ -96,7 +109,7 @@ export default function AnimatedTabs() {
             <div className="xtw-overflow-hidden">
                 <AnimatePresence mode="wait">
                     <motion.div
-                        key="portion"
+                        key={selectedTab}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
