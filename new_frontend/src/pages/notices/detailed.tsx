@@ -9,6 +9,8 @@ import { useEffect, useRef, useState } from "react";
 import useNoticeActions from "@/hooks/useNoticeActions";
 import { toast } from "sonner";
 import type { Notice } from "@/types/notice";
+import SuspenseLoader from "@/components/SuspenseLoader";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 function NoticeShadowContent({ html }: { html: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -71,24 +73,9 @@ function DetailedNotices() {
 
   if (isLoading) {
     return (
-      <div className="tw-max-w-2xl tw-mx-auto tw-text-primary">
-        <div className="tw-flex tw-flex-col tw-items-center tw-p-6 tw-text-center tw-bg-primary tw-text-secondary">
-          <div className="tw-flex tw-justify-center tw-items-center tw-mb-4">
-            <div className="tw-animate-spin tw-rounded-full tw-h-8 tw-w-8 tw-border-t-2 tw-border-b-2 tw-border-secondary" />
-          </div>
-          <Skeleton className="tw-h-8 tw-w-1/2 tw-mb-2" />
-          <div className="tw-flex tw-items-center tw-justify-center tw-w-full">
-            <div className="tw-flex tw-gap-3 tw-pr-3 tw-border-r tw-border-secondary/20 tw-items-center">
-              <Skeleton className="tw-h-6 tw-w-20" />
-              <Skeleton className="tw-h-6 tw-w-32" />
-            </div>
-            <div className="tw-flex tw-items-center tw-gap-3 tw-pl-3">
-              <Skeleton className="tw-h-7 tw-w-7" />
-            </div>
-          </div>
-        </div>
-        <div className="tw-bg-gray-50 tw-p-6 tw-min-h-[120px]">
-          <Skeleton className="tw-h-24 tw-w-full" />
+      <div className="tw-flex tw-w-full tw-items-center tw-justify-center tw-h-[calc(100vh-3.5rem)]">
+        <div className="tw-w-1/2">
+          <LoadingSpinner />
         </div>
       </div>
     );

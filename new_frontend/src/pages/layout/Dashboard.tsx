@@ -92,7 +92,7 @@ const DashboardLayout = () => {
       setIsDarkHeader(true);
     }
 
-    if (titleKey === 'notices' || titleKey === 'schoolCalendar' || titleKey === 'noticeDetails') {
+    if (titleKey === 'notices' || titleKey === 'schoolCalendar' || titleKey === 'noticeDetails' || titleKey === 'starredMessages' || titleKey === 'archivedMessages') {
       setIsDarkHeader(false);
     } else {
       setIsDarkHeader(true);

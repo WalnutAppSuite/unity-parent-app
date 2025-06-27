@@ -72,7 +72,7 @@ function NoticeListingPage() {
     <div className="tw-w-full tw-flex tw-flex-col tw-items-center tw-h-screen">
 
       {/* Search Bar */}
-      <div className="tw-flex tw-w-full tw-bg-background-custom tw-p-5">
+      <div className="tw-flex tw-w-full tw-bg-primary tw-p-5">
         <div className="tw-relative tw-w-full tw-bg-secondary tw-rounded-full tw-overflow-hidden">
           <form onSubmit={handleSearch}>
             <Input

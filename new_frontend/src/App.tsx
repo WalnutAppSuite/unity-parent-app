@@ -7,6 +7,7 @@ import { useSetAtom } from 'jotai';
 import { useEffect, Suspense } from 'react';
 import { Toaster } from 'sonner'
 import ErrorBoundary from "@/components/ErrorBoundary";
+import SuspenseLoader from './components/SuspenseLoader';
 
 function App() {
   const { data: students, isLoading, error } = useStudents();
@@ -15,7 +16,7 @@ function App() {
   useEffect(() => {
     if (students) setStudents(students);
   }, [students, setStudents]);
-  
+
   // if (isLoading) {
   //   return (
   //     <div className="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
@@ -42,19 +43,12 @@ function App() {
   //     </div>
   //   );
   // }
-  
+
   return (
     <ErrorBoundary>
-      <Suspense fallback={
-        <div className="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
-          <div className="tw-text-center">
-            <div className="tw-animate-spin tw-rounded-full tw-h-12 tw-w-12 tw-border-b-2 tw-border-primary tw-mx-auto"></div>
-            <p className="tw-mt-4 tw-text-primary">Loading...</p>
-          </div>
-        </div>
-      }>
+      <Suspense fallback={<SuspenseLoader />}>
         <BrowserRouter basename={basePath}>
-          <Toaster position='top-left' richColors/>
+          <Toaster position='top-left' richColors />
           <WalshRoute />
         </BrowserRouter>
       </Suspense>
