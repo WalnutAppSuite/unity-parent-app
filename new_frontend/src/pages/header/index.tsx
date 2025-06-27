@@ -14,7 +14,7 @@ function Header({ onMenuClick, headerTitle, className, isDarkHeader }: HeaderPro
         `tw-w-full tw-p-4 tw-flex tw-flex-col ${className} ` +
         (isDarkHeader
           ? 'tw-bg-primary tw-text-secondary'
-          : 'tw-bg-background-asscent tw-text-primary')
+          : 'tw-bg-background-accent tw-text-primary')
       }
     >
       <div className="tw-flex tw-items-center tw-justify-between">

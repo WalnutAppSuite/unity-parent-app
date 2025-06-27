@@ -1,7 +1,7 @@
 import Header from '@/pages/header';
 import Navbar from '@/pages/navbar';
 import { Outlet, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 import { basePath } from '@/constants';
@@ -66,6 +66,7 @@ const DashboardLayout = () => {
     '/observation': 'observation',
     '/observation/list': 'observationListing',
     '/calendar': 'schoolCalendar',
+    '/school-calendar': 'schoolCalendar',
     '/certificate': 'bonafideCertificate',
     '/helpdesk': 'helpdesk',
     '/knowledge-base': 'knowledgeBase',
@@ -89,8 +90,8 @@ const DashboardLayout = () => {
     if (isNoticeDetails) {
       titleKey = 'noticeDetails';
       setIsDarkHeader(true);
-    } 
-    
+    }
+
     if (titleKey === 'notices' || titleKey === 'schoolCalendar' || titleKey === 'noticeDetails') {
       setIsDarkHeader(false);
     } else {
@@ -100,10 +101,14 @@ const DashboardLayout = () => {
     setHeaderTitle(t(titleKey || ''));
   }, [location.pathname, t]);
 
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  // const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  const toggleSidebar = useCallback(() => {
+    setIsSidebarOpen((prev) => !prev);
+  }, []);
 
   return (
-    <div className="tw-w-full tw-h-screen tw-flex tw-flex-col tw-bg-background-asscent">
+    <div className="tw-w-full tw-h-screen tw-flex tw-flex-col tw-bg-background-accent">
       <Header onMenuClick={toggleSidebar} headerTitle={headerTitle} className="tw-h-14" isDarkHeader={!isDarkHeader} />
       {/* Overlay */}
       <AnimatePresence>
@@ -137,7 +142,7 @@ const DashboardLayout = () => {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 1000 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="tw-w-full tw-bg-background-asscent tw-min-h-[calc(100vh-56px)] tw-overflow-y-scroll"
+        className="tw-w-full tw-bg-background-accent tw-min-h-[calc(100vh-56px)] tw-overflow-y-scroll"
       >
         <Outlet />
       </motion.div>
