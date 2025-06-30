@@ -23,9 +23,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     const [isOpen, setIsOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
 
-    const selectedLabel =
-        options.find((opt) => opt.value === value)?.label || placeholder;
-    console.log(options, "options");
+    const selectedLabel = options.find((opt) => opt.value === value)?.label || placeholder;
     // Close dropdown on outside click
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -49,8 +47,7 @@ const Dropdown: React.FC<DropdownProps> = ({
             >
                 <span>{selectedLabel}</span>
                 <svg
-                    className={`tw-w-4 tw-h-4 tw-transition-transform ${isOpen ? 'tw-rotate-180' : ''
-                        }`}
+                    className={`tw-w-4 tw-h-4 tw-transition-transform ${isOpen ? 'tw-rotate-180' : ''}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

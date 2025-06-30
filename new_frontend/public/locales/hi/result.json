@@ -1,6 +1,23 @@
 {
-    "showResult": "Show Result",
-    "academicYear": "Academic Year",
-    "selectExam": "Select Exam",
-    "selectAcademicYear": "Select Academic Year"
+  "showResult": "Show Result",
+  "academicYear": "Academic Year",
+  "selectExam": "Select Exam",
+  "selectAcademicYear": "Select Academic Year",
+  "noExamFound": "No exam found",
+
+  "loadingResult": "Loading result...",
+  "loadingMarks": "Loading marks...",
+  "loadResult": "Load Result",
+  "loadMarks": "Load Marks",
+  "invalidStudentData": "Invalid student data",
+  "missingData": "Missing data",
+  "failedToFetchPrintFormat": "Failed to fetch print format",
+  "noDataForDownload": "No data available for download",
+  "downloadFailed": "Download failed",
+  "pdfDownloadStarted": "PDF download started",
+  "resultTab": "Result",
+  "marksTab": "Marks",
+  "loadingStudentData": "Loading student data...",
+  "downloadPdf": "Download PDF",
+  "loading": "Loading..."
 }

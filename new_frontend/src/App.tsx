@@ -6,6 +6,7 @@ import { studentsAtom } from '@/store/studentAtoms';
 import { useSetAtom } from 'jotai';
 import { useEffect, Suspense } from 'react';
 import { Toaster } from 'sonner'
+import './index.css';
 import ErrorBoundary from "@/components/ErrorBoundary";
 
 function App() {
@@ -15,7 +16,7 @@ function App() {
   useEffect(() => {
     if (students) setStudents(students);
   }, [students, setStudents]);
-  
+
   if (isLoading) {
     return (
       <div className="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
@@ -32,8 +33,8 @@ function App() {
       <div className="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
         <div className="tw-text-center">
           <p className="tw-text-red-500">Something went wrong while loading the application.</p>
-          <button 
-            onClick={() => window.location.reload()} 
+          <button
+            onClick={() => window.location.reload()}
             className="tw-mt-4 tw-px-4 tw-py-2 tw-bg-primary tw-text-white tw-rounded tw-cursor-pointer"
           >
             Retry
@@ -42,7 +43,7 @@ function App() {
       </div>
     );
   }
-  
+
   return (
     <ErrorBoundary>
       <Suspense fallback={
@@ -54,7 +55,7 @@ function App() {
         </div>
       }>
         <BrowserRouter basename={basePath}>
-          <Toaster position='top-left' richColors/>
+          <Toaster position='top-left' richColors />
           <WalshRoute />
         </BrowserRouter>
       </Suspense>
