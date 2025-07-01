@@ -151,7 +151,7 @@ def get_all_notices(
             )
         )) {cursor_condition} {search_condition}
         order by creation desc
-        limit %(limit)s
+        limit 50
     """,
         values=notices_values,
         as_dict=1,
@@ -235,19 +235,18 @@ def get_all_notices(
             if notice.get("is_archived") != 1:
                 filtered_notices.append(notice)
 
-    # Check if we have more results
-    has_more = len(notices) > limit
-
-    # Get next cursor from the original notices (before filtering)
+    # Apply limit and has_more after filtering
+    limited_notices = filtered_notices[:limit]
+    has_more = len(filtered_notices) > limit
     next_cursor = None
-    if has_more and notices:
+    if has_more and len(limited_notices) > 0:
+        last_notice = limited_notices[-1]
         next_cursor = {
-            "creation": notices[-1].get("creation"),
-            "name": notices[-1].get("name"),
+            "creation": last_notice.get("creation"),
+            "name": last_notice.get("name"),
         }
-
     result = {
-        "notices": filtered_notices,
+        "notices": limited_notices,
         "next_cursor": next_cursor,
         "has_more": has_more,
     }
