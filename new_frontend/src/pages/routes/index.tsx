@@ -16,7 +16,8 @@ import FeeListing from "@/pages/fee/listing"
 import Result from '@/pages/result';
 import Observation from '@/pages/class-participation/index';
 import ObservationListing from '@/pages/class-participation/listing'
-import SchoolCalendar from '@/pages/school-calendar';
+import SchoolCalendar from '@/pages/school-calendar/index';
+import SchoolCalendarEmbed from '@/pages/school-calendar/school_calendar';
 import Certificate from '@/pages/bonafide-certificate';
 import HelpDesk from '@/pages/helpdesk';
 import Cmap from '@/pages/cmap';
@@ -58,6 +59,7 @@ function AppRoutes() {
         <Route path="/observation" element={<Observation />} />
         <Route path="/observation/list" element={<ObservationListing />} />
         <Route path="/calendar" element={<SchoolCalendar />} />
+        <Route path="/school-calendar" element={<SchoolCalendarEmbed />} />
         <Route path="/certificate" element={<Certificate />} />
         <Route path="/helpdesk" element={<HelpDesk />} />
         <Route path="/knowledge-base" element={<KnowledgeBase />} />

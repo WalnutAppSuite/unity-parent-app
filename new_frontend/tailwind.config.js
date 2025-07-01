@@ -26,7 +26,7 @@ module.exports = {
           foreground: 'hsl(var(--background-foreground))',
           primary: '#1a237e',
           secondary: '#FFFFFF',
-          asscent : '#dde9ff',
+          accent : '#dde9ff',
         },
         foreground: 'hsl(var(--foreground))',
         primary: {
@@ -36,6 +36,10 @@ module.exports = {
         secondary: {
           DEFAULT: '#FFFFFF',
           foreground: 'hsl(var(--secondary-foreground))',
+        },
+        accent: {
+          DEFAULT: '#dde9ff',
+          foreground: 'hsl(var(--accent-foreground))',
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',

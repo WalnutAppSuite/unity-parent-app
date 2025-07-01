@@ -11,7 +11,9 @@ i18n
     fallbackLng: 'en',
     debug: false,
     backend: {
-      loadPath: '/public/locales/{{lng}}/{{ns}}.json'
+      loadPath: import.meta.env.DEV
+        ? '/locales/{{lng}}/{{ns}}.json'
+        : '/assets/unity_parent_app/new_frontend/locales/{{lng}}/{{ns}}.json',
     },
     ns: [
       'home',
@@ -39,12 +41,12 @@ i18n
       'daily_card',
       'weekly_card',
       'fee_listing',
-      'not_found'
+      'not_found',
     ],
     defaultNS: 'home',
     interpolation: {
-      escapeValue: false
-    }
+      escapeValue: false,
+    },
   });
 
 export default i18n;

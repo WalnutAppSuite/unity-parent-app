@@ -4,12 +4,14 @@ import { Search } from 'lucide-react';
 import NoticeCard from '@/components/custom/notice-card/index';
 import NoticeCardSkeleton from '@/components/custom/notice-card/skeleton';
 import { useState, useEffect, useRef } from 'react';
-import useNoticeList from '@/hooks/useNotice';
+import useNoticeList from '@/hooks/useNoticeList';
 
 function NoticeListingPage() {
   const { t } = useTranslation('notice_listing');
   const [searchQuery, setSearchQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const {
     data,
     fetchNextPage,
@@ -22,11 +24,19 @@ function NoticeListingPage() {
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setSubmittedQuery(searchQuery);
-  };
-  
-  const allNotices = data?.pages.flatMap(page => page.message.notices) || [];
 
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      console.log("search clicked")
+      setSubmittedQuery(searchQuery);
+    }, 500);
+  };
+
+  // Flatten all notices from all pages into a single array
+  const allNotices = data?.pages.flatMap(page => page.message.notices) || [];
 
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
@@ -54,19 +64,20 @@ function NoticeListingPage() {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div className="tw-w-full tw-flex tw-flex-col tw-items-center tw-h-screen">
-      <div className="tw-flex tw-w-full tw-bg-background-custom tw-p-5">
+    <div className="tw-w-full tw-flex tw-flex-col tw-items-center tw-h-screen ">
+      {/* Search Bar */}
+      <div className="tw-flex tw-w-full tw-bg-primary tw-p-5">
         <div className="tw-relative tw-w-full tw-bg-secondary tw-rounded-full tw-overflow-hidden">
           <form onSubmit={handleSearch}>
             <Input
               className="tw-border-none !tw-h-12 tw-w-full tw-placeholder-primary tw-text-primary focus:tw-outline-none tw-rounded-full !tw-p-4"
-              placeholder={t('search')}
+              placeholder={t('search_in_all_notices')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <button
               type="submit"
-              className="tw-absolute tw-top-1/2 tw-right-3 tw-transform tw--translate-y-1/2 tw-text-primary"
+              className="tw-absolute tw-top-1/2 tw-right-3 tw-transform tw--translate-y-1/2 tw-text-primary hover:tw-text-[#544DDB] tw-transition-colors"
               onClick={handleSearch}
             >
               <Search />
@@ -75,33 +86,27 @@ function NoticeListingPage() {
         </div>
       </div>
 
-      <div
-        className="tw-flex tw-flex-col tw-w-full tw-flex-1 tw-overflow-y-auto tw-p-4 tw-gap-4"
-      >
+      <div className="tw-flex tw-flex-col tw-w-full tw-flex-1 tw-overflow-y-auto tw-p-4 tw-gap-4">
         {/* Initial loading skeletons */}
         {isLoading && (
           <>
-            {
-              Array.from({ length: 5 }).map((_, i) => (
-                <NoticeCardSkeleton key={i} />
-              ))
-            }
+            {Array.from({ length: 5 }).map((_, i) => (
+              <NoticeCardSkeleton key={`loading-${i}`} />
+            ))}
           </>
         )}
 
         {/* Render all notices */}
-        {allNotices.map((notice) => (
+        {!isLoading && allNotices.map((notice) => (
           <NoticeCard key={notice.name} notice={notice} />
         ))}
 
         {/* Loading more skeletons */}
         {isFetchingNextPage && (
           <>
-            {
-              Array.from({ length: 5 }).map((_, i) => (
-                <NoticeCardSkeleton key={i} />
-              ))
-            }
+            {Array.from({ length: 3 }).map((_, i) => (
+              <NoticeCardSkeleton key={`loading-more-${i}`} />
+            ))}
           </>
         )}
 
@@ -111,14 +116,42 @@ function NoticeListingPage() {
         {/* End of list message */}
         {!hasNextPage && allNotices.length > 0 && (
           <div className="tw-text-center tw-text-gray-500 tw-py-8">
-            <p>You've reached the end of the notices</p>
+            <div className="tw-flex tw-items-center tw-justify-center tw-gap-2">
+              <p>{t('end_of_all_notices')}</p>
+            </div>
           </div>
         )}
 
         {/* No notices found message */}
         {!isLoading && allNotices.length === 0 && (
           <div className="tw-text-center tw-text-gray-500 tw-py-16">
-            <p>No notices found</p>
+            <div className="tw-flex tw-flex-col tw-items-center tw-gap-4">
+              {submittedQuery ? (
+                <>
+                  <h3 className="tw-text-lg tw-font-medium tw-text-gray-700">
+                    {t('no_all_notices_match', { query: submittedQuery })}
+                  </h3>
+                  <p className="tw-text-sm tw-max-w-sm tw-mx-auto tw-text-gray-500">
+                    {t('try_different_search_all')}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSubmittedQuery('');
+                    }}
+                    className="tw-mt-2 tw-px-4 tw-py-2 tw-bg-[#544DDB] tw-text-white tw-rounded-full tw-text-sm hover:tw-bg-[#544DDB]/90 tw-transition-colors"
+                  >
+                    {t('clear_search')}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <h3 className="tw-text-lg tw-font-medium tw-text-gray-700">
+                    {t('no_notices_yet')}
+                  </h3>
+                </>
+              )}
+            </div>
           </div>
         )}
       </div>

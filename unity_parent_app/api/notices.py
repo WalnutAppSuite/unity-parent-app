@@ -190,8 +190,14 @@ def get_all_notices(
                     "student_first_name": student_dict[notice.student].first_name,
                 }
             )
+    
+    # Set default values for status fields
+    for notice in final_notices:
+        notice["is_read"] = 0
+        notice["is_archived"] = 0
+        notice["is_stared"] = 0
+    
     try:
-
         notice_statuses = frappe.get_all(
             "School Notice Status",
             filters=[
@@ -208,37 +214,38 @@ def get_all_notices(
                     notice.get("name") == notice_status.notice
                     and notice.get("student") == notice_status.student
                 ):
-                    notice["is_read"] = notice_status.is_read
-                    notice["is_archived"] = notice_status.is_archived
-                    notice["is_stared"] = notice_status.is_stared
+                    notice["is_read"] = notice_status.is_read or 0
+                    notice["is_archived"] = notice_status.is_archived or 0
+                    notice["is_stared"] = notice_status.is_stared or 0
                     break
     except Exception as e:
         frappe.logger("notice").exception(e)
 
-    filtered_notices = [
-        notice
-        for notice in final_notices
-        if (
-            notice.get("is_stared")
-            if stared_only
-            else (
-                notice.get("is_archived")
-                if archived_only
-                else not notice.get("is_archived")
-            )
-        )
-    ]
+    # Apply filtering based on parameters
+    filtered_notices = []
+    for notice in final_notices:
+        if stared_only:
+            if notice.get("is_stared") == 1:
+                filtered_notices.append(notice)
+        elif archived_only:
+            if notice.get("is_archived") == 1:
+                filtered_notices.append(notice)
+        else:
+            # Regular notices - exclude archived ones
+            if notice.get("is_archived") != 1:
+                filtered_notices.append(notice)
 
+    # Check if we have more results
     has_more = len(notices) > limit
 
-    next_cursor = (
-        {
+    # Get next cursor from the original notices (before filtering)
+    next_cursor = None
+    if has_more and notices:
+        next_cursor = {
             "creation": notices[-1].get("creation"),
             "name": notices[-1].get("name"),
         }
-        if has_more
-        else None
-    )
+
     result = {
         "notices": filtered_notices,
         "next_cursor": next_cursor,
