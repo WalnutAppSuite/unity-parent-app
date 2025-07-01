@@ -83,8 +83,10 @@ const ResultDetailsPage = () => {
     // eslint-disable-next-line
   }, [studentData]);
 
-  const { data: schoolLetterHeadData } = useSchoolLetterHead(schoolName || student?.school || "Default School");
-  const { data: assessmentGroupData } = usePrintFormat(examValue || "");
+  // Only call hooks when we have valid parameters
+  const schoolNameForHook = schoolName || student?.school || "Default School";
+  const { data: schoolLetterHeadData, isLoading: schoolLetterHeadLoading, error: schoolLetterHeadError } = useSchoolLetterHead(schoolNameForHook);
+  const { data: assessmentGroupData, isLoading: assessmentGroupLoading, error: assessmentGroupError } = usePrintFormat(examValue || "");
   const printFormatMutation = usePrintFormatMutate();
 
   // Fetch data for the active tab when dependencies are ready
@@ -132,11 +134,31 @@ const ResultDetailsPage = () => {
   }, [activeTab]);
 
   // Show loading while dependencies are loading
-  if (!assessmentGroupData || !schoolLetterHeadData) {
-    return <div className="tw-text-center tw-p-8">{t("loadingDependencies")}</div>;
-  }
   if (!student) {
     return <div className="tw-text-center tw-p-8">{t("loadingStudentData")}</div>;
+  }
+  
+  // Check if required parameters are available
+  if (!examValue) {
+    return <div className="tw-text-center tw-p-8 tw-text-red-500">{t("missingExamValue")}</div>;
+  }
+  
+  // Show loading states
+  if (schoolLetterHeadLoading || assessmentGroupLoading) {
+    return <div className="tw-text-center tw-p-8">{t("loadingDependencies")}</div>;
+  }
+  
+  // Show error states
+  if (schoolLetterHeadError) {
+    return <div className="tw-text-center tw-p-8 tw-text-red-500">{t("failedToFetchPrintFormat")}</div>;
+  }
+  
+  if (assessmentGroupError) {
+    return <div className="tw-text-center tw-p-8 tw-text-red-500">{t("failedToFetchPrintFormat")}</div>;
+  }
+  
+  if (!assessmentGroupData || !schoolLetterHeadData) {
+    return <div className="tw-text-center tw-p-8">{t("loadingDependencies")}</div>;
   }
 
   const tabs = [

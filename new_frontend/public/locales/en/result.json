@@ -21,6 +21,7 @@
   "resultTab": "Result",
   "marksTab": "Marks",
   "loadingStudentData": "Loading student data...",
+  "missingExamValue": "Exam value is missing. Please try again.",
   "downloadPdf": "Download PDF",
   "loading": "Loading..."
 }
