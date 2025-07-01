@@ -9,14 +9,11 @@ export function useFetchAssessmentGroups(
   setAssessmentGroupOptions: (opts: { value: string; label: string }[]) => void,
   setErrorMessage: (msg: string) => void,
   setSelectedExam: (val: string) => void,
-  setExamOptions: (opts: any[]) => void,
 ) {
   const assessmentGroupFilter = async (
     selected_year: string | null,
     class_name?: string | null,
   ) => {
-    console.log('Selected Year:', selected_year);
-    console.log('Class Name:', class_name);
     const resp = await fetch(
       `/api/resource/Assessment%20Group?filters=[["custom_academic_year","=","${selected_year}"],["custom_program","=","${class_name}"],["custom_show_in_app","=", "1"]]&fields=["assessment_group_name","name", "custom_program"]`,
     );
@@ -33,7 +30,6 @@ export function useFetchAssessmentGroups(
       if (data?.data?.length < 1) {
         setErrorMessage('Result Not Found');
         setSelectedExam('');
-        setExamOptions([]);
         setAssessmentGroupOptions([]);
       } else {
         // const groupNames = data?.data?.map?.((i: any) => i.name);
@@ -42,11 +38,10 @@ export function useFetchAssessmentGroups(
           label: i.assessment_group_name,
         }));
         setAssessmentGroupOptions(examOpts);
-        setExamOptions(examOpts);
       }
     },
     onError: (error) => {
-      console.log('error', error);
+      console.error('error', error);
     },
   });
 }

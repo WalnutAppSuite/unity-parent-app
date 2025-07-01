@@ -1,11 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import axiosInstance from '@/utils/axiosInstance';
-
-interface AssessmentGroupData {
-  result_print_format: string | null;
-  custom_print_configuration: string | null;
-  custom_school?: string;
-}
+import type { AssessmentGroupData } from '@/types/assessments';
 
 interface LetterHeadData {
   data?: {
@@ -53,9 +48,6 @@ export const usePrintFormatMutate = () => {
         _lang: 'en',
       };
 
-      console.log('API Request Data:', requestData);
-      console.log('API URL:', `/api/method/frappe.www.printview.get_html_and_style?`);
-
       const response = await axiosInstance.post(
         `/api/method/frappe.www.printview.get_html_and_style?`,
         requestData,
@@ -64,7 +56,6 @@ export const usePrintFormatMutate = () => {
           responseType: 'text',
         },
       );
-      console.log(response, 'Print Format Response');
       if (typeof response.data !== 'string' || response.data.trim() === '') {
         throw new Error('Empty response data');
       }

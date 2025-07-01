@@ -2,7 +2,11 @@ import axiosInstance from '@/utils/axiosInstance';
 import { useQuery } from '@tanstack/react-query';
 
 export interface SchoolLetterHead {
-  data: any;
+  data: {
+    letter_head?: string;
+    name?: string;
+    [key: string]: unknown;
+  };
 }
 
 const fetchSchoolLetterHead = async (school: string): Promise<SchoolLetterHead> => {

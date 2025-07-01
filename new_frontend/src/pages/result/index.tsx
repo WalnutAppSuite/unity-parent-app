@@ -11,21 +11,7 @@ import { useFetchAcademicYears } from "@/hooks/useFetchAcademicYears";
 import { useFetchAssessmentGroups } from "@/hooks/useAssessmentGroups";
 import { useAssessmentResultMutate } from "@/hooks/useAssessmentResultMutate";
 import { studentsAtom } from "@/store/studentAtoms";
-
-// Types and Interfaces
-interface Student {
-  name?: string;
-  student_name?: string;
-  first_name?: string;
-  program_name?: string;
-  classSection?: string;
-  image?: string;
-  reference_number?: string;
-  custom_division?: string;
-  last_name?: string;
-  school?: string;
-  [key: string]: any; // Allow additional properties
-}
+import type { Student } from "@/types/students";
 
 interface AssessmentOption {
   value: string;
@@ -71,7 +57,6 @@ const useResultForm = (student: Student) => {
     (opts) => setFormData(prev => ({ ...prev, assessmentOptions: opts })),
     (msg) => toast.error(msg),
     (value) => setFormData(prev => ({ ...prev, selectedExam: String(value) })),
-    () => { } // unitData callback
   );
 
   const handleAcademicYearChange = useCallback(async (value: string | number) => {
@@ -134,7 +119,6 @@ const useResultForm = (student: Student) => {
       }
     }
   }, [formData.selectedAcademicYear, formData.assessmentOptions, academicYears, mutateAssessmentResult]);
-  console.log(academicYears, "Academic Years");
   const handleShowResult = useCallback(() => {
     const { selectedAcademicYear, selectedExam, assessmentResults, selectedExamGroup } = formData;
 
@@ -161,7 +145,6 @@ const useResultForm = (student: Student) => {
       assessmentGroupName: selectedExamGroup?.label || "",
       schoolName: student.school || "",
     });
-    console.log(student, "Program Name");
     const studentNameParam = encodeURIComponent(student.name || student.student_name || "");
     const url = `/result-details/${studentNameParam}?${params.toString()}`;
     navigate(url);
@@ -221,7 +204,7 @@ const ResultForm = ({ student }: { student: Student }) => {
           options={formData.assessmentOptions}
           value={formData.selectedExam}
           onChange={handleExamChange}
-          placeholder={t("selectExam") || "Select Exam"}
+          placeholder={t("selectExam")}
           disabled={!formData.selectedAcademicYear || formData.assessmentOptions.length === 0 || isLoading}
         />
       </div>
