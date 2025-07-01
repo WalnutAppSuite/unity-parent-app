@@ -22,6 +22,7 @@
     "helpdesk": "Helpdesk",
     "knowledgeBase": "Knowledge Base",
     "timetable": "Timetable",
+    "timetableDetailed": "Timetable",
     "starredMessages": "Starred Messages",
     "archivedMessages": "Archived Messages",
     "notFound": "Page Not Found"

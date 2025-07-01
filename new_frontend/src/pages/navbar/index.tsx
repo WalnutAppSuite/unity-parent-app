@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import i18n from '@/i18n/index';
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
@@ -46,10 +46,15 @@ const menuItems: MenuItem[] = [
 const Navbar = ({ onClose, setHeaderTitle }: NavbarProps) => {
   const { t } = useTranslation("navbar");
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
+  const location = useLocation();
+
+  // Close navbar when location changes
+  useEffect(() => {
+    onClose();
+  }, [location.pathname, onClose]);
 
   const handleMenuItemClick = (title: string) => {
     setHeaderTitle(t(title));
-    onClose();
   };
 
   const handleWindowReload = () => {

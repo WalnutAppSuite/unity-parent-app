@@ -10,7 +10,7 @@ function OfflinePtm() {
     const { studentId, studentName } = location.state;
     const { t } = useTranslation('online_ptm');
     const { data, isLoading, error } = usePTMLinks(studentId);
-
+    
     if (isLoading) {
         return (
             <div className="tw-text-center tw-h-full tw-p-4 tw-flex tw-flex-col tw-items-center tw-gap-3">
@@ -33,7 +33,7 @@ function OfflinePtm() {
         );
     }
 
-    if (!data) {
+    if (!data?.message?.data || (Array.isArray(data?.message?.data) && data?.message?.data.length === 0)) {
         return (
             <div className="tw-text-center tw-h-full tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-3 tw-text-primary">
                 <h2 className="tw-text-[18px] tw-font-semibold">{studentName || ''}</h2>

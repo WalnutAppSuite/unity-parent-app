@@ -10,8 +10,6 @@ function ClassParticipation() {
 
     const { data, isLoading, error } = useObservation(studentId, selectedUnit);
 
-    console.log(data);
-
     if (isLoading) {
         return (
             <div className="tw-text-center tw-h-full tw-p-4 tw-flex tw-flex-col tw-items-center tw-gap-3">

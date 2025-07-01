@@ -1,0 +1,24 @@
+{
+    "button": "Show Timetable",
+    "error": "Something went wrong while fetching timetable data",
+    "noData": "No timetable data found",
+    "period": "Period",
+    "days": {
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday"
+    },
+    "daysAbbr": {
+        "monday": "Mon",
+        "tuesday": "Tue",
+        "wednesday": "Wed",
+        "thursday": "Thu",
+        "friday": "Fri",
+        "saturday": "Sat",
+        "sunday": "Sun"
+    }
+}

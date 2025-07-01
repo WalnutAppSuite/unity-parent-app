@@ -42,6 +42,7 @@ i18n
       'weekly_card',
       'fee_listing',
       'not_found',
+      'timetable',
     ],
     defaultNS: 'home',
     interpolation: {

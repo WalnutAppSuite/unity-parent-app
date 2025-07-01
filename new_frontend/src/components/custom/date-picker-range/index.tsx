@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { CalendarIcon, X } from "lucide-react"
 import type { DateRange } from "react-day-picker"
 import { cn } from "@/lib/utils"
+import { useState, useEffect } from "react"
 
 interface DateRangePickerProps {
   className?: string;
@@ -24,11 +25,22 @@ export function DateRangePicker({
   onChange,
   placeholder
 }: DateRangePickerProps) {
+  const [open, setOpen] = useState(false);
   const handleClear = () => onChange(undefined);
+
+  useEffect(() => {
+    if (value?.from && value?.to) {
+      setOpen(false);
+    }
+  }, [value?.from, value?.to]);
+
+  const handleSelect = (range: DateRange | undefined) => {
+    onChange(range);
+  };
 
   return (
     <div className={cn("tw-relative", className)}>
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             id="date"
@@ -57,7 +69,7 @@ export function DateRangePicker({
             mode="range"
             defaultMonth={value?.from}
             selected={value}
-            onSelect={onChange}
+            onSelect={handleSelect}
             numberOfMonths={1}
           />
         </PopoverContent>

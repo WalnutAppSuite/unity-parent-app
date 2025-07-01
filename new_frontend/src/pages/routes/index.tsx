@@ -22,6 +22,7 @@ import Certificate from '@/pages/bonafide-certificate';
 import HelpDesk from '@/pages/helpdesk';
 import Cmap from '@/pages/cmap';
 import Timetable from '@/pages/timetable/index';
+import TimetableDetailed from '@/pages/timetable/detailed';
 import KnowledgeBase from '@/pages/knowledge-base/index';
 import StarredMessages from '@/pages/starred/index';
 import ArchivedMessages from '@/pages/archived/index';
@@ -63,6 +64,7 @@ function AppRoutes() {
         <Route path="/helpdesk" element={<HelpDesk />} />
         <Route path="/knowledge-base" element={<KnowledgeBase />} />
         <Route path="/timetable" element={<Timetable />} />
+        <Route path="/timetable/detailed" element={<TimetableDetailed />} />
         <Route path='/starred' element={<StarredMessages />} />
         <Route path='/archived' element={<ArchivedMessages />} />
         <Route path="*" element={<NotFound />} />

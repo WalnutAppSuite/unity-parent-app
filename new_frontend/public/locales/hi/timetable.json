@@ -1,0 +1,24 @@
+{
+    "button": "टाइम टेबल दिखाएं",
+    "error": "टाइम टेबल डेटा फिचिंग में कोई त्रुटि हो गई",
+    "noData": "टाइम टेबल डेटा नहीं मिला",
+    "period": "अवधि",
+    "days": {
+        "monday": "सोमवार",
+        "tuesday": "मंगलवार",
+        "wednesday": "बुधवार",
+        "thursday": "गुरुवार",
+        "friday": "शनिवार",
+        "saturday": "रविवार",
+        "sunday": "रविवार"
+    },
+    "daysAbbr": {
+        "monday": "सोम",
+        "tuesday": "मंगल",
+        "wednesday": "बुध",
+        "thursday": "गुरु",
+        "friday": "शनि",
+        "saturday": "रवि",
+        "sunday": "रवि"
+    }
+}

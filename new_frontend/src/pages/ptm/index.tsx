@@ -55,8 +55,8 @@ function PTMChild({ studentId, schoolName, studentName }: { studentId: string, s
 
   return (
     <div className="tw-flex tw-flex-col tw-gap-3">
-      <Button onClick={() => navigate('/ptm/online', { state: { studentId, studentName } })}>Upcoming Online PTMs</Button>
-      <Button onClick={() => navigate('/ptm/offline', { state: { schoolName, studentName } })}>Offline PTMs Schedule</Button>
+      <Button className="tw-bg-secondary !tw-text-primary tw-text-4 tw-font-semibold tw-rounded-xl" onClick={() => navigate('/ptm/online', { state: { studentId, studentName } })}>Upcoming Online PTMs</Button>
+      <Button className="tw-bg-secondary !tw-text-primary tw-text-4 tw-font-semibold tw-rounded-xl" onClick={() => navigate('/ptm/offline', { state: { schoolName, studentName } })}>Offline PTMs Schedule</Button>
     </div>
   )
 }

@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { CalendarIcon, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useState, useEffect } from "react"
 
 interface SingleDatePickerProps {
     className?: string;
@@ -24,11 +25,23 @@ export function SingleDatePicker({
     placeHolder,
     minDate
 }: SingleDatePickerProps) {
+    const [open, setOpen] = useState(false);
     const handleClear = () => onChange(undefined);
+
+    // Close popover when a date is selected
+    useEffect(() => {
+        if (value) {
+            setOpen(false);
+        }
+    }, [value]);
+
+    const handleSelect = (date: Date | undefined) => {
+        onChange(date);
+    };
 
     return (
         <div className={cn("tw-relative", className)}>
-            <Popover>
+            <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button
                         id="date"
@@ -51,7 +64,7 @@ export function SingleDatePicker({
                         mode="single"
                         defaultMonth={value}
                         selected={value}
-                        onSelect={onChange}
+                        onSelect={handleSelect}
                         numberOfMonths={1}
                         disabled={minDate ? (date => date < minDate) : undefined}
                     />
