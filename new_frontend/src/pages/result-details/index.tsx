@@ -170,6 +170,8 @@ const ResultDetailsPage = () => {
   const isMarksDisabled = !assessmentGroupData?.result_print_format;
 
   const handleDownloadPdf = async () => {
+     const { i18n } = useTranslation();
+
     if (!firstResultName || !assessmentGroupData || !schoolLetterHeadData) {
       toast.error(t("noDataForDownload"));
       return;
@@ -186,7 +188,7 @@ const ResultDetailsPage = () => {
         format,
         no_letterhead: "0",
         letterhead: schoolLetterHeadData?.data?.letter_head || "Default letter head",
-        _lang: "en",
+        _lang: i18n.language,
       });
       const downloadUrl = `/api/method/frappe.utils.print_format.download_pdf?${params.toString()}`;
       const link = document.createElement("a");
@@ -196,7 +198,8 @@ const ResultDetailsPage = () => {
       link.click();
       document.body.removeChild(link);
       toast.success(t("pdfDownloadStarted"));
-    } catch {
+    } catch(error) {
+      console.error("Download failed:", error);
       toast.error(t("downloadFailed"));
     }
   };
