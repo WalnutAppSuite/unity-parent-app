@@ -4,6 +4,7 @@ import PortionCard from '@/components/custom/curriculum-updates-card/portion';
 import { useCmapPortion } from '@/hooks/useCmapList';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@/components/ui/skeleton';
+import CmapInstruction from '@/components/custom/instruction/cmap';
 
 function PortionListing() {
   const location = useLocation();
@@ -33,7 +34,7 @@ function PortionListing() {
         <div className="tw-flex tw-flex-col tw-items-center">
           <h2 className="tw-text-[18px]">{student_name || ''}</h2>
         </div>
-        <div className="tw-text-red-500 tw-font-normal tw-w-full tw-text-center tw-flex tw-justify-center tw-items-center tw-items-center tw-justify-center tw-h-[80%]">{t('error')}</div>
+        <div className="tw-text-red-500 tw-font-normal tw-w-full tw-text-center tw-flex tw-justify-center tw-items-center tw-h-[80%]">{t('error')}</div>
       </div>
     )
   }
@@ -44,15 +45,16 @@ function PortionListing() {
         <div className="tw-flex tw-flex-col tw-items-center">
           <h2 className="tw-text-[18px]">{student_name || ''}</h2>
         </div>
-        <div className="tw-w-full tw-font-normal tw-text-center tw-flex tw-justify-center tw-items-center tw-items-center tw-justify-center tw-h-[80%]">{t('noData')}</div>
+        <div className="tw-w-full tw-font-normal tw-text-center tw-flex tw-justify-center tw-items-center tw-h-[80%]">{t('noData')}</div>
       </div>
     );
   }
 
   return (
     <div className="tw-text-primary tw-font-semibold tw-flex tw-flex-col tw-items-center">
-      <div className="tw-flex tw-flex-col tw-items-center">
+      <div className="tw-flex tw-flex-col tw-items-center tw-mb-2 tw-gap-1">
         <h2 className="tw-text-[18px]">{student_name || ''}</h2>
+        <CmapInstruction />
       </div>
       <div className="tw-flex tw-flex-col tw-w-full tw-h-full tw-gap-2 tw-p-4 tw-pt-0">
         <div className="tw-flex tw-flex-col tw-w-full tw-h-full tw-gap-2">

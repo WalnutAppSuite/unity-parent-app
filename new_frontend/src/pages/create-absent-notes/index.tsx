@@ -1,4 +1,3 @@
-
 import ProfileWrapper from '@/components/custom/ProfileWrapper';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -89,13 +88,15 @@ function CreateNoteChild({ name, division }: { name: string, division: string })
         );
     };
 
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
     return (
         <div className="tw-flex tw-flex-col tw-gap-4">
             {/* Date */}
             <div className="tw-flex tw-items-start tw-flex-col tw-gap-2">
                 <label htmlFor="date-picker" className="tw-text-secondary tw-text-sm tw-font-medium">
-                    {t("fromLable")}
-                    <span className="tw-text-red-500"> *</span>
+                    {t("fromLable")}*
                 </label>
                 <div className="tw-w-full">
                     <SingleDatePicker
@@ -108,6 +109,7 @@ function CreateNoteChild({ name, division }: { name: string, division: string })
                             }
                         }}
                         className="tw-flex-1"
+                        minDate={yesterday}
                     />
                 </div>
             </div>
@@ -116,8 +118,7 @@ function CreateNoteChild({ name, division }: { name: string, division: string })
             {/* Time */}
             <div className="tw-flex tw-items-start tw-flex-col tw-gap-2">
                 <label htmlFor="date-picker" className="tw-text-secondary tw-text-sm tw-font-medium">
-                    {t("toLable")}
-                    <span className="tw-text-red-500"> *</span>
+                    {t("toLable")} *
                 </label>
                 <div className="tw-w-full">
                     <SingleDatePicker
@@ -137,8 +138,7 @@ function CreateNoteChild({ name, division }: { name: string, division: string })
             {/* Reason */}
             <div className="tw-flex tw-items-start tw-gap-2 tw-flex-col">
                 <label htmlFor="text-area" className="tw-text-secondary tw-text-sm tw-font-medium">
-                    {t("notesLable")}
-                    <span className="tw-text-red-500"> *</span>
+                    {t("notesLable")} *
                 </label>
                 <Textarea
                     id="text-area"

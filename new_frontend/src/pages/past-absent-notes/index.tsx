@@ -78,7 +78,7 @@ function PastLeaveNotesChild({ studentId }: { studentId: string }) {
   const displayItems = isOpen ? pastLeaveDetails : [pastLeaveDetails[0]];
 
   return (
-    <div className="tw-rounded-lg tw-bg-secondary/15 tw-text-secondary tw-shadow-sm tw-p-4">
+    <div className="tw-rounded-lg !tw-w-full tw-bg-secondary/15 tw-text-secondary tw-shadow-sm tw-p-4">
       <div
         className="tw-flex tw-justify-between tw-items-center tw-cursor-pointer"
         onClick={toggleAccordion}
@@ -92,7 +92,7 @@ function PastLeaveNotesChild({ studentId }: { studentId: string }) {
         </motion.div>
       </div>
 
-      <div className="tw-mt-3 tw-grid tw-text-md tw-grid-cols-2 tw-font-semibold tw-text-primary" style={{ gridTemplateColumns: "40% 60%" }}>
+      <div className="tw-mt-3 tw-w-full tw-grid tw-grid-cols-2 tw-font-semibold tw-text-primary">
         <span>{t('date')}</span>
         <span>{t('reason')}</span>
       </div>
@@ -130,13 +130,10 @@ function PastLeaveNotesChild({ studentId }: { studentId: string }) {
                     height: { duration: 0.2, ease: "easeIn" }
                   }
                 }}
-                className="tw-grid tw-grid-cols-2 tw-py-2 tw-text-sm tw-overflow-hidden"
-                style={{ gridTemplateColumns: "35% 65%" }}
+                className="tw-grid tw-grid-cols-2 tw-py-2 tw-text-sm tw-overflow-hidden tw-w-full"
               >
                 <div>{formatted}</div>
-                <div>
-                  {item.reason}
-                </div>
+                <div>{item.reason}</div>
               </motion.div>
             );
           })}

@@ -1,4 +1,3 @@
-
 import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -35,7 +34,12 @@ export function DateRangePicker({
   }, [value?.from, value?.to]);
 
   const handleSelect = (range: DateRange | undefined) => {
-    onChange(range);
+    if (range?.from && range?.to && range.from.getTime() === range.to.getTime()) {
+      // Only one date selected, treat as incomplete range
+      onChange({ from: range.from, to: undefined });
+    } else {
+      onChange(range);
+    }
   };
 
   return (

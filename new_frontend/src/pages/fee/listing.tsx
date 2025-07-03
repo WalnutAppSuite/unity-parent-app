@@ -56,9 +56,9 @@ function FeeListing() {
         >
             <div className="tw-flex tw-flex-col tw-items-center">
                 <h2 className="tw-text-[24px] tw-font-bold">{studentName || ''}</h2>
-                <Badge variant="outline" className="tw-text-sm">
+                <div className="tw-text-sm !tw-text-primary">
                     {academicYear}
-                </Badge>
+                </div>
             </div>
 
             <FeeCards

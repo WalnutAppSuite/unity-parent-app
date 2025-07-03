@@ -58,7 +58,7 @@ function StudentProfileWithFilters({ student }: { student: Student }) {
 function FeeChild({ studentId, studentName }: { studentId: string, studentName: string }) {
   const [academicYear, setAcademicYear] = useState("");
   const { t } = useTranslation('fee');
-  const { data, isLoading } = useStudentAcademicYear(studentId);
+  const { data } = useStudentAcademicYear(studentId);
 
   const navigate = useNavigate();
 
@@ -88,7 +88,7 @@ function FeeChild({ studentId, studentName }: { studentId: string, studentName: 
       </Select>
       <Button
         className="tw-bg-secondary !tw-text-primary tw-text-4 tw-font-semibold tw-rounded-xl"
-        // disabled={}
+        disabled={!academicYear}
         onClick={handleFeesButtonClick}
       >
         {t('button')}

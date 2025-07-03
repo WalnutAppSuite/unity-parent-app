@@ -35,8 +35,7 @@ function Daily({ data }: { data: Cmap }) {
         </div>
         <div>{t('chapter')} : {data.products[0].chapter_name}</div>
         <div
-          className="tw-flex tw-items-center tw-gap-1 tw-overflow-x-scroll"
-          id="doc-card"
+          className="tw-flex tw-gap-1 tw-overflow-x-scroll"
         >
           {data.products.map((product, index) => (
             <DocCard

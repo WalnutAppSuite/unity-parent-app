@@ -12,6 +12,7 @@
     "copy-html-entry": "cp ../unity_parent_app/public/new_frontend/index.html ../unity_parent_app/www/parent-app.html"
   },
   "dependencies": {
+    "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-popover": "^1.1.14",
     "@radix-ui/react-scroll-area": "^1.2.9",
     "@radix-ui/react-select": "^2.2.5",

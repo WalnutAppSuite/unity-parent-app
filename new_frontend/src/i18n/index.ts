@@ -43,6 +43,7 @@ i18n
       'fee_listing',
       'not_found',
       'timetable',
+      'knowledge_base',
     ],
     defaultNS: 'home',
     interpolation: {

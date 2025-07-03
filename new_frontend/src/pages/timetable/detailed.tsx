@@ -86,7 +86,7 @@ function DetailedTimetable() {
 
     return (
         <motion.div ref={scrollContainerRef} className="tw-w-full tw-overflow-auto tw-h-full">
-            <Card className="tw-p-6 tw-min-w-fit tw-shadow-xl !tw-bg-background-accent">
+            <Card className="tw-min-w-fit tw-shadow-xl !tw-bg-background-accent">
                 <table className="tw-table-auto tw-bg-secondary/50 tw-w-full tw-min-w-max">
                     <thead>
                         <tr>

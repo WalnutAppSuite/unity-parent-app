@@ -63,13 +63,12 @@ const DashboardLayout = () => {
     '/fee': 'fee',
     '/fee/list': 'feeListing',
     '/result': 'result',
-    '/observation': 'observation',
-    '/observation/list': 'observationListing',
     '/calendar': 'schoolCalendar',
     '/school-calendar': 'schoolCalendar',
     '/certificate': 'bonafideCertificate',
     '/helpdesk': 'helpdesk',
-    '/knowledge-base': 'knowledgeBase',
+    '/observation': 'observation',
+    '/observation/list': 'observation',
     '/timetable': 'timetable',
     '/timetable/detailed': 'timetableDetailed',
     '/starred': 'starredMessages',
@@ -138,15 +137,17 @@ const DashboardLayout = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, x: -1000 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: 1000 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="tw-w-full tw-bg-background-accent tw-min-h-[calc(100vh-56px)] tw-overflow-y-scroll"
-      >
-        <Outlet />
-      </motion.div>
+      <div className="tw-w-full tw-bg-background-accent tw-min-h-[calc(100vh-56px)] tw-overflow-y-scroll tw-flex tw-justify-center">
+        <motion.div
+          initial={{ opacity: 0, x: -1000 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 1000 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="tw-bg-background-accent tw-max-w-md tw-w-full tw-h-full tw-border-opacity-30 tw-overflow-y-auto tw-shadow-primary tw-shadow-2xl"
+        >
+          <Outlet />
+        </motion.div>
+      </div>
     </div>
   );
 };

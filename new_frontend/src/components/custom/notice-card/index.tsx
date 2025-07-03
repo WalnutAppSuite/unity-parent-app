@@ -64,7 +64,7 @@ function NoticeCard({ notice }: NoticeCardProps) {
 
   return (
     <Card onClick={handleRedirect} className='tw-w-full tw-h-fit !tw-rounded-3xl tw-text-primary/70 tw-bg-white'>
-      <div className={`tw-py-4 tw-px-5 !tw-rounded-3xl ${notice.is_read ? 'tw-bg-secondary' : 'tw-bg-primary/5'}`} >
+      <div className={`tw-py-4 tw-px-5 !tw-rounded-3xl ${!notice.is_read ? 'tw-bg-secondary' : 'tw-bg-primary/10'}`} >
         <div className="tw-flex tw-items-center tw-justify-between tw-gap-2 tw-mb-2">
           <div className="tw-flex tw-gap-2 tw-flex-wrap">
             {/* Student badge */}
@@ -97,7 +97,7 @@ function NoticeCard({ notice }: NoticeCardProps) {
           </span>
 
           <span className='tw-flex tw-w-fit tw-gap-1 tw-items-center tw-text-sm'>
-            <Circle className={`tw-w-4 tw-h-4 ${!notice.is_read ? 'tw-fill-green-500 tw-text-green-500' : 'tw-fill-orange-500 tw-text-orange-500'}`} />
+            <Circle className={`tw-w-4 tw-h-4 ${notice.is_read ? 'tw-fill-green-500 tw-text-green-500' : 'tw-fill-orange-500 tw-text-orange-500'}`} />
             {notice.is_read ? 'Read' : 'Unread'}
           </span>
         </div>

@@ -14,12 +14,10 @@ import type { Unit, AcademicYear } from '@/hooks/useCmapList';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useClassDetails } from '@/hooks/useClassDetails';
-import CmapInstruction from '@/components/custom/instruction/cmap';
 
 function Daily({ students }: { students: Student[] }) {
   return (
     <div className="tw-flex tw-flex-col tw-gap-4">
-      <CmapInstruction />
       {students.map((student) => (
         <StudentProfileWithFilters key={student.name} student={student} />
       ))}

@@ -6,6 +6,7 @@ import Daily from "@/pages/daily";
 import { useAtom } from "jotai";
 import { studentsAtom } from "@/store/studentAtoms";
 import { useTranslation } from "react-i18next";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function AnimatedTabs() {
 
@@ -26,7 +27,11 @@ export default function AnimatedTabs() {
     const [students] = useAtom(studentsAtom);
 
     if (!students || students.length === 0) {
-        return <div className="tw-text-center tw-p-4">Loading students...</div>;
+        return <div className="tw-text-center tw-w-full tw-h-[80vh] tw-flex tw-items-center tw-justify-center">
+            <div className="tw-w-1/2">
+                <LoadingSpinner />
+            </div>
+        </div>;
     }
 
     useEffect(() => {

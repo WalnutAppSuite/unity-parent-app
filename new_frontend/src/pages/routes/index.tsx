@@ -24,6 +24,7 @@ import Cmap from '@/pages/cmap';
 import Timetable from '@/pages/timetable/index';
 import TimetableDetailed from '@/pages/timetable/detailed';
 import KnowledgeBase from '@/pages/knowledge-base/index';
+import DetailedKnowledgeBase from '@/pages/knowledge-base/detailed';
 import StarredMessages from '@/pages/starred/index';
 import ArchivedMessages from '@/pages/archived/index';
 import DailyListing from '@/pages/daily/listing';
@@ -36,7 +37,7 @@ function AppRoutes() {
     <Routes>
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Login />} />
 
       {/* Protected/dashboard routes */}
       <Route element={<DashboardLayout />}>
@@ -63,6 +64,7 @@ function AppRoutes() {
         <Route path="/certificate" element={<Certificate />} />
         <Route path="/helpdesk" element={<HelpDesk />} />
         <Route path="/knowledge-base" element={<KnowledgeBase />} />
+        <Route path="/knowledge-base/detailed" element={<DetailedKnowledgeBase />} />
         <Route path="/timetable" element={<Timetable />} />
         <Route path="/timetable/detailed" element={<TimetableDetailed />} />
         <Route path='/starred' element={<StarredMessages />} />

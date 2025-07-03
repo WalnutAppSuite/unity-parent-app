@@ -13,14 +13,12 @@ import { useCmapFilters } from '@/hooks/useCmapList';
 import type { Unit, Subject, AcademicYear } from '@/hooks/useCmapList';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import CmapInstruction from "@/components/custom/instruction/cmap"
 import { Skeleton } from '@/components/ui/skeleton';
 
 function Daily({ students }: { students: Student[] }) {
   if (!students || students.length === 0) {
     return (
       <div className="tw-flex tw-flex-col tw-gap-4">
-        <CmapInstruction />
         <div className="tw-text-center tw-p-4 tw-text-primary/50">
           No students available
         </div>
@@ -30,7 +28,6 @@ function Daily({ students }: { students: Student[] }) {
 
   return (
     <div className="tw-flex tw-flex-col tw-gap-4">
-      <CmapInstruction />
       {students.map((student) => (
         <StudentProfileWithFilters key={student.name} student={student} />
       ))}

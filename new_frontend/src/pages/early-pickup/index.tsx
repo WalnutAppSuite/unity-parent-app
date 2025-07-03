@@ -91,8 +91,7 @@ function EarlyPickupChild({ studentId, program }: { studentId: string; program: 
       {/* Date */}
       <div className="tw-flex tw-items-start tw-flex-col tw-gap-2">
         <label htmlFor="date-picker" className="tw-text-secondary tw-text-sm tw-font-medium">
-          {t("pickupDateLable")}
-          <span className="tw-text-red-500"> *</span>
+          {t("pickupDateLable")} *
         </label>
         <div className="tw-w-full">
           <SingleDatePicker
@@ -111,8 +110,7 @@ function EarlyPickupChild({ studentId, program }: { studentId: string; program: 
       {/* Time */}
       <div className="tw-flex tw-items-start tw-gap-2 tw-flex-col">
         <label htmlFor="time-input" className="tw-text-secondary tw-text-sm tw-font-medium">
-          {t("pickTimeLable")}
-          <span className="tw-text-red-500"> *</span>
+          {t("pickTimeLable")} *
         </label>
         <Input
           id="time-input"

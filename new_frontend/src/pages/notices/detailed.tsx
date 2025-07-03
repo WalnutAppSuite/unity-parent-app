@@ -1,15 +1,12 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useNoticeDetails from "@/hooks/useNoticeDetailed";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Archive, CalendarDays, Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "@/utils/formatDate";
 import { useEffect, useRef, useState } from "react";
 import useNoticeActions from "@/hooks/useNoticeActions";
-import { toast } from "sonner";
 import type { Notice } from "@/types/notice";
-import SuspenseLoader from "@/components/SuspenseLoader";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 function NoticeShadowContent({ html }: { html: string }) {
@@ -34,6 +31,7 @@ function NoticeShadowContent({ html }: { html: string }) {
 }
 
 function DetailedNotices() {
+  const navigate = useNavigate();
   const location = useLocation();
   const { notice, studentId } = location.state || {};
   const { t } = useTranslation("notices");
@@ -55,9 +53,7 @@ function DetailedNotices() {
     toggleStar(noticeData);
     setIsStarred((prev) => !prev);
     if (isStarred) {
-      toast.success("Notice unstarred successfully!");
-    } else {
-      toast.success("Notice starred successfully!");
+      navigate("/starred");
     }
   };
 
@@ -65,9 +61,7 @@ function DetailedNotices() {
     toggleArchive(noticeData);
     setIsArchived((prev) => !prev)
     if (isArchived) {
-      toast.success("Notice unarchived successfully!");
-    } else {
-      toast.success("Notice archived successfully!");
+      navigate("/archived");
     }
   };
 
@@ -95,10 +89,10 @@ function DetailedNotices() {
 
   return (
     <div className="tw-max-w-2xl tw-mx-auto tw-text-primary">
-      <div className="tw-flex tw-flex-col tw-items-center tw-p-6 tw-text-center tw-bg-primary tw-text-secondary">
+      <div className="tw-flex tw-flex-col tw-items-center tw-p-6 tw-text-left tw-bg-primary tw-text-secondary">
         <h1 className="tw-text-xl tw-font-bold tw-mb-2">{noticeData?.subject || t("noSubject", "No Subject")}</h1>
-        <div className="tw-flex tw-items-center tw-justify-center tw-w-full">
-          <div className="tw-flex tw-gap-3 tw-pr-3 tw-border-r tw-border-secondary/20 tw-items-center">
+        <div className="tw-flex tw-items-center tw-justify-between tw-w-full">
+          <div className="tw-flex tw-gap-3 tw-items-center">
             <Badge className="tw-bg-secondary/10 tw-text-secondary tw-text-xs">{noticeData?.student_first_name || studentId}</Badge>
             <span className="tw-flex tw-items-center tw-gap-1 tw-text-secondary/70 tw-text-sm">
               <CalendarDays className="tw-w-4 tw-h-4" />

@@ -72,6 +72,7 @@ const DocCard = ({ name = 'Untitled', url, type = '' }: DocCardProps) => {
       onClick={handleClick}
       variant="secondary"
       className={`
+        !tw-min-w-[170px]
         tw-flex tw-items-center tw-gap-2 tw-justify-center 
         tw-font-normal !tw-px-3 !tw-py-2 !tw-rounded-[6px] 
         ${className}

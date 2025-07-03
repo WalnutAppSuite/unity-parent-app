@@ -4,6 +4,7 @@ import { useCmapList } from '@/hooks/useCmapList';
 import { DailySkeleton } from '@/components/custom/curriculum-updates-card/daily/skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTranslation } from 'react-i18next';
+import CmapInstruction from '@/components/custom/instruction/cmap';
 
 function DailyListing() {
   const location = useLocation();
@@ -34,7 +35,7 @@ function DailyListing() {
             {subject + " " || ''}:{" " + t('unit') + ' ' + unit}
           </p>
         </div>
-        <div className="tw-text-red-500 tw-w-full tw-text-center tw-flex tw-justify-center tw-items-center tw-items-center tw-justify-center tw-h-[80%]">{t('error')}</div>
+        <div className="tw-text-red-500 tw-w-full tw-text-center tw-flex tw-justify-center tw-items-center tw-h-[80%]">{t('error')}</div>
       </div>
     );
   }
@@ -48,7 +49,7 @@ function DailyListing() {
             {subject + " " || ''}:{" " + t('unit') + ' ' + unit}
           </p>
         </div>
-        <div className="tw-w-full tw-font-normal tw-text-center tw-flex tw-justify-center tw-items-center tw-items-center tw-justify-center tw-h-[80%]">{t('noData')}</div>
+        <div className="tw-w-full tw-font-normal tw-text-center tw-flex tw-justify-center tw-items-center tw-h-[80%]">{t('noData')}</div>
       </div>
     );
   }
@@ -57,9 +58,10 @@ function DailyListing() {
     <div className="tw-text-primary tw-font-semibold tw-flex tw-flex-col tw-items-center">
       <div className="tw-flex tw-flex-col tw-items-center">
         <h2 className="tw-text-[18px]">{student_name || ''}</h2>
-        <p className="tw-text-[14px]">
+        <p className="tw-text-[14px] tw-mb-2">
           {subject + " " || ''}:{" " + t('unit') + ' ' + unit}
         </p>
+        <CmapInstruction />
       </div>
       <div className="tw-flex tw-flex-col tw-w-full tw-h-full tw-gap-3 tw-p-4">
         {data?.map((item) => <DailyCard key={item.name} data={item} />)}

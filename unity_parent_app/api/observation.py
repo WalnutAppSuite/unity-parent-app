@@ -72,7 +72,11 @@ def get_observations(student_id, unit):
             "name": obs.name,
             "subject": obs.subject,
             "observation_type": obs_type_label,
-            "observation_label": (obs.observation_type or "").split()[0] if obs.observation_type and obs.observation_type.strip() else "Unknown",
+            "observation_label": (
+                "C" if "classroom" in (obs.observation_type or "").lower() else
+                "H" if "homework" in (obs.observation_type or "").lower() else
+                (obs.observation_type or "").split()[0] if obs.observation_type and obs.observation_type.strip() else "Unknown"
+            ),
             "marks": obs.average_marks,
             "Table": obs_marks_sorted,
             "total_marks": total_marks

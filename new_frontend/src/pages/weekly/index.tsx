@@ -7,14 +7,12 @@ import { useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 import { useNavigate } from 'react-router-dom';
 import { useClassDetails } from '@/hooks/useClassDetails';
-import CmapInstruction from '@/components/custom/instruction/cmap';
 
 function Weekly({ students }: { students: Student[] }) {
   // Handle case where students might be undefined or empty
   if (!students || students.length === 0) {
     return (
       <div className="tw-flex tw-flex-col tw-gap-4">
-        <CmapInstruction />
         <div className="tw-text-center tw-p-4 tw-text-primary/50">
           No students available
         </div>
@@ -24,7 +22,6 @@ function Weekly({ students }: { students: Student[] }) {
 
   return (
     <div className="tw-flex tw-flex-col tw-gap-4">
-      <CmapInstruction />
       {students.map((student) => (
         <StudentProfileWithFilters key={student.name} student={student} />
       ))}
