@@ -17,8 +17,8 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { title: "login", path: "/login" },
-  { title: "home", path: "/" },
+  // { title: "login", path: "/login" },
+  // { title: "home", path: "/" },
   { title: "messages", path: "/notices" },
   { title: "starredMessages", path: "/starred" },
   { title: "archivedMessages", path: "/archived" },
