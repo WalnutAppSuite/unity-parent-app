@@ -7,6 +7,13 @@ import StudentAccordion from './studentAccordion';
 import ActionPopup from './popupBars/ActionPopup'
 
 
+/**
+ * Displays and manages an interactive list of student profiles with single-edit enforcement.
+ *
+ * Allows users to view and edit student details, ensuring only one student can be edited at a time. If an edit is in progress and the user attempts to edit another student, a confirmation popup prompts the user to switch or stay. Updates to student data are reflected in the shared state.
+ *
+ * @returns The rendered student profile management component.
+ */
 function StudentProfile() {
   const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
   const [showWarningPopup, setShowWarningPopup] = useState(false);

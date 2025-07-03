@@ -2,6 +2,11 @@ import React from 'react';
 import { motion } from "framer-motion";
 import type { ActionPopupProps } from '@/types/students';
 
+/**
+ * Displays a modal popup with a title, message, and customizable save and cancel buttons.
+ *
+ * The popup overlays the entire viewport and animates into view. It is only rendered when `isVisible` is true. The save and cancel buttons trigger the provided callbacks when clicked, and their labels are customizable.
+ */
 function ActionPopup({ isVisible, onSave, onCancel, title, message,saveButtonText,cancelButtonText }: ActionPopupProps) {
   if (!isVisible) return null;
 

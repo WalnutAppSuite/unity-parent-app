@@ -47,6 +47,20 @@ const OTPInput: React.FC<OTPInputProps> = ({ value, length, onChange, onComplete
   );
 };
 
+/**
+ * Displays an expandable student profile card with editable fields and OTP verification.
+ *
+ * Renders detailed student and guardian information in a stylized card, supporting inline editing for contact, address, medical, and financial fields. Sensitive updates require OTP verification via email or mobile. The component manages editing state, field-level updates, and UI expansion, and supports both API-driven and mock data modes. Animated transitions and status messages provide user feedback during editing and verification.
+ *
+ * @param student - The student data object to display and edit
+ * @param index - The index used for card gradient styling
+ * @param isEditing - Whether the card is in editing mode
+ * @param onEditStart - Callback triggered when editing begins for this student
+ * @param onEditAttempt - Callback triggered if an edit is attempted while another edit is active
+ * @param onStudentUpdate - Callback to update student data in mock mode
+ * @param onEditComplete - Callback triggered when editing is completed
+ * @returns The rendered student profile card component
+ */
 function StudentAccordion({ 
   student, 
   index, 
