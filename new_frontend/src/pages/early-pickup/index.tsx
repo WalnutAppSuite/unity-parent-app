@@ -137,7 +137,7 @@ function EarlyPickupChild({ studentId, program }: { studentId: string; program: 
       </div>
 
       <Button
-        className="tw-bg-secondary !tw-text-primary tw-text-4 tw-font-semibold tw-rounded-xl"
+        className="tw-bg-secondary !tw-text-primary hover:!tw-bg-secondary/80 tw-text-4 tw-font-semibold tw-rounded-xl"
         disabled={!date || !time}
         onClick={handleEarlySubmit}
       >

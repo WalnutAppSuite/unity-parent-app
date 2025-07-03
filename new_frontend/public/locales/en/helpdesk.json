@@ -1,0 +1,14 @@
+{
+    "title": "Need a hand? Reach out and we'll be happy to help out",
+    "issue_label": "What is the issue?",
+    "issue_placeholder": "Category",
+    "sub_issue_label": "Select a specific issue",
+    "sub_issue_placeholder": "Sub Category",
+    "message_placeholder": "Enter your message here",
+    "attachment": "Attachment",
+    "select_file": "Select file",
+    "suggestion": "Suggestion from knowledge base",
+    "did_you_find": "Did you find your answer?",
+    "yes": "Yes",
+    "no": "No"
+}

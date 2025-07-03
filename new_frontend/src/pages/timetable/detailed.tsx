@@ -34,6 +34,9 @@ function DetailedTimetable() {
     );
     const allDays = WEEKDAYS.filter(day => allDaysUnsorted.includes(day));
 
+    console.log(error);
+
+
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const todayCellRef = useRef<HTMLTableCellElement>(null);
 
@@ -60,14 +63,33 @@ function DetailedTimetable() {
         return (
             <div className="tw-flex tw-flex-col tw-gap-4 tw-p-6">
                 <Skeleton className="tw-w-32 tw-h-6" />
-                {[...Array(4)].map((_, idx) => (
-                    <Skeleton key={idx} className="tw-w-full tw-h-16" />
+                {[...Array(1)].map((_, idx) => (
+                    <Skeleton key={idx} className="tw-w-full tw-h-60" />
                 ))}
             </div>
         );
     }
 
     if (error) {
+        const errorMsg = String(error);
+        if (errorMsg.includes("No timetable found")) {
+            return (
+                <div className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-h-[70vh] tw-gap-4 tw-text-primary">
+                    <p className="tw-font-semibold">{studentName}</p>
+                    <p>{t("noTimetableFound", "No timetable found for this division.")}</p>
+                </div>
+            );
+        }
+        if (errorMsg.includes("data is undefined")) {
+            return (
+                <div className="tw-flex tw-flex-col tw-items-center tw-justify-start tw-h-[70vh] tw-gap-4 tw-text-primary">
+                    <p className="tw-font-semibold">{studentName}</p>
+                    <div className="tw-flex tw-h-full tw-flex-col tw-items-center tw-justify-center">
+                        {t("noData")}
+                    </div>
+                </div>
+            );
+        }
         return (
             <div className="tw-text-center tw-h-[80vh] tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-3">
                 <p className="tw-text-destructive tw-font-semibold">{t("error")}</p>
@@ -75,7 +97,7 @@ function DetailedTimetable() {
         );
     }
 
-    if (!data?.timetable) {
+    if (!data) {
         return (
             <div className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-h-[70vh] tw-gap-4 tw-text-primary">
                 <p className="tw-font-semibold">{studentName}</p>

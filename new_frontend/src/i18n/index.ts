@@ -44,6 +44,7 @@ i18n
       'not_found',
       'timetable',
       'knowledge_base',
+      'helpdesk',
     ],
     defaultNS: 'home',
     interpolation: {
