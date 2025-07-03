@@ -25,16 +25,21 @@ const useNoticeList = (props: NoticeListProps) => {
     return useInfiniteQuery({
         queryKey: ["notices", props.staredOnly, props.archivedOnly, props.search_query],
         queryFn: async ({ pageParam }: { pageParam?: Cursor }) => {
-            const url = new URLSearchParams({
-                stared_only: props.staredOnly?.toString() || "",
-                archived_only: props.archivedOnly?.toString() || "",
+            const params = new URLSearchParams({
                 cursor_name: pageParam?.name || "",
                 cursor_creation: pageParam?.creation || "",
                 search_query: props?.search_query || "",
                 limit: String(props.limit || 10),
             });
 
-            const response = await fetch(`/api/method/unity_parent_app.api.notices.get_all_notices?${url}`);
+            if (props.staredOnly) {
+                params.set("stared_only", "true");
+            }
+            if (props.archivedOnly) {
+                params.set("archived_only", "true");
+            }
+
+            const response = await fetch(`/api/method/unity_parent_app.api.notices.get_all_notices?${params}`);
 
             if (!response.ok) {
                 throw new Error("Failed to fetch notice list");

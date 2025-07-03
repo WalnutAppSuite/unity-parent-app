@@ -89,13 +89,6 @@ def get_all_notices(
             "data": [],
         }
 
-    # Create cache key based on user and parameters
-    cache_key = f"walsh:notices_{user}_{cursor_creation}_{cursor_name}_{limit}_{stared_only}_{archived_only}"
-    notices_cache = frappe.cache().get_value(cache_key)
-    if notices_cache:
-        print("add", cache_key)
-        return notices_cache
-
     cursor = None
     if cursor_name and cursor_creation:
         cursor = {
@@ -124,7 +117,7 @@ def get_all_notices(
         "limit": limit + 1,
         "cursor_creation": cursor.get("creation") if cursor else None,
         "cursor_name": cursor.get("name") if cursor else None,
-        "search_query": f"%{search_query}%" if search_query else None,
+        "search_query": f"%{search_query.lower()}%" if search_query else None,
     }
 
     cursor_condition = (
@@ -134,7 +127,7 @@ def get_all_notices(
     )
 
     search_condition = (
-        "AND (subject LIKE %(search_query)s OR notice LIKE %(search_query)s)"
+        "AND (LOWER(subject) LIKE LOWER(%(search_query)s) OR LOWER(notice) LIKE LOWER(%(search_query)s))"
         if search_query
         else ""
     )
@@ -250,10 +243,8 @@ def get_all_notices(
         "next_cursor": next_cursor,
         "has_more": has_more,
     }
-
-    frappe.log_error(cache_key, result)
-
-    frappe.cache().set_value(cache_key, result, expires_in_sec=300)
+    
+    print("notices abc", len(result["notices"]))
 
     return result
 
