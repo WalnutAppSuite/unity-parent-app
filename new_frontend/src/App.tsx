@@ -6,6 +6,7 @@ import { studentsAtom } from '@/store/studentAtoms';
 import { useSetAtom } from 'jotai';
 import { useEffect, Suspense } from 'react';
 import { Toaster } from 'sonner'
+import './index.css';
 import ErrorBoundary from "@/components/ErrorBoundary";
 import SuspenseLoader from './components/SuspenseLoader';
 

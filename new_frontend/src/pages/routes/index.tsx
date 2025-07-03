@@ -31,6 +31,7 @@ import DailyListing from '@/pages/daily/listing';
 import WeeklyListing from '@/pages/weekly/listing';
 import PortionListing from '@/pages/portion/listing';
 import NotFound from '@/pages/404';
+import ResultDetailsPage from '../result-details';
 
 function AppRoutes() {
   return (
@@ -70,6 +71,7 @@ function AppRoutes() {
         <Route path='/starred' element={<StarredMessages />} />
         <Route path='/archived' element={<ArchivedMessages />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="result-details/:studentName" element={<ResultDetailsPage />} />
       </Route>
     </Routes>
   );

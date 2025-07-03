@@ -2,7 +2,7 @@ import common_site_config from '../../../sites/common_site_config.json';
 
 const { webserver_port } = common_site_config;
 
-const uat = "https://uat.unityedu.tech";
+const uat = 'https://uat.unityedu.tech';
 
 export default {
   '^/(app|api|assets|files|private)': {
@@ -12,9 +12,9 @@ export default {
     changeOrigin: true,
     router: function (req: any) {
       const site_name = req.headers.host.split(':')[0];
-      console.log(req)
+      console.log(req);
       return `http://${site_name}:${webserver_port}`;
       // return uat;
-    }
-  }
+    },
+  },
 };
