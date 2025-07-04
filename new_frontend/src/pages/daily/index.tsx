@@ -150,7 +150,7 @@ function DailyChildren({ studentId, first_name }: { studentId: string, first_nam
           ))}
         </SelectContent>
       </Select>
-      <Button className="tw-bg-secondary !tw-text-primary tw-text-4 tw-font-semibold tw-rounded-xl" onClick={handleDailyButtonClick} disabled={!selectDivision || !selectSubject || !selectUnit}>
+      <Button className="tw-bg-secondary !tw-text-primary hover:!tw-bg-secondary/80 tw-text-4 tw-font-semibold tw-rounded-xl" onClick={handleDailyButtonClick} disabled={!selectDivision || !selectSubject || !selectUnit}>
         {t('button')}
       </Button>
     </div>

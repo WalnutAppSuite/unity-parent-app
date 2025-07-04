@@ -87,7 +87,7 @@ function FeeChild({ studentId, studentName }: { studentId: string, studentName: 
         </SelectContent>
       </Select>
       <Button
-        className="tw-bg-secondary !tw-text-primary tw-text-4 tw-font-semibold tw-rounded-xl"
+        className="tw-bg-secondary !tw-text-primary hover:!tw-bg-secondary/80 tw-text-4 tw-font-semibold tw-rounded-xl"
         disabled={!academicYear}
         onClick={handleFeesButtonClick}
       >

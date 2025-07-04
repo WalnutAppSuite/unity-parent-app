@@ -150,7 +150,7 @@ function CreateNoteChild({ name, division }: { name: string, division: string })
             </div>
 
             <Button
-                className="tw-bg-secondary !tw-text-primary tw-text-4 tw-font-semibold tw-rounded-xl"
+                className="tw-bg-secondary !tw-text-primary hover:!tw-bg-secondary/80 tw-text-4 tw-font-semibold tw-rounded-xl"
                 disabled={!fromDate || !toDate || !reason}
                 onClick={handleCreateButtonClick}
             >

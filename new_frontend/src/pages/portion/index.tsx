@@ -106,7 +106,7 @@ function PortionChildren({ data, first_name }: { data: any, first_name: string }
           ))}
         </SelectContent>
       </Select>
-      <Button className="tw-bg-secondary !tw-text-primary tw-text-4 tw-font-semibold tw-rounded-xl" onClick={handleDailyButtonClick} disabled={!selectDivision || !selectUnit}>
+      <Button className="tw-bg-secondary !tw-text-primary hover:!tw-bg-secondary/80 tw-text-4 tw-font-semibold tw-rounded-xl" onClick={handleDailyButtonClick} disabled={!selectDivision || !selectUnit}>
         {t('button')}
       </Button>
     </div>

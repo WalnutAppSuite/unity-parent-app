@@ -52,7 +52,7 @@ const BonafideChildComponent = ({ student }: BonafideChildProps) => {
             </div>
             <a href={bonafide.bonafide_pdf} download={bonafide?.bonafide_pdf}>
               <Button
-                className="tw-bg-secondary !tw-text-primary tw-text-4 tw-font-semibold tw-rounded-xl tw-mt-1"
+                className="tw-bg-secondary !tw-text-primary hover:!tw-bg-secondary/80 tw-text-4 tw-font-semibold tw-rounded-xl tw-mt-1"
               >
                 {t('downloadButton')}
               </Button>
