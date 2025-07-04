@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { AnimatePresence, motion } from "framer-motion";
 import type { Student, StudentAccordionProps, FieldEditState, OTPInputProps } from '@/types/students';
-import { MdEdit, MdLock } from 'react-icons/md';
+import { Edit, Lock } from 'lucide-react';
 import {
   guardin_address,
   guardin_address2,
@@ -572,7 +572,7 @@ function StudentAccordion({
           alignItems: 'center',      
           justifyContent: 'space-between'           
         }}>
-          <span>{label} {isFieldEditing && <MdEdit size={17} style={{ marginLeft: '6px' }} />}</span>
+          <span>{label} {isFieldEditing && <Edit size={17} style={{ marginLeft: '6px' }} />}</span>
           {canEdit && (
             <button
               onClick={() => fieldKey && initializeFieldState(fieldKey, value)}
@@ -584,7 +584,7 @@ function StudentAccordion({
                 padding: '4px'
               }}
             >
-              <MdEdit size={16} />
+              <Edit size={16} />
             </button>
           )}
         </div>
@@ -759,7 +759,7 @@ function StudentAccordion({
               boxShadow: isEditing ? '0 4px 12px rgba(251, 191, 36, 0.3)' : 'none'
             }}
           >
-            {isEditing ? <MdLock size={18} /> : <MdEdit size={18} />}
+            {isEditing ? <Lock size={18} /> : <Edit size={18} />}
           </button>
 
           {/* Student Name */}
