@@ -8,7 +8,7 @@ import Absent from '@/pages/absent';
 import EarlyPickup from '@/pages/early pickup';
 import Event from '@/pages/events';
 import PTM from '@/pages/ptm';
-import StudentProfile from '@/pages/student profile';
+import StudentProfile from '@/pages/student-profile';
 import Fee from '@/pages/fee';
 import Result from '@/pages/result';
 import Observation from '@/pages/observation';
