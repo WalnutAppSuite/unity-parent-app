@@ -56,3 +56,22 @@ export function usePTMLinks(studentId: string) {
         enabled: !!studentId,
     });
 }
+
+async function fetchOfflinePTMLinks(school: string): Promise<any> {
+    const response = await axiosInstance.get(
+        "/api/method/unity_parent_app.api.calendar.get_calender_events",
+        {
+            params: { school },
+        }
+    );
+    return response.data;
+}
+
+export function useOfflinePTMLinks(school: string) {
+    return useQuery({
+        queryKey: ["offlinePTMList", school],
+        queryFn: () => fetchOfflinePTMLinks(school),
+        retry: 1,
+        enabled: !!school,
+    });
+}
