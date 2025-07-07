@@ -144,3 +144,38 @@ export type EditableFieldKeys =
 
 // Verification method type
 export type VerificationMethod = 'email' | 'mobile';
+
+// Add these interfaces if not present already
+export interface Guardian {
+    name: string;
+    first_name: string;
+    middle_name?: string;
+    last_name: string;
+    guardian_name: string;
+    email_address: string;
+    mobile_number: string;
+    annual_income: string;
+    relation: string;
+    occupation?: string;
+    designation?: string;
+    company_name?: string;
+    work_address?: string;
+    education?: string;
+}
+
+export interface GuardianDetailsProps {
+    label: string;
+    guardian: Guardian | undefined;
+    emailValue: string;
+    mobileValue: string;
+    incomeValue: string;
+    onEmailChange: (val: string) => void;
+    onMobileChange: (val: string) => void;
+    onIncomeChange: (val: string) => void;
+    onUpdate: (field: string, value: string, otp: string) => Promise<void>;
+    t: any;
+    setOtpField: (field: string) => void;
+    setOtpValue: (val: string) => void;
+    setOtpError: (val: string) => void;
+    onSendOtp: (field: string) => Promise<void>;
+}

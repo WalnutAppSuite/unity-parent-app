@@ -1,100 +1,158 @@
-import { useState } from 'react';
-import { AnimatePresence } from "framer-motion";
-import { useAtom } from "jotai";
-import { studentsAtom } from "@/store/studentAtoms";
 import type { Student } from '@/types/students';
+import { useAtom } from 'jotai';
+import { studentsAtom } from '@/store/studentAtoms';
+import { useClassDetails } from '@/hooks/useClassDetails';
+import { useDetailsList } from '@/hooks/useGuardianList';
 import StudentAccordion from '@/components/custom/student-accordion';
-import ActionPopup from '@/components/custom/popup-bars/ActionPopup'
+import { useTranslation } from 'react-i18next';
 
+export default function StudentProfile() {
+  const [students] = useAtom(studentsAtom);
+  const { t } = useTranslation('student_profile');
 
-function StudentProfile() {
-  const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
-  const [showWarningPopup, setShowWarningPopup] = useState(false);
-  const [pendingEditStudentId, setPendingEditStudentId] = useState<string | null>(null);
+  // Handle loading state
+  if (!students) {
+    return (
+      <div className="tw-flex tw-flex-col tw-h-[80vh] tw-gap-4 tw-items-center tw-justify-center">
+        <div className="tw-text-center tw-p-4 tw-text-primary/50">
+          {t('studentProfile.loading')}
+        </div>
+      </div>
+    );
+  }
 
-  const [students, setStudents] = useAtom(studentsAtom);
-
-
-  const handleEditStart = (studentId: string) => {
-
-    if (editingStudentId && editingStudentId !== studentId) {
-      setPendingEditStudentId(studentId);
-      setShowWarningPopup(true);
-      return;
-    }
-
-
-    setEditingStudentId(studentId);
-  };
-
-  const handleEditAttempt = (studentId: string) => {
-
-    if (editingStudentId && editingStudentId !== studentId) {
-      setPendingEditStudentId(studentId);
-      setShowWarningPopup(true);
-    }
-  };
-
-  const handleStudentUpdate = (studentId: string, updatedData: Partial<Student>) => {
-
-    setStudents(prev => prev.map(student =>
-      student.id === studentId
-        ? { ...student, ...updatedData }
-        : student
-    ));
-  };
-
-  const handleEditComplete = () => {
-
-    setEditingStudentId(null);
-  };
-
-
-  const handleWarningPopupContinue = () => {
-    setShowWarningPopup(false);
-
-
-    if (pendingEditStudentId) {
-      setEditingStudentId(pendingEditStudentId);
-      setPendingEditStudentId(null);
-    }
-  };
-
-  const handleWarningPopupCancel = () => {
-    setShowWarningPopup(false);
-    setPendingEditStudentId(null);
-  };
+  // Handle empty state
+  if (students.length === 0) {
+    return (
+      <div className="tw-flex tw-flex-col tw-h-[80vh] tw-gap-4 tw-items-center tw-justify-center">
+        <div className="tw-text-center tw-p-4 tw-text-primary/50">
+          {t('studentProfile.noStudents')}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className='tw-flex tw-flex-col tw-gap-6'>
-
-      {students.map((student: Student, index: number) => (
-        <StudentAccordion
-          key={student.id || student.reference_number || index}
-          student={student}
-          index={index}
-          isEditing={editingStudentId === student.id}
-          onEditStart={handleEditStart}
-          onEditAttempt={handleEditAttempt}
-          onStudentUpdate={handleStudentUpdate}
-          onEditComplete={handleEditComplete}
-        />
+    <div className="tw-flex tw-flex-col tw-gap-4 tw-p-4">
+      {students.map((student) => (
+        <StudentProfileWithFilters key={student.name} student={student} />
       ))}
-
-
-      <AnimatePresence>
-        <ActionPopup
-          isVisible={showWarningPopup}
-          onSave={handleWarningPopupContinue}
-          onCancel={handleWarningPopupCancel}
-          title="Switch Student"
-          message="You are currently editing another student. Do you want to continue editing this student instead?"
-          saveButtonText="Continue Editing"
-          cancelButtonText="Stay Here"
-        />
-      </AnimatePresence>
     </div>
   );
 }
 
-export default StudentProfile;
+function StudentProfileWithFilters({ student }: { student: Student }) {
+  const { t } = useTranslation('student_profile');
+  
+  if (!student || !student.name) {
+    return null;
+  }
+
+  const { data: classDetails, isLoading: classDetailsLoading, error: classDetailsError } = useClassDetails(student.name);
+
+  const { data: studentDetails, isLoading: studentDetailsLoading, error: studentDetailsError } = useDetailsList(student.name);
+
+  // Handle error states
+  if (classDetailsError) {
+    return (
+      <div className="tw-flex tw-flex-col tw-gap-4 tw-p-4 tw-bg-red-50 tw-border tw-border-red-200 tw-rounded-lg">
+        <div className="tw-text-red-600 tw-font-medium">{t('studentProfile.errors.classDetails.title')}</div>
+        <div className="tw-text-red-500 tw-text-sm">
+          {classDetailsError instanceof Error ? classDetailsError.message : t('studentProfile.errors.classDetails.message')}
+        </div>
+      </div>
+    );
+  }
+
+  if (studentDetailsError) {
+    return (
+      <div className="tw-flex tw-flex-col tw-gap-4 tw-p-4 tw-bg-red-50 tw-border tw-border-red-200 tw-rounded-lg">
+        <div className="tw-text-red-600 tw-font-medium">{t('studentProfile.errors.studentDetails.title')}</div>
+        <div className="tw-text-red-500 tw-text-sm">
+          {studentDetailsError instanceof Error ? studentDetailsError.message : t('studentProfile.errors.studentDetails.message')}
+        </div>
+      </div>
+    );
+  }
+
+  // API handlers for field updates
+  const handleUpdateField = async (fieldName: string, value: string, otp: string) => {
+    try {
+      // TODO: Implement API call to update field
+      console.log('Updating field:', fieldName, 'with value:', value, 'OTP:', otp);
+      
+      // Example API call structure:
+      // const response = await fetch('/api/student/update-field', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({
+      //     studentId: student.name,
+      //     fieldName,
+      //     value,
+      //     otp
+      //   })
+      // });
+      
+      // if (!response.ok) {
+      //   throw new Error('Failed to update field');
+      // }
+      
+      // Refresh student details after successful update
+      // await refetch();
+      
+    } catch (error) {
+      console.error('Error updating field:', error);
+      throw error;
+    }
+  };
+
+  const handleSendOtp = async (fieldName: string) => {
+    try {
+      // TODO: Implement API call to send OTP
+      console.log('Sending OTP for field:', fieldName);
+      
+      // Example API call structure:
+      // const response = await fetch('/api/student/send-otp', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({
+      //     studentId: student.name,
+      //     fieldName
+      //   })
+      // });
+      
+      // if (!response.ok) {
+      //   throw new Error('Failed to send OTP');
+      // }
+      
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      throw error;
+    }
+  };
+
+  return (
+    <StudentAccordion
+      isLoading={classDetailsLoading || studentDetailsLoading}
+      studentName={student.student_name}
+      referenceNumber={student.reference_number}
+      firstName={student.first_name}
+      lastName={student.last_name}
+      programName={classDetails?.program?.program_name || ''}
+      customDivision={classDetails?.division?.student_group_name || ''}
+      school={classDetails?.division?.custom_school || ''}
+      dateOfBirth={student.date_of_birth}
+      religion={student.religion}
+      caste={student.caste}
+      subCaste={student.sub_caste}
+      motherTongue={student.mother_tongue}
+      address1={student.address1}
+      address2={student.address2}
+      bloodGroup={student.blood_group}
+      guardians={studentDetails?.message?.guardians}
+      onUpdateField={handleUpdateField}
+      onSendOtp={handleSendOtp}
+    />
+  );
+}
+

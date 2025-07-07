@@ -8,8 +8,6 @@ import profile from '../../../public/images/profile.png';
 export default function ProfileWrapper({
   isLoading = true,
   children = <></>,
-  name = 'AB12',
-  classSection = '10-B',
   image = profile,
   student_name = 'Adarsh Tiwari',
   reference_number = 'GD14',
@@ -19,8 +17,6 @@ export default function ProfileWrapper({
   program_name = "10"
 }: {
   isLoading?: boolean;
-  name : string;
-  classSection?: string;
   children?: React.ReactNode;
   student_name?: string;
   image?: string;

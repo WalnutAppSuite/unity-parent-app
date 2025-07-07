@@ -45,6 +45,7 @@ i18n
       'timetable',
       'knowledge_base',
       'helpdesk',
+      'student_profile',
     ],
     defaultNS: 'home',
     interpolation: {
