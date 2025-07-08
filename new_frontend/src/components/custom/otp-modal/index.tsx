@@ -18,16 +18,21 @@ interface OtpModalProps {
 const OtpModal: React.FC<OtpModalProps> = ({ open, field, otp, onOtpChange, onCancel, onVerify, error, loading, otpDestination, otpDestinationValue }) => {
     if (!open) return null;
 
-    console.log(otpDestination , otpDestinationValue);
-    
+    console.log(otpDestination, otpDestinationValue);
+
 
     return (
         <div className="tw-fixed tw-inset-0 tw-z-50 tw-flex tw-items-center tw-justify-center tw-text-primary tw-bg-primary/5 tw-backdrop-blur-sm">
             <div className="tw-bg-secondary tw-rounded-xl tw-shadow-2xl tw-p-6 tw-w-full tw-max-w-xs tw-flex tw-flex-col tw-gap-4">
-                <div className="tw-text-lg tw-font-semibold tw-text-center">
-                    {otpDestination && otpDestinationValue
-                        ? `Enter the OTP sent on ${otpDestination === 'mobile' ? 'mobile' : 'email'}: ${otpDestinationValue}`
-                        : `Enter OTP for ${field}`}
+                <div className=" tw-font-semibold tw-text-center">
+                    {otpDestination && otpDestinationValue ? (
+                        <div className='tw-flex tw-flex-col'>
+                            <span>Enter the OTP sent on {otpDestination === 'mobile' ? 'mobile' : 'email'}:</span>
+                            <span className="tw-text-primary tw-font-medium tw-underline tw-text-sm">{otpDestinationValue}</span>
+                        </div>
+                    ) : (
+                        <>Enter OTP for {field}</>
+                    )}
                 </div>
                 <OtpInput otp={otp} onOtpChange={onOtpChange} />
                 {error && <div className="tw-text-red-600 tw-text-xs tw-text-center">{error}</div>}

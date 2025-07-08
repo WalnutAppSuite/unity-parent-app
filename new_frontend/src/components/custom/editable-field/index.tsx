@@ -64,6 +64,11 @@ export default function EditableField({
         }
     };
 
+    // Helper function to get display value
+    const getDisplayValue = (val: string) => {
+        return val || 'N/A';
+    };
+
     if (!isEditable) {
         return (
             <div className={`tw-flex tw-gap-1 tw-flex-col ${className}`}>
@@ -72,7 +77,7 @@ export default function EditableField({
                 </div>
                 <input
                     type={type}
-                    value={value}
+                    value={getDisplayValue(value)}
                     className='tw-w-full tw-border tw-border-secondary/50 tw-bg-secondary/10 tw-rounded-md tw-px-2 tw-py-1'
                     readOnly
                 />
@@ -96,7 +101,7 @@ export default function EditableField({
                 </div>
                 <input
                     type={type}
-                    value={value}
+                    value={getDisplayValue(value)}
                     className='tw-w-full tw-border tw-border-secondary/50 tw-bg-secondary/10 tw-rounded-md tw-px-2 tw-py-1'
                     readOnly
                 />

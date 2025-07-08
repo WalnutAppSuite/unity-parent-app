@@ -11,19 +11,19 @@ const GuardianDetails: React.FC<Omit<GuardianDetailsProps, 'setOtpField' | 'setO
             <div className='tw-mt-2 tw-font-semibold'>{label}</div>
             <div className='tw-flex tw-gap-1 tw-flex-col'>
                 <label className='tw-w-fit'>{t(`${label.toLowerCase()}.name`)}</label>
-                <input type="text" value={guardian?.guardian_name || ''} className='tw-w-full tw-border tw-border-secondary/50 tw-bg-secondary/10 tw-rounded-md tw-px-2 tw-py-1' readOnly />
+                <input type="text" value={guardian?.guardian_name || 'N/A'} className='tw-w-full tw-border tw-border-secondary/50 tw-bg-secondary/10 tw-rounded-md tw-px-2 tw-py-1' readOnly />
             </div>
             <div className='tw-flex tw-gap-1 tw-flex-col'>
                 <label className='tw-w-fit'>{t(`${label.toLowerCase()}.occupation`)}</label>
-                <input type="text" value={guardian?.occupation || ''} className='tw-w-full tw-border tw-border-secondary/50 tw-bg-secondary/10 tw-rounded-md tw-px-2 tw-py-1' readOnly />
+                <input type="text" value={guardian?.occupation || 'N/A'} className='tw-w-full tw-border tw-border-secondary/50 tw-bg-secondary/10 tw-rounded-md tw-px-2 tw-py-1' readOnly />
             </div>
             <div className='tw-flex tw-gap-1 tw-flex-col'>
                 <label className='tw-w-fit'>{t(`${label.toLowerCase()}.company`)}</label>
-                <input type="text" value={guardian?.company_name || ''} className='tw-w-full tw-border tw-border-secondary/50 tw-bg-secondary/10 tw-rounded-md tw-px-2 tw-py-1' readOnly />
+                <input type="text" value={guardian?.company_name || 'N/A'} className='tw-w-full tw-border tw-border-secondary/50 tw-bg-secondary/10 tw-rounded-md tw-px-2 tw-py-1' readOnly />
             </div>
             <EditableField
                 label={t(`${label.toLowerCase()}.email`)}
-                value={emailValue}
+                value={emailValue || ''}
                 fieldName={`${label.toLowerCase()}Email`}
                 type="email"
                 onChange={(val: string) => onEmailChange(val)}
@@ -31,7 +31,7 @@ const GuardianDetails: React.FC<Omit<GuardianDetailsProps, 'setOtpField' | 'setO
             />
             <EditableField
                 label={t(`${label.toLowerCase()}.mobile`)}
-                value={mobileValue}
+                value={mobileValue || ''}
                 fieldName={`${label.toLowerCase()}Mobile`}
                 type="tel"
                 onChange={(val: string) => onMobileChange(val)}
@@ -39,7 +39,7 @@ const GuardianDetails: React.FC<Omit<GuardianDetailsProps, 'setOtpField' | 'setO
             />
             <EditableField
                 label={t(`${label.toLowerCase()}.income`)}
-                value={incomeValue}
+                value={incomeValue || ''}
                 fieldName={`${label.toLowerCase()}Income`}
                 onChange={(val: string) => onIncomeChange(val)}
                 onUpdate={onUpdate}

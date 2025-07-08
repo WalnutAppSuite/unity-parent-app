@@ -75,37 +75,6 @@ function StudentProfileWithFilters({ student }: { student: Student }) {
     );
   }
 
-  // API handlers for field updates
-  const handleUpdateField = async (fieldName: string, value: string, otp: string) => {
-    try {
-      // TODO: Implement API call to update field
-      console.log('Updating field:', fieldName, 'with value:', value, 'OTP:', otp);
-      
-      // Example API call structure:
-      // const response = await fetch('/api/student/update-field', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     studentId: student.name,
-      //     fieldName,
-      //     value,
-      //     otp
-      //   })
-      // });
-      
-      // if (!response.ok) {
-      //   throw new Error('Failed to update field');
-      // }
-      
-      // Refresh student details after successful update
-      // await refetch();
-      
-    } catch (error) {
-      console.error('Error updating field:', error);
-      throw error;
-    }
-  };
-
   const handleSendOtp = async (fieldName: string) => {
     try {
       // TODO: Implement API call to send OTP
@@ -135,6 +104,7 @@ function StudentProfileWithFilters({ student }: { student: Student }) {
     <StudentAccordion
       isLoading={classDetailsLoading || studentDetailsLoading}
       studentName={student.student_name}
+      studentId={student.name}
       referenceNumber={student.reference_number}
       firstName={student.first_name}
       lastName={student.last_name}
@@ -150,7 +120,6 @@ function StudentProfileWithFilters({ student }: { student: Student }) {
       address2={student.address2}
       bloodGroup={student.blood_group}
       guardians={studentDetails?.message?.guardians}
-      onUpdateField={handleUpdateField}
       onSendOtp={handleSendOtp}
     />
   );
