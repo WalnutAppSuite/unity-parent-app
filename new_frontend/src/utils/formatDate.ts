@@ -17,7 +17,7 @@ export interface FormatDateFromISO {
     (date?: Date): string;
 }
 
-export const formatDateFromISO: FormatDateFromISO = function(date?: Date): string {
+export const formatDateFromISO: FormatDateFromISO = function (date?: Date): string {
     if (!date) return '';
     return date.toISOString().split('T')[0];
 };
@@ -26,7 +26,7 @@ export interface GetDatesBetween {
     (start?: Date, end?: Date): string[];
 }
 
-export const getDatesBetween: GetDatesBetween = function(start?: Date, end?: Date): string[] {
+export const getDatesBetween: GetDatesBetween = function (start?: Date, end?: Date): string[] {
     if (!start || !end) return [];
     const dates: string[] = [];
     let current = new Date(start);
@@ -36,3 +36,12 @@ export const getDatesBetween: GetDatesBetween = function(start?: Date, end?: Dat
     }
     return dates;
 };
+
+export function formatTime(dateStr: string) {
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+    });
+}

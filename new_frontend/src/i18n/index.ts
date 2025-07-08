@@ -46,6 +46,7 @@ i18n
       'knowledge_base',
       'helpdesk',
       'student_profile',
+      'offline_ptm',
     ],
     defaultNS: 'home',
     interpolation: {
