@@ -325,8 +325,30 @@ export default function StudentAccordion({
                         }
                         setOtpField(null);
                         setOtpValue('');
-                    } catch (err) {
-                        setOtpError('Invalid OTP or update failed');
+                    } catch (err: any) {
+                        console.log('OTP Error:', err);
+                        if (err?.response?.data?.message) {
+                            setOtpError(err.response.data.message);
+                        } else if (err?.message) {
+                            try {
+                                // Try to parse as JSON
+                                const errorData = JSON.parse(err.message);
+                                setOtpError(errorData);
+                            } catch {
+                                // If not JSON, wrap as generic error object
+                                setOtpError({
+                                    error: true,
+                                    error_type: 'generic',
+                                    error_message: err.message,
+                                });
+                            }
+                        } else {
+                            setOtpError({
+                                error: true,
+                                error_type: 'generic',
+                                error_message: 'Invalid OTP or update failed',
+                            });
+                        }
                     } finally {
                         setOtpLoading(false);
                     }

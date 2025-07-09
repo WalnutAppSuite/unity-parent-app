@@ -1,4 +1,6 @@
 import React, { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { OtpErrorType } from '@/hooks/useOtpModal';
 
 interface OtpModalProps {
     open: boolean;
@@ -8,7 +10,7 @@ interface OtpModalProps {
     onOtpChange: (otp: string) => void;
     onCancel: () => void;
     onVerify: () => void;
-    error?: string;
+    error?: OtpErrorType;
     loading?: boolean;
     otpDestination?: 'mobile' | 'email' | null;
     otpDestinationValue?: string;
@@ -16,9 +18,26 @@ interface OtpModalProps {
 
 
 const OtpModal: React.FC<OtpModalProps> = ({ open, field, otp, onOtpChange, onCancel, onVerify, error, loading, otpDestination, otpDestinationValue }) => {
+    const { t } = useTranslation('otp_modal');
+    
     if (!open) return null;
 
-    console.log(otpDestination, otpDestinationValue);
+    console.log(error);
+
+    // Helper function to extract error message
+    const getErrorMessage = (
+      error: any
+    ): string => {
+      if (!error) return '';
+      if (typeof error === 'string') {
+        return t('errors.generic');
+      }
+      // Support both old and new error object shapes
+      if (error.error_type === 'invalid_otp' || error?.message?.error_type === 'invalid_otp') {
+        return t('errors.invalidOtp');
+      }
+      return error.error_message || error?.message?.error_message || t('errors.generic');
+    };
 
 
     return (
@@ -27,29 +46,29 @@ const OtpModal: React.FC<OtpModalProps> = ({ open, field, otp, onOtpChange, onCa
                 <div className=" tw-font-semibold tw-text-center">
                     {otpDestination && otpDestinationValue ? (
                         <div className='tw-flex tw-flex-col'>
-                            <span>Enter the OTP sent on {otpDestination === 'mobile' ? 'mobile' : 'email'}:</span>
+                            <span>{t('title', { destination: t(otpDestination) })}</span>
                             <span className="tw-text-primary tw-font-medium tw-underline tw-text-sm">{otpDestinationValue}</span>
                         </div>
                     ) : (
-                        <>Enter OTP for {field}</>
+                        <>{t('titleFallback', { field })}</>
                     )}
                 </div>
                 <OtpInput otp={otp} onOtpChange={onOtpChange} />
-                {error && <div className="tw-text-red-600 tw-text-xs tw-text-center">{error}</div>}
+                {error && <div className="tw-text-red-600 tw-text-xs tw-text-center">{getErrorMessage(error)}</div>}
                 <div className="tw-flex tw-gap-2 tw-justify-center">
                     <button
                         className="tw-bg-primary tw-text-secondary tw-px-4 tw-py-2 tw-rounded tw-font-medium hover:tw-bg-primary/90"
                         onClick={onVerify}
                         disabled={loading || !otp}
                     >
-                        {loading ? 'Verifying...' : 'Verify OTP'}
+                        {loading ? t('verifying') : t('verifyOtp')}
                     </button>
                     <button
                         className="tw-bg-secondary tw-text-primary tw-px-4 tw-py-2 tw-rounded tw-font-medium tw-border tw-border-primary hover:tw-bg-secondary/80"
                         onClick={onCancel}
                         disabled={loading}
                     >
-                        Cancel
+                        {t('cancel')}
                     </button>
                 </div>
             </div>

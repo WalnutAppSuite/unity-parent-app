@@ -47,6 +47,7 @@ i18n
       'helpdesk',
       'student_profile',
       'offline_ptm',
+      'otp_modal',
     ],
     defaultNS: 'home',
     interpolation: {

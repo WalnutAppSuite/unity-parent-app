@@ -33,6 +33,12 @@ export function useVerifyOtpEmail() {
         otp,
         email,
       });
+      
+      // Check if the response contains an error
+      if (res.data?.message?.error) {
+        throw new Error(JSON.stringify(res.data.message));
+      }
+      
       return res.data;
     },
   });
@@ -46,6 +52,12 @@ export function useVerifyOtpMobile() {
         otp,
         phone_no: mobile,
       });
+      
+      // Check if the response contains an error
+      if (res.data?.message?.error) {
+        throw new Error(JSON.stringify(res.data.message));
+      }
+      
       return res.data;
     },
   });
