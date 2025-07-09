@@ -94,7 +94,7 @@ export default function EditableField({
                         size="sm"
                         variant="ghost"
                         onClick={handleEdit}
-                        className="tw-bg-none !tw-hover:tw-bg-none"
+                        className="!tw-bg-transparent !tw-hover:tw-bg-transparent !tw-focus:tw-bg-transparent !tw-active:tw-bg-transparent"
                     >
                         <Edit />
                     </Button>

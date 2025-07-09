@@ -57,14 +57,14 @@ const OtpModal: React.FC<OtpModalProps> = ({ open, field, otp, onOtpChange, onCa
                 {error && <div className="tw-text-red-600 tw-text-xs tw-text-center">{getErrorMessage(error)}</div>}
                 <div className="tw-flex tw-gap-2 tw-justify-center">
                     <button
-                        className="tw-bg-primary tw-text-secondary tw-px-4 tw-py-2 tw-rounded tw-font-medium hover:tw-bg-primary/90"
+                        className="tw-bg-primary tw-text-secondary tw-px-4 tw-py-2 tw-rounded tw-font-medium hover:tw-bg-primary/90 hover:tw-shadow-lg hover:tw-scale-105 transition-all duration-150"
                         onClick={onVerify}
                         disabled={loading || !otp}
                     >
                         {loading ? t('verifying') : t('verifyOtp')}
                     </button>
                     <button
-                        className="tw-bg-secondary tw-text-primary tw-px-4 tw-py-2 tw-rounded tw-font-medium tw-border tw-border-primary hover:tw-bg-secondary/80"
+                        className="tw-bg-secondary tw-text-primary tw-px-4 tw-py-2 tw-rounded tw-font-medium tw-border tw-border-primary hover:tw-bg-secondary/80 hover:tw-border-primary/70 hover:tw-scale-105 transition-all duration-150"
                         onClick={onCancel}
                         disabled={loading}
                     >
