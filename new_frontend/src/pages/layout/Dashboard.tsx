@@ -56,6 +56,7 @@ const DashboardLayout = () => {
     '/absent-note': 'absentNote',
     '/pickup': 'earlyPickup',
     '/events': 'events',
+    '/events/details': 'events',
     '/ptm': 'ptmLinks',
     '/ptm/online': 'ptmOnline',
     '/ptm/offline': 'ptmOffline',

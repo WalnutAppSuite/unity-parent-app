@@ -6,7 +6,8 @@ import DetailedNotices from '@/pages/notices/detailed';
 import DashboardLayout from '@/pages/layout/Dashboard';
 import Absent from '@/pages/absent';
 import EarlyPickup from '@/pages/early-pickup';
-import Event from '@/pages/events';
+import Event from '@/pages/events/index';
+import DetailedEvent from '@/pages/events/detailed';
 import PTM from '@/pages/ptm/index';
 import PTMOnline from '@/pages/ptm/online-ptm';
 import PTMOffline from '@/pages/ptm/offline-ptm';
@@ -50,6 +51,7 @@ function AppRoutes() {
         <Route path="/absent-note" element={<Absent />} />
         <Route path="/pickup" element={<EarlyPickup />} />
         <Route path="/events" element={<Event />} />
+        <Route path="/events/details" element={<DetailedEvent />} />
         <Route path="/ptm" element={<PTM />} />
         <Route path="/ptm/online" element={<PTMOnline />} />
         <Route path="/ptm/offline" element={<PTMOffline />} />

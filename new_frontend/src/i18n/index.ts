@@ -46,6 +46,7 @@ i18n
       'knowledge_base',
       'helpdesk',
       'offline_ptm',
+      'events',
     ],
     defaultNS: 'home',
     interpolation: {
