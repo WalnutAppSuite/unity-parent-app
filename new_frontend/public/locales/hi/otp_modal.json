@@ -1,0 +1,13 @@
+{
+  "title": "{{destination}} पर भेजे गए OTP को दर्ज करें:",
+  "titleFallback": "{{field}} के लिए OTP दर्ज करें",
+  "mobile": "मोबाइल",
+  "email": "ईमेल",
+  "verifyOtp": "सत्यापित करें",
+  "verifying": "सत्यापित कर रहा है...",
+  "cancel": "रद्द करें",
+  "errors": {
+    "invalidOtp": "अमान्य OTP. कृपया पुनः प्रयास करें।",
+    "generic": "एक त्रुटि हुई। कृपया पुनः प्रयास करें।"
+  }
+} 

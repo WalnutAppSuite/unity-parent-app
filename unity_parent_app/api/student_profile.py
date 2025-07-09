@@ -20,7 +20,6 @@ def create_otp(email):
     cache = frappe.cache()
     key = "otp_" + email
     otp = generate_otp()
-
     # Cache the OTP
     cache.set_value(key, otp)
 

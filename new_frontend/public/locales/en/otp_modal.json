@@ -1,0 +1,13 @@
+{
+  "title": "Enter the OTP sent on {{destination}}:",
+  "titleFallback": "Enter OTP for {{field}}",
+  "mobile": "mobile",
+  "email": "email",
+  "verifyOtp": "Verify",
+  "verifying": "Verifying...",
+  "cancel": "Cancel",
+  "errors": {
+    "invalidOtp": "Invalid OTP. Please try again.",
+    "generic": "An error occurred. Please try again."
+  }
+} 
