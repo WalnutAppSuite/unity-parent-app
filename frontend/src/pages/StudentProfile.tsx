@@ -5,6 +5,8 @@ import useStudentList from "../components/queries/useStudentList.ts";
 import useClassDetails from "../components/queries/useClassDetails.ts";
 import useStudentProfileColor from "../components/hooks/useStudentProfileColor.ts";
 import { Box, Stack, Image } from "@mantine/core";
+import useStudentCustomLearning from "../components/queries/useStudentCustomLearning.ts";
+
 
 import { StudentProfleFOrm } from "./StudentProfileForm.tsx";
 
@@ -23,6 +25,7 @@ export const StudentProfle = () => {
 
   const { data: studentsList } = useStudentList();
   const { data: classDetails } = useClassDetails(selectedStudent);
+  const { data: customLearningData, isError: customLearningError, isLoading: customLearningLoading } = useStudentCustomLearning(selectedStudent);
   const students = useMemo(
     () => studentsList?.data?.message || [],
     [studentsList?.data]
@@ -135,7 +138,9 @@ export const StudentProfle = () => {
                     setOpened(!opened);
                   }}
                 >
-                  {`${student.first_name}  -  ${student.reference_number}`}
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span>{`${student.first_name}  -  ${student.reference_number}`}</span>
+                  </div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className={`icon icon-tabler ${
@@ -178,6 +183,9 @@ export const StudentProfle = () => {
                     studentProfileColor={studentProfileColor}
                     classDetails={classDetails}
                     isSelected={isSelected}
+                    customLearningData={customLearningData}
+                    customLearningLoading={customLearningLoading}
+                    customLearningError={customLearningError}
                   />
                 )}
               </Box>

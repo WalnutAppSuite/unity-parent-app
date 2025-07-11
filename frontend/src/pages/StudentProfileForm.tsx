@@ -20,6 +20,9 @@ interface StudentProfileProps {
   studentProfileColor: any;
   classDetails: any;
   isSelected: any;
+  customLearningData?: any;
+  customLearningLoading?: boolean;
+  customLearningError?: boolean;
 }
 export const StudentProfleFOrm = ({
   student,
@@ -27,6 +30,9 @@ export const StudentProfleFOrm = ({
   studentProfileColor,
   classDetails,
   isSelected,
+  customLearningData,
+  customLearningLoading,
+  customLearningError,
 }: StudentProfileProps) => {
   const { data: details_list, refetch: detailsRefetch } =
     useDetailsList(selectedStudent);
@@ -507,8 +513,143 @@ export const StudentProfleFOrm = ({
 
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "column", width: "700px" }}>
-        <div style={{ width: "700px", overflowX: "auto" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          maxWidth: "100vw",
+        }}
+      >
+        {/* Custom Learning Section */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            borderBottom: `1px solid ${studentProfileColor}`,
+            paddingBottom: "0.5rem",
+            margin: "0px auto",
+            width: "100%",
+            maxWidth: "100%",
+            boxSizing: "border-box",
+          }}
+        >
+          <span
+            style={{
+              color: studentProfileColor,
+              padding: "10px 1rem",
+              fontWeight: 600,
+            }}
+          >
+            Learning Groups:
+          </span>
+          <span
+            style={{
+              color: "black",
+              padding: "0.5rem 1rem 0 1rem",
+              width: "100%",
+              display: "block",
+            }}
+          >
+            {customLearningLoading ? (
+              "Loading..."
+            ) : customLearningError ? (
+              "Error loading learning data"
+            ) : customLearningData?.data?.message?.custom_learning &&
+              customLearningData.data.message.custom_learning.length > 0 ? (
+              <table
+                style={{
+                  width: "auto",
+                  minWidth: "180px",
+                  borderCollapse: "collapse",
+                  marginTop: "0.5rem",
+                  marginLeft: 0,
+                  marginRight: 0,
+                  border: "1px solid #d3d3d3", 
+                  borderRadius: "6px",
+                  background: "#fafafa", 
+                  // overflow: "hidden",
+                }}
+              >
+                <thead>
+                  <tr>
+                    <th
+                      style={{
+                        textAlign: "left",
+                        padding: "0.18rem 0.4rem",
+                        border: "1px solid #d3d3d3",
+                        fontWeight: 600,
+                        fontSize: "1em",
+                        minWidth: "80px",
+                        background: "#fafafa", 
+                        color: `${studentProfileColor}`
+
+                      }}
+                    >
+                      Subject
+                    </th>
+                    <th
+                      style={{
+                        textAlign: "left",
+                        padding: "0.18rem 0.4rem",
+                        border: "1px solid #d3d3d3",
+                        fontWeight: 600,
+                        fontSize: "1em",
+                        whiteSpace: "nowrap",
+                        minWidth: "50px",
+                        background: "#fafafa", 
+                        color: `${studentProfileColor}`
+
+                      }}
+                    >
+                      Group
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {customLearningData.data.message.custom_learning.map(
+                    (item: any) => (
+                      <tr key={item.name}>
+                        <td
+                          style={{
+                            padding: "0.18rem 0.4rem",
+                            border: "1px solid #d3d3d3",
+                            fontSize: "0.97em",
+                            whiteSpace: "nowrap",
+                            background: "#fff", 
+                          }}
+                        >
+                          {item.subject}
+                        </td>
+                        <td
+                          style={{
+                            padding: "0.18rem 0.4rem",
+                            border: "1px solid #d3d3d3",
+                            fontSize: "0.97em",
+                            whiteSpace: "nowrap",
+                            background: "#fff", 
+                          }}
+                        >
+                          {item.item?.split("-")[0] || `G${item.group_no}`}
+                        </td>
+                      </tr>
+                    )
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              "No learning data"
+            )}
+          </span>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            maxWidth: "100vw",
+          }}
+        >
           <div
             style={{
               display: "flex",
