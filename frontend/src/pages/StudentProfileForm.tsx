@@ -20,6 +20,9 @@ interface StudentProfileProps {
   studentProfileColor: any;
   classDetails: any;
   isSelected: any;
+  customLearningData?: any;
+  customLearningLoading?: boolean;
+  customLearningError?: boolean;
 }
 export const StudentProfleFOrm = ({
   student,
@@ -27,6 +30,9 @@ export const StudentProfleFOrm = ({
   studentProfileColor,
   classDetails,
   isSelected,
+  customLearningData,
+  customLearningLoading,
+  customLearningError,
 }: StudentProfileProps) => {
   const { data: details_list, refetch: detailsRefetch } =
     useDetailsList(selectedStudent);
@@ -505,10 +511,126 @@ export const StudentProfleFOrm = ({
     .toLocaleDateString("en-GB")
     .replace(/\//g, "-");
 
+  // Helper to get group display value
+  const getGroupDisplay = (item: any) => {
+    return item.item?.split("-")[0] || `G${item.group_no}`;
+  };
+
+  // Table styles for Learning Groups
+  const tableStyles = {
+    table: {
+      width: "auto",
+      minWidth: "180px",
+      borderCollapse: "collapse" as const,
+      marginTop: "0.5rem",
+      marginLeft: 0,
+      marginRight: 0,
+      border: "1px solid #d3d3d3",
+      borderRadius: "6px",
+      background: "#fafafa",
+    },
+    th: {
+      textAlign: "left" as const,
+      padding: "0.18rem 0.4rem",
+      border: "1px solid #d3d3d3",
+      fontWeight: 600,
+      fontSize: "1em",
+      background: "#fafafa",
+    },
+    td: {
+      padding: "0.18rem 0.4rem",
+      border: "1px solid #d3d3d3",
+      fontSize: "0.97em",
+      whiteSpace: "nowrap" as const,
+      background: "#fff",
+    },
+  };
+
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "column", width: "700px" }}>
-        <div style={{ width: "700px", overflowX: "auto" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          maxWidth: "100vw",
+        }}
+      >
+        {/* Custom Learning Section */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            borderBottom: `1px solid ${studentProfileColor}`,
+            paddingBottom: "0.5rem",
+            margin: "0px auto",
+            width: "100%",
+            maxWidth: "100%",
+            boxSizing: "border-box",
+          }}
+        >
+          <span
+            style={{
+              color: studentProfileColor,
+              padding: "10px 1rem",
+              fontWeight: 600,
+            }}
+          >
+            Learning Groups:
+          </span>
+          <span
+            style={{
+              color: "black",
+              padding: "0.5rem 1rem 0 1rem",
+              width: "100%",
+              display: "block",
+            }}
+          >
+            {customLearningLoading ? (
+              "Loading..."
+            ) : customLearningError ? (
+              "Error loading learning data"
+            ) : customLearningData?.data?.message?.custom_learning &&
+              customLearningData.data.message.custom_learning.length > 0 ? (
+              <table style={tableStyles.table}>
+                <thead>
+                  <tr>
+                    <th style={{...tableStyles.th, minWidth: "80px", color: studentProfileColor}}>
+                      Subject
+                    </th>
+                    <th style={{...tableStyles.th, minWidth: "50px", color: studentProfileColor}}>
+                      Group
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {customLearningData.data.message.custom_learning.map(
+                    (item: any) => (
+                      <tr key={item.name}>
+                        <td style={tableStyles.td}>
+                          {item.subject}
+                        </td>
+                        <td style={tableStyles.td}>
+                          {getGroupDisplay(item)}
+                        </td>
+                      </tr>
+                    )
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              "No learning data"
+            )}
+          </span>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            maxWidth: "100vw",
+          }}
+        >
           <div
             style={{
               display: "flex",

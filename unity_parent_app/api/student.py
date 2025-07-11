@@ -257,4 +257,63 @@ def student_rollover(academic_year, program=None, division=None, student_status=
     except Exception as e:
         frappe.logger("rollover").exception(e)
         return False
-    
+   
+@frappe.whitelist()
+def get_student_custom_learning(student_id):
+    """
+    Custom API to fetch the custom_learning child table data from Program Enrollment for a given student.
+    Args:
+        student_id (str): The name/id of the student (Student doctype primary key)
+    Returns:
+        dict: {"custom_learning": list of differential learning items}
+    """
+    if not student_id:
+        return {"success": False, "error": "student_id is required"}
+    try:
+        # Get ALL Program Enrollments for the student to find one with custom_learning data
+        pe_list = frappe.get_all(
+            "Program Enrollment",
+            filters={"student": student_id, "docstatus": 1},
+            fields=["name", "enrollment_date", "program", "academic_year", "student_group"],
+            order_by="enrollment_date desc",
+        )
+        if not pe_list:
+            return {"success": False, "error": "No active Program Enrollment found for this student"}
+        
+        # Try each Program Enrollment to find one with custom_learning data
+        for pe in pe_list:
+            program_enrollment_name = pe.name
+            
+            # Get the full Program Enrollment document to access child table data
+            program_enrollment_doc = frappe.get_doc("Program Enrollment", program_enrollment_name)
+            
+            # Check if this enrollment has custom_learning data
+            if hasattr(program_enrollment_doc, 'custom_learning') and program_enrollment_doc.custom_learning:                
+                # Extract the custom_learning child table data
+                custom_learning_items = []
+                for item in program_enrollment_doc.custom_learning:
+                    custom_learning_items.append({
+                        "name": item.name,
+                        "item": item.item,
+                        "subject": item.subject,
+                        "group_no": item.group_no,
+                        "track_changes": getattr(item, 'track_changes', ''),
+                        "idx": item.idx
+                    })          
+                return {
+                    "success": True, 
+                    "custom_learning": custom_learning_items,
+                    "enrollment_data": pe,
+                    "count": len(custom_learning_items)
+                }              
+        # If we get here, no enrollment has custom_learning data
+        return {
+            "success": True, 
+            "custom_learning": [],
+            "enrollment_data": pe_list[0],  # Return the latest enrollment
+            "count": 0,
+            "message": "No differential learning data found for any enrollment"
+        }       
+    except Exception as e:
+        frappe.log_error(f"Error fetching custom_learning for student {student_id}: {str(e)}")
+        return {"success": False, "error": f"Database error: {str(e)}"}
