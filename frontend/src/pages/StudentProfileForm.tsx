@@ -511,6 +511,41 @@ export const StudentProfleFOrm = ({
     .toLocaleDateString("en-GB")
     .replace(/\//g, "-");
 
+  // Helper to get group display value
+  const getGroupDisplay = (item: any) => {
+    return item.item?.split("-")[0] || `G${item.group_no}`;
+  };
+
+  // Table styles for Learning Groups
+  const tableStyles = {
+    table: {
+      width: "auto",
+      minWidth: "180px",
+      borderCollapse: "collapse" as const,
+      marginTop: "0.5rem",
+      marginLeft: 0,
+      marginRight: 0,
+      border: "1px solid #d3d3d3",
+      borderRadius: "6px",
+      background: "#fafafa",
+    },
+    th: {
+      textAlign: "left" as const,
+      padding: "0.18rem 0.4rem",
+      border: "1px solid #d3d3d3",
+      fontWeight: 600,
+      fontSize: "1em",
+      background: "#fafafa",
+    },
+    td: {
+      padding: "0.18rem 0.4rem",
+      border: "1px solid #d3d3d3",
+      fontSize: "0.97em",
+      whiteSpace: "nowrap" as const,
+      background: "#fff",
+    },
+  };
+
   return (
     <>
       <div
@@ -557,51 +592,13 @@ export const StudentProfleFOrm = ({
               "Error loading learning data"
             ) : customLearningData?.data?.message?.custom_learning &&
               customLearningData.data.message.custom_learning.length > 0 ? (
-              <table
-                style={{
-                  width: "auto",
-                  minWidth: "180px",
-                  borderCollapse: "collapse",
-                  marginTop: "0.5rem",
-                  marginLeft: 0,
-                  marginRight: 0,
-                  border: "1px solid #d3d3d3", 
-                  borderRadius: "6px",
-                  background: "#fafafa", 
-                  // overflow: "hidden",
-                }}
-              >
+              <table style={tableStyles.table}>
                 <thead>
                   <tr>
-                    <th
-                      style={{
-                        textAlign: "left",
-                        padding: "0.18rem 0.4rem",
-                        border: "1px solid #d3d3d3",
-                        fontWeight: 600,
-                        fontSize: "1em",
-                        minWidth: "80px",
-                        background: "#fafafa", 
-                        color: `${studentProfileColor}`
-
-                      }}
-                    >
+                    <th style={{...tableStyles.th, minWidth: "80px", color: studentProfileColor}}>
                       Subject
                     </th>
-                    <th
-                      style={{
-                        textAlign: "left",
-                        padding: "0.18rem 0.4rem",
-                        border: "1px solid #d3d3d3",
-                        fontWeight: 600,
-                        fontSize: "1em",
-                        whiteSpace: "nowrap",
-                        minWidth: "50px",
-                        background: "#fafafa", 
-                        color: `${studentProfileColor}`
-
-                      }}
-                    >
+                    <th style={{...tableStyles.th, minWidth: "50px", color: studentProfileColor}}>
                       Group
                     </th>
                   </tr>
@@ -610,27 +607,11 @@ export const StudentProfleFOrm = ({
                   {customLearningData.data.message.custom_learning.map(
                     (item: any) => (
                       <tr key={item.name}>
-                        <td
-                          style={{
-                            padding: "0.18rem 0.4rem",
-                            border: "1px solid #d3d3d3",
-                            fontSize: "0.97em",
-                            whiteSpace: "nowrap",
-                            background: "#fff", 
-                          }}
-                        >
+                        <td style={tableStyles.td}>
                           {item.subject}
                         </td>
-                        <td
-                          style={{
-                            padding: "0.18rem 0.4rem",
-                            border: "1px solid #d3d3d3",
-                            fontSize: "0.97em",
-                            whiteSpace: "nowrap",
-                            background: "#fff", 
-                          }}
-                        >
-                          {item.item?.split("-")[0] || `G${item.group_no}`}
+                        <td style={tableStyles.td}>
+                          {getGroupDisplay(item)}
                         </td>
                       </tr>
                     )
