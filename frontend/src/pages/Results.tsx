@@ -52,7 +52,6 @@ export const Results = () => {
   const { data: letterHeadData } = useSchoolLetterHead(
     assessmentGroupData?.data?.data?.custom_school
   );
-  console.log(letterHeadData);
 
   const examName = examResult?.map?.((i: any) => i?.name);
   const assessmentGroupFilter = async (
