@@ -3,7 +3,7 @@ import EditableField from '@/components/custom/editable-field';
 import type { GuardianDetailsProps } from '@/types/students';
 import { useTranslation } from 'react-i18next';
 
-const GuardianDetails: React.FC<Omit<GuardianDetailsProps, 'setOtpField' | 'setOtpValue' | 'setOtpError'>> = ({ label, guardian, emailValue, mobileValue, incomeValue, onEmailChange, onMobileChange, onIncomeChange, onUpdate, onSendOtp }) => {
+const GuardianDetails: React.FC<Omit<GuardianDetailsProps, 'setOtpField' | 'setOtpValue' | 'setOtpError'>> = ({ label, guardian, emailValue, mobileValue, incomeValue, onEmailChange, onMobileChange, onIncomeChange, onUpdate }) => {
     const { t } = useTranslation('student_profile');
 
     return (

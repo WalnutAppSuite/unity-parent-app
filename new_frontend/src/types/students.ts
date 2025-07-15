@@ -177,5 +177,4 @@ export interface GuardianDetailsProps {
     setOtpField: (field: string) => void;
     setOtpValue: (val: string) => void;
     setOtpError: (val: string) => void;
-    onSendOtp: (field: string) => Promise<void>;
 }

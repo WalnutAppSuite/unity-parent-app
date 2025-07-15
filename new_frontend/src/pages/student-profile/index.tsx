@@ -75,30 +75,6 @@ function StudentProfileWithFilters({ student }: { student: Student }) {
     );
   }
 
-  const handleSendOtp = async (fieldName: string) => {
-    try {
-      // TODO: Implement API call to send OTP
-      console.log('Sending OTP for field:', fieldName);
-      
-      // Example API call structure:
-      // const response = await fetch('/api/student/send-otp', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     studentId: student.name,
-      //     fieldName
-      //   })
-      // });
-      
-      // if (!response.ok) {
-      //   throw new Error('Failed to send OTP');
-      // }
-      
-    } catch (error) {
-      console.error('Error sending OTP:', error);
-      throw error;
-    }
-  };
 
   return (
     <StudentAccordion
@@ -120,7 +96,6 @@ function StudentProfileWithFilters({ student }: { student: Student }) {
       address2={student.address2}
       bloodGroup={student.blood_group}
       guardians={studentDetails?.message?.guardians}
-      onSendOtp={handleSendOtp}
     />
   );
 }

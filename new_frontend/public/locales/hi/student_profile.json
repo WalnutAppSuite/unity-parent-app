@@ -62,16 +62,20 @@
       "otpSent": "OTP सफलतापूर्वक भेजा गया!"
     }
   },
-  "mother.name": "माता का नाम",
-  "mother.email": "माता का ईमेल",
-  "mother.mobile": "माता का मोबाइल",
-  "mother.income": "माता की वार्षिक आय",
-  "mother.occupation": "माता का व्यवसाय",
-  "mother.company": "माता की कंपनी",
-  "father.name": "पिता का नाम",
-  "father.email": "पिता का ईमेल",
-  "father.mobile": "पिता का मोबाइल",
-  "father.income": "पिता की वार्षिक आय",
-  "father.occupation": "पिता का व्यवसाय",
-  "father.company": "पिता की कंपनी"
+  "mother": {
+    "name": "माता का नाम",
+    "email": "माता का ईमेल",
+    "mobile": "माता का मोबाइल नंबर",
+    "income": "माता की आय",
+    "occupation": "माता का व्यवसाय",
+    "company": "माता की कंपनी"
+  },
+  "father": {
+    "name": "पिता का नाम",
+    "email": "पिता का ईमेल",
+    "mobile": "पिता का मोबाइल नंबर",
+    "income": "पिता की आय",
+    "occupation": "पिता का व्यवसाय",
+    "company": "पिता की कंपनी"
+  }
 }

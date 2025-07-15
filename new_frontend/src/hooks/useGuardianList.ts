@@ -162,7 +162,7 @@ export const guardin_email_update = () => {
     };
 }
 
-export const guardin_number_update = () => {
+export const guardian_number_update = () => {
     const queryClient = useQueryClient();
 
     const mutation = useMutation({

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -43,30 +43,28 @@ interface StudentProfileCardProps {
     bloodGroup: string;
     guardians?: Guardian[];
     onFieldChange?: (field: string, value: string) => void;
-    onSendOtp?: (fieldName: string) => Promise<void>;
 }
 
 export default function StudentAccordion({
     isLoading = true,
     image,
-    studentName = 'Adarsh Tiwari',
-    studentId = 'SHGD14',
-    referenceNumber = 'GD14',
-    school = 'Walnut School at Shivane',
-    firstName = 'Adarsh',
-    lastName = 'Tiwari',
-    programName = '10',
-    customDivision = 'B',
-    dateOfBirth = '10-01-2000',
-    religion = 'Hindu',
-    caste = 'Brahmin',
-    subCaste = 'Brahmin',
-    motherTongue = 'Hindi',
-    address1 = '123, Main Road, New Delhi',
-    address2 = '123, Main Road, New Delhi',
+    studentName,
+    studentId,
+    referenceNumber,
+    school,
+    firstName,
+    lastName,
+    programName,
+    customDivision,
+    dateOfBirth,
+    religion,
+    caste,
+    subCaste,
+    motherTongue,
+    address1,
+    address2,
     bloodGroup = 'A+',
-    guardians = [],
-    onSendOtp = async () => { },
+    guardians = []
 }: StudentProfileCardProps) {
     const { t } = useTranslation('student_profile');
     const { mother, father } = useGuardians(guardians);
@@ -88,7 +86,7 @@ export default function StudentAccordion({
     const updateField = useFieldUpdate();
 
     const formattedDateOfBirth = dateOfBirth.split("-").reverse().join("-");
-
+    const accordionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -100,7 +98,7 @@ export default function StudentAccordion({
             },
             { threshold: 0.1 },
         );
-        const currentElement = document.getElementById('student-accordion');
+        const currentElement = accordionRef.current;
         if (currentElement) {
             observer.observe(currentElement);
         }
@@ -155,7 +153,7 @@ export default function StudentAccordion({
     }, [mother, father]);
 
     return (
-        <div id="student-accordion">
+        <div ref={accordionRef}>
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -259,7 +257,6 @@ export default function StudentAccordion({
                                                                 await handleOtpRequest(field, value);
                                                             }}
                                                             t={t}
-                                                            onSendOtp={onSendOtp}
                                                         />
                                                         <GuardianDetails
                                                             label="Father"
@@ -274,7 +271,6 @@ export default function StudentAccordion({
                                                                 await handleOtpRequest(field, value);
                                                             }}
                                                             t={t}
-                                                            onSendOtp={onSendOtp}
                                                         />
                                                     </div>
                                                 </div>

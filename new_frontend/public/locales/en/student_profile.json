@@ -62,16 +62,20 @@
       "otpSent": "OTP sent successfully!"
     }
   },
-  "mother.name": "Mother's Name",
-  "mother.email": "Mother's Email",
-  "mother.mobile": "Mother's Mobile",
-  "mother.income": "Mother's Income",
-  "mother.occupation": "Mother's Occupation",
-  "mother.company": "Mother's Company",
-  "father.name": "Father's Name",
-  "father.email": "Father's Email",
-  "father.mobile": "Father's Mobile",
-  "father.income": "Father's Income",
-  "father.occupation": "Father's Occupation",
-  "father.company": "Father's Company"
+  "mother": {
+    "name": "Mother's Name",
+    "email": "Mother's Email",
+    "mobile": "Mother's Mobile",
+    "income": "Mother's Income",
+    "occupation": "Mother's Occupation",
+    "company": "Mother's Company"
+  },
+  "father": {
+    "name": "Father's Name",
+    "email": "Father's Email",
+    "mobile": "Father's Mobile",
+    "income": "Father's Income",
+    "occupation": "Father's Occupation",
+    "company": "Father's Company"
+  }
 }
