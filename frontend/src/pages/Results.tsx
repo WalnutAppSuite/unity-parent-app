@@ -265,9 +265,6 @@ export const Results = () => {
     selectedExam,
   ]);
 
-  console.log("years", years);
-
-  console.log("selectedYear", selectedYear);
 
   const handleExamChange = (e: any) => {
     setSelectedExam(e);
