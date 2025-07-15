@@ -513,7 +513,7 @@ export const StudentProfleFOrm = ({
 
   // Helper to get group display value
   const getGroupDisplay = (item: any) => {
-    return item.item?.split("-")[0] || `G${item.group_no}`;
+    return item.differential_group.group_name;
   };
 
   // Table styles for Learning Groups
