@@ -247,9 +247,7 @@ export const Results = () => {
   useEffect(() => {
     if (examName[0] && classDetails?.data?.message?.division?.program) {
       setErrorTrue(false);
-      printFormatView(
-        examName[0]
-      );
+      printFormatView(examName[0]);
     }
     if (selectedExam === "") {
       setPrintFormat({ html: "", style: "" });
@@ -266,6 +264,7 @@ export const Results = () => {
     setError,
     selectedExam,
   ]);
+
 
   const handleExamChange = (e: any) => {
     setSelectedExam(e);
@@ -301,7 +300,7 @@ export const Results = () => {
 
     try {
       const response = await fetch(
-        `/api/resource/Program Enrollment?filters=[["student","=","${student}"],["docstatus","=","1"]]&fields=["academic_year","student_group","program"]`
+        `/api/method/unity_parent_app.api.studentProfile.get_academic_years?student=${student}`
       );
 
       if (!response.ok) {
@@ -310,10 +309,18 @@ export const Results = () => {
 
       const data = await response.json();
 
-      if (data.data && data.data) {
-        setYears(data.data);
-      } else if (data.message && data.message.error) {
+      if (data.message?.academic_years?.length > 0) {
+        // Convert array of strings to array of objects with academic_year property
+        const formattedYears = data.message.academic_years.map((year: string) => ({
+          academic_year: year,
+          program: '', // Add empty program as it's required by the type
+          student_group: '' // Add empty student_group as it's required by the type
+        }));
+        setYears(formattedYears);
+      } else if (data.message?.error) {
         console.error(data.message.error);
+        setYears([]);
+      } else {
         setYears([]);
       }
     } catch (error) {
@@ -356,14 +363,21 @@ export const Results = () => {
     }
   }, [selectedUnit, unitOptions]);
 
-  const handleYearChange = (e: string | null) => {
-    const selectedYear = years.find((v) => v.academic_year === e);
-    if (selectedYear) {
-      setSelectedYear(selectedYear);
+  const handleYearChange = (selectedYearValue: string | null) => {
+    if (!selectedYearValue) {
+      setSelectedYear(null);
+      assessmentGroupFilter(null, null);
+      return;
+    }
+    
+    const yearData = years.find((year) => year.academic_year === selectedYearValue);
+    if (yearData) {
+      setSelectedYear(yearData);
+      assessmentGroupFilter(selectedYearValue, yearData.program);
     } else {
       setSelectedYear(null);
+      assessmentGroupFilter(null, null);
     }
-    assessmentGroupFilter(e, selectedYear?.program);
   };
 
   const html = printFormat?.html;
@@ -472,13 +486,23 @@ export const Results = () => {
                   width: "25vh",
                   padding: "8px",
                 }}
-                value={selectedYear?.academic_year}
-                onChange={(value) => handleYearChange(value)}
+                value={selectedYear?.academic_year || ''}
+                onChange={(value) => handleYearChange(value || null)}
                 placeholder="Select Year"
-                data={years.map((year) => ({
-                  value: year.academic_year,
-                  label: year.academic_year,
-                }))}
+                data={
+                  Array.isArray(years) && years.length > 0
+                    ? years.map((year) => ({
+                        value: year.academic_year,
+                        label: year.academic_year,
+                      }))
+                    : []
+                }
+                searchable
+                clearable
+                nothingFound="No years found"
+                transition="pop-top-left"
+                transitionDuration={150}
+                transitionTimingFunction="ease"
               />
             </div>
             <div
@@ -501,7 +525,7 @@ export const Results = () => {
                 }}
                 value={selectedExam}
                 onChange={handleExamChange}
-                placeholder="Select Year"
+                placeholder="Select Exam"
                 data={examOptions}
               />
             </div>
