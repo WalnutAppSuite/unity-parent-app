@@ -73,6 +73,8 @@ const DashboardLayout = () => {
     '/timetable/detailed': 'timetableDetailed',
     '/starred': 'starredMessages',
     '/archived': 'archivedMessages',
+    '/knowledge-base' : 'knowledgeBase',
+    '/knowledge-base/detailed' : 'knowledgeBase',
     '*': 'notFound'
   };
 

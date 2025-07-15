@@ -57,7 +57,7 @@ function KnowledgeBaseChild({ wiki_link }: { wiki_link: string }) {
 
   return <div>
     <Button
-      className="tw-bg-secondary tw-w-full !tw-text-primary tw-text-4 tw-font-semibold tw-rounded-xl"
+      className="tw-bg-secondary !tw-text-primary hover:!tw-bg-secondary/80 tw-text-4 tw-font-semibold tw-rounded-xl"
       onClick={handleTimetableClick}
     >
       {t('button')}

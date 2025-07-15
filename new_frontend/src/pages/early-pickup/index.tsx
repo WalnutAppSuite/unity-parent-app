@@ -59,6 +59,7 @@ function EarlyPickupChild({ studentId, program }: { studentId: string; program: 
   const [date, setDate] = useState<Date | undefined>();
   const [time, setTime] = useState<string>("");
   const [reason, setReason] = useState("");
+  const[loading,setLoading] = useState(false);
 
   const { mutate } = useEarlyPickUpMutation();
 
@@ -66,6 +67,8 @@ function EarlyPickupChild({ studentId, program }: { studentId: string; program: 
     if (!date) return;
     const newDate = new Date(date);
     const formattedDate = newDate.toISOString().split("T")[0];
+
+    setLoading(true)
 
     mutate({
       student: studentId,
@@ -78,13 +81,20 @@ function EarlyPickupChild({ studentId, program }: { studentId: string; program: 
     }, {
       onSuccess: () => {
         toast.success("Early pickup request submitted successfully!");
+        setLoading(false);
       },
       onError: (err: any) => {
         const message = err?.response?.data?.message || "Something went wrong while submitting the application , please try again later";
         toast.error(`Submission failed: ${message}`);
+        setLoading(false);
       }
-    });
+    }
+  );
   }
+
+  // Calculate yesterday
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
 
   return (
     <div className="tw-flex tw-flex-col tw-gap-4">
@@ -97,6 +107,7 @@ function EarlyPickupChild({ studentId, program }: { studentId: string; program: 
           <SingleDatePicker
             placeHolder={t("pickDatePlaceholder")}
             value={date}
+            minDate={yesterday}
             onChange={(d) => {
               if (d instanceof Date || d === undefined) {
                 setDate(d);
@@ -118,7 +129,7 @@ function EarlyPickupChild({ studentId, program }: { studentId: string; program: 
           type="time"
           value={time}
           onChange={e => setTime(e.target.value)}
-          className="tw-flex-1 !tw-bg-black/10 !placeholder:tw-text-secondary tw-text-secondary"
+          className="tw-flex-1 !tw-bg-black/10 !placeholder:tw-text-secondary !tw-text-secondary"
         />
       </div>
 
@@ -141,7 +152,7 @@ function EarlyPickupChild({ studentId, program }: { studentId: string; program: 
         disabled={!date || !time}
         onClick={handleEarlySubmit}
       >
-        {t('button')}
+        {loading ? t('sending') : t('button')}
       </Button>
     </div>
   );

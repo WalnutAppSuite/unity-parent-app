@@ -58,6 +58,8 @@ function NoticeCard({ notice }: NoticeCardProps) {
       state: {
         notice: notice.name,
         studentId: notice.student,
+        starred: isStarred,
+        archived: isArchived,
       }
     });
   }

@@ -51,14 +51,15 @@ function CreateNoteChild({ name, division }: { name: string, division: string })
     const [fromDate, setFromDate] = useState<Date | undefined>();
     const [toDate, setToDate] = useState<Date | undefined>();
     const [reason, setReason] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const { mutate } = useLeaveNote();
 
     const handleCreateButtonClick = () => {
-
         if (!fromDate || !toDate || !reason || !name || !division) {
             return null
         }
+        setLoading(true);
 
         const formattedFrom = formatDateFromISO(fromDate);
         const formattedTo = formatDateFromISO(toDate);
@@ -80,9 +81,11 @@ function CreateNoteChild({ name, division }: { name: string, division: string })
                     setFromDate(undefined);
                     setToDate(undefined);
                     setReason("");
+                    setLoading(false);
                 },
                 onError: (err: any) => {
                     toast.error(t("Failed to create leave note.") + (err?.message ? `: ${err.message}` : ""));
+                    setLoading(false);
                 },
             }
         );
@@ -92,7 +95,7 @@ function CreateNoteChild({ name, division }: { name: string, division: string })
     yesterday.setDate(yesterday.getDate() - 1);
 
     return (
-        <div className="tw-flex tw-flex-col tw-gap-4">
+        <div className="tw-relative tw-flex tw-flex-col tw-gap-4">
             {/* Date */}
             <div className="tw-flex tw-items-start tw-flex-col tw-gap-2">
                 <label htmlFor="date-picker" className="tw-text-secondary tw-text-sm tw-font-medium">
@@ -113,8 +116,6 @@ function CreateNoteChild({ name, division }: { name: string, division: string })
                     />
                 </div>
             </div>
-
-
             {/* Time */}
             <div className="tw-flex tw-items-start tw-flex-col tw-gap-2">
                 <label htmlFor="date-picker" className="tw-text-secondary tw-text-sm tw-font-medium">
@@ -134,7 +135,6 @@ function CreateNoteChild({ name, division }: { name: string, division: string })
                     />
                 </div>
             </div>
-
             {/* Reason */}
             <div className="tw-flex tw-items-start tw-gap-2 tw-flex-col">
                 <label htmlFor="text-area" className="tw-text-secondary tw-text-sm tw-font-medium">
@@ -148,13 +148,12 @@ function CreateNoteChild({ name, division }: { name: string, division: string })
                     className="tw-flex-1 !tw-bg-black/10 placeholder:tw-text-secondary tw-text-secondary !tw-h-32 tw-resize-none !tw-text-[14px]"
                 />
             </div>
-
             <Button
                 className="tw-bg-secondary !tw-text-primary hover:!tw-bg-secondary/80 tw-text-4 tw-font-semibold tw-rounded-xl"
-                disabled={!fromDate || !toDate || !reason}
+                disabled={!fromDate || !toDate || !reason || loading}
                 onClick={handleCreateButtonClick}
             >
-                {t('button')}
+                {loading ? t('sending') : t('button')}
             </Button>
         </div>
     );

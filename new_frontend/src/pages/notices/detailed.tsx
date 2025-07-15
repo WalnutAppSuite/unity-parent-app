@@ -33,7 +33,7 @@ function NoticeShadowContent({ html }: { html: string }) {
 function DetailedNotices() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { notice, studentId } = location.state || {};
+  const { notice, studentId , starred , archived } = location.state || {};
   const { t } = useTranslation("notices");
   const { toggleStar, toggleArchive, isStarring, isArchiving } = useNoticeActions();
   const { data, isLoading, error } = useNoticeDetails({ id: notice, student: studentId });
@@ -42,27 +42,28 @@ function DetailedNotices() {
 
   useEffect(() => {
     if (data?.data) {
-      setIsStarred(data.data.is_stared === 1);
-      setIsArchived(data.data.is_archived === 1);
+      setIsStarred(starred || false);
+      setIsArchived(archived || false);
+      // Save to localStorage
+      localStorage.setItem(`notice_${notice}_starred`, JSON.stringify(starred || false));
+      localStorage.setItem(`notice_${notice}_archived`, JSON.stringify(archived || false));
     }
-  }, [data]);
+  }, [data, starred, archived, notice]);
 
   const handleStarClick = (noticeData: Notice) => {
-    console.log(noticeData);
-
     toggleStar(noticeData);
-    setIsStarred((prev) => !prev);
-    if (isStarred) {
-      navigate("/starred");
-    }
+    setIsStarred((prev) => {
+      localStorage.setItem(`notice_${notice}_starred`, JSON.stringify(!prev));
+      return !prev;
+    });
   };
 
   const handleArchiveClick = (noticeData: Notice) => {
     toggleArchive(noticeData);
-    setIsArchived((prev) => !prev)
-    if (isArchived) {
-      navigate("/archived");
-    }
+    setIsArchived((prev) => {
+      localStorage.setItem(`notice_${notice}_archived`, JSON.stringify(!prev));
+      return !prev;
+    });
   };
 
   if (isLoading) {
