@@ -5,5 +5,6 @@
     "toPlaceholder": "तारीख चुनें",
     "notesLable": "आपका नोट",
     "notesPlaceholder": "आपका नोट (अधिकतम 140 अक्षर)",
-    "button" : "बचाना"
+    "button" : "भेजें",
+    "sending": "भेजा जा रहा है..."
 }

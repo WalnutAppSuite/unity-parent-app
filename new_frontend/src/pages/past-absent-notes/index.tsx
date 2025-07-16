@@ -49,10 +49,6 @@ function PastLeaveNotesChild({ studentId }: { studentId: string }) {
   const toggleAccordion = () => setIsOpen((prev) => !prev);
   const { t } = useTranslation('past_leave_note')
 
-  if (!pastLeaveDetails?.length) {
-    return <p className="tw-text-sm tw-text-gray-500">No leave notes available.</p>;
-  }
-
   if (isLoading) {
     return (
       <Skeleton className="tw-h-20" />

@@ -5,5 +5,6 @@
     "toPlaceholder": "Pick to date",
     "notesLable": "Your Note",
     "notesPlaceholder": "Your Note (max 140 charaters)",
-    "button" : "Save"
+    "button" : "Send",
+    "sending": "Sending..."
 }

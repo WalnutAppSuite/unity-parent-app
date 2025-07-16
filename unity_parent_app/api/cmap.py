@@ -29,6 +29,10 @@ def get_students():
         return []
 
     students = [student for student in all_student_data if student.get("enabled")]
+    
+    for student in all_student_data:
+        program_doc = frappe.get_cached_doc("Program", student.program)
+        student['program_name'] = program_doc.program_name if program_doc else None
 
     # Cache the results for 10 minutes
     frappe.cache().set_value(cache_key, students, expires_in_sec=600)
