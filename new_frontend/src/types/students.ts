@@ -61,3 +61,120 @@ export interface Student {
   custom_number_of_books_issued: string;
   [key: string]: any;
 }
+export interface FieldEditState {
+  [key: string]: {
+    isEditing: boolean;
+    value: string;
+    isSubmitting: boolean;
+    showOTP: boolean;
+  };
+}
+
+// StudentAccordion component props (updated)
+export interface StudentAccordionProps {
+  student: Student;
+  index: number;
+  isEditing: boolean;
+  onEditStart: (studentId: string) => void;
+  onEditAttempt: (studentId: string) => void;
+  onStudentUpdate: (studentId: string, updatedData: Partial<Student>) => void;
+  onEditComplete: () => void;
+  onSuccessMessage: (message: string, studentName?: string) => void;
+}
+
+// Legacy EditableFields interface (for backward compatibility)
+export interface EditableFields {
+  custom_mothers_email: string;
+  custom_mothers_mobile_no: string;
+  custom_fathers_email: string;
+  custom_fathers_mobile: string;
+  address_line_1: string;
+  address_line_2: string;
+  blood_group: string;
+  custom_fathers_annual_income: string;
+  custom_mothers_annual_income: string;
+}
+
+// ActionPopup component props
+export interface ActionPopupProps {
+  isVisible: boolean;
+  onSave: () => void;
+  onCancel: () => void;
+  title: string;
+  message: string;
+  saveButtonText?: string;
+  cancelButtonText?: string;
+}
+
+// OTP Input component props
+export interface OTPInputProps {
+  value: string;
+  length: number;
+  onChange: (value: string) => void;
+  onComplete?: (value: string) => void;
+  disabled?: boolean;
+}
+
+// API Response types for OTP operations
+export interface OTPResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+  error_message?: string;
+}
+
+// Field types that require OTP verification
+export type OTPRequiredFields = 
+  | 'custom_mothers_email' 
+  | 'custom_fathers_email' 
+  | 'custom_mothers_mobile_no' 
+  | 'custom_fathers_mobile';
+
+// Editable field keys
+export type EditableFieldKeys = 
+  | 'custom_mothers_email'
+  | 'custom_mothers_mobile_no'
+  | 'custom_fathers_email'
+  | 'custom_fathers_mobile'
+  | 'address_line_1'
+  | 'address_line_2'
+  | 'blood_group'
+  | 'custom_fathers_annual_income'
+  | 'custom_mothers_annual_income';
+
+// Verification method type
+export type VerificationMethod = 'email' | 'mobile';
+
+// Add these interfaces if not present already
+export interface Guardian {
+    name: string;
+    first_name: string;
+    middle_name?: string;
+    last_name: string;
+    guardian_name: string;
+    email_address: string;
+    mobile_number: string;
+    annual_income: string;
+    relation: string;
+    occupation?: string;
+    designation?: string;
+    company_name?: string;
+    work_address?: string;
+    education?: string;
+}
+
+export interface GuardianDetailsProps {
+    label: string;
+    guardian: Guardian | undefined;
+    emailValue: string;
+    mobileValue: string;
+    incomeValue: string;
+    onEmailChange: (val: string) => void;
+    onMobileChange: (val: string) => void;
+    onIncomeChange: (val: string) => void;
+    onUpdate: (field: string, value: string, otp: string) => Promise<void>;
+    t: any;
+    setOtpField: (field: string) => void;
+    setOtpValue: (val: string) => void;
+    setOtpError: (val: string) => void;
+}

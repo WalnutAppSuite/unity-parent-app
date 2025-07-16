@@ -1,0 +1,81 @@
+{
+  "studentProfile": {
+    "title": "छात्र प्रोफ़ाइल",
+    "loading": "छात्रों को लोड कर रहा है...",
+    "noStudents": "कोई छात्र उपलब्ध नहीं है",
+    "errors": {
+      "classDetails": {
+        "title": "कक्षा विवरण लोड करने में त्रुटि",
+        "message": "कक्षा की जानकारी लोड करने में विफल"
+      },
+      "studentDetails": {
+        "title": "छात्र विवरण लोड करने में त्रुटि",
+        "message": "छात्र की जानकारी लोड करने में विफल"
+      }
+    },
+    "accordion": {
+      "class": "कक्षा",
+      "school": "स्कूल",
+      "dateOfBirth": "जन्म तिथि",
+      "religion": "धर्म",
+      "caste": "जाति",
+      "subCaste": "उप-जाति",
+      "motherTongue": "मातृभाषा",
+      "address1": "पता 1",
+      "address2": "पता 2",
+      "bloodGroup": "रक्त समूह",
+      "mothersDetails": "माता का विवरण",
+      "mothersName": "माता का नाम",
+      "mothersEmail": "माता का ईमेल",
+      "mothersMobile": "माता का मोबाइल",
+      "mothersIncome": "माता की वार्षिक आय",
+      "mothersOccupation": "माता का व्यवसाय",
+      "mothersCompany": "माता की कंपनी",
+      "fathersDetails": "पिता का विवरण",
+      "fathersName": "पिता का नाम",
+      "fathersEmail": "पिता का ईमेल",
+      "fathersMobile": "पिता का मोबाइल",
+      "fathersIncome": "पिता की वार्षिक आय",
+      "fathersOccupation": "पिता का व्यवसाय",
+      "fathersCompany": "पिता की कंपनी"
+    },
+    "actions": {
+      "edit": "संपादित करें",
+      "lock": "लॉक करें",
+      "expand": "विस्तार करें",
+      "collapse": "संकुचित करें",
+      "update": "अपडेट करें",
+      "cancel": "रद्द करें",
+      "save": "सहेजें",
+      "verifyOtp": "OTP सत्यापित करें"
+    },
+    "placeholders": {
+      "noImage": "कोई छवि उपलब्ध नहीं है",
+      "enterOtp": "OTP दर्ज करें",
+      "otpSent": "आपके मोबाइल पर OTP भेजा गया"
+    },
+    "otp": {
+      "title": "OTP सत्यापन",
+      "message": "कृपया अपने मोबाइल नंबर पर भेजे गए OTP को दर्ज करें",
+      "resend": "OTP पुनः भेजें",
+      "invalidOtp": "अमान्य OTP. कृपया पुनः प्रयास करें।",
+      "otpSent": "OTP सफलतापूर्वक भेजा गया!"
+    }
+  },
+  "mother": {
+    "name": "माता का नाम",
+    "email": "माता का ईमेल",
+    "mobile": "माता का मोबाइल नंबर",
+    "income": "माता की आय",
+    "occupation": "माता का व्यवसाय",
+    "company": "माता की कंपनी"
+  },
+  "father": {
+    "name": "पिता का नाम",
+    "email": "पिता का ईमेल",
+    "mobile": "पिता का मोबाइल नंबर",
+    "income": "पिता की आय",
+    "occupation": "पिता का व्यवसाय",
+    "company": "पिता की कंपनी"
+  }
+}

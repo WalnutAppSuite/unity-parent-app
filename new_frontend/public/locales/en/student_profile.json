@@ -1,0 +1,81 @@
+{
+  "studentProfile": {
+    "title": "Student Profile",
+    "loading": "Loading students...",
+    "noStudents": "No students available",
+    "errors": {
+      "classDetails": {
+        "title": "Error loading class details",
+        "message": "Failed to load class information"
+      },
+      "studentDetails": {
+        "title": "Error loading student details",
+        "message": "Failed to load student information"
+      }
+    },
+    "accordion": {
+      "class": "Class",
+      "school": "School",
+      "dateOfBirth": "Date of Birth",
+      "religion": "Religion",
+      "caste": "Caste",
+      "subCaste": "Sub Caste",
+      "motherTongue": "Mother Tongue",
+      "address1": "Address 1",
+      "address2": "Address 2",
+      "bloodGroup": "Blood Group",
+      "mothersDetails": "Mother's Details",
+      "mothersName": "Mother's Name",
+      "mothersEmail": "Mother's Email",
+      "mothersMobile": "Mother's Mobile",
+      "mothersIncome": "Annual Income of Mother",
+      "mothersOccupation": "Mother's Occupation",
+      "mothersCompany": "Mother's Company",
+      "fathersDetails": "Father's Details",
+      "fathersName": "Father's Name",
+      "fathersEmail": "Father's Email",
+      "fathersMobile": "Father's Mobile",
+      "fathersIncome": "Annual Income of Father",
+      "fathersOccupation": "Father's Occupation",
+      "fathersCompany": "Father's Company"
+    },
+    "actions": {
+      "edit": "Edit",
+      "lock": "Lock",
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "update": "Update",
+      "cancel": "Cancel",
+      "save": "Save",
+      "verifyOtp": "Verify OTP"
+    },
+    "placeholders": {
+      "noImage": "No Image Available",
+      "enterOtp": "Enter OTP",
+      "otpSent": "OTP sent to your mobile"
+    },
+    "otp": {
+      "title": "OTP Verification",
+      "message": "Please enter the OTP sent to your mobile number",
+      "resend": "Resend OTP",
+      "invalidOtp": "Invalid OTP. Please try again.",
+      "otpSent": "OTP sent successfully!"
+    }
+  },
+  "mother": {
+    "name": "Mother's Name",
+    "email": "Mother's Email",
+    "mobile": "Mother's Mobile",
+    "income": "Mother's Income",
+    "occupation": "Mother's Occupation",
+    "company": "Mother's Company"
+  },
+  "father": {
+    "name": "Father's Name",
+    "email": "Father's Email",
+    "mobile": "Father's Mobile",
+    "income": "Father's Income",
+    "occupation": "Father's Occupation",
+    "company": "Father's Company"
+  }
+}
