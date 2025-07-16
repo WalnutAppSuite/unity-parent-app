@@ -7,34 +7,34 @@ from edu_quality.public.py.walsh.login import is_disabled
 import json
 
 
-@frappe.whitelist()
-def get_students():
-    user = frappe.session.user
+# @frappe.whitelist()
+# def get_students():
+#     user = frappe.session.user
 
-    cache_key = f"walsh:guardian_students_{user}"
-    students_cache = frappe.cache().get_value(cache_key)
+#     cache_key = f"walsh:guardian_students_{user}"
+#     students_cache = frappe.cache().get_value(cache_key)
 
-    if students_cache:
-        return students_cache
+#     if students_cache:
+#         return students_cache
 
-    guardian = frappe.get_cached_doc("Guardian", {"user": user})
-    all_student_data = frappe.get_all(
-        "Student", filters={"guardian": guardian.name}, fields=["*"]
-    )
+#     guardian = frappe.get_cached_doc("Guardian", {"user": user})
+#     all_student_data = frappe.get_all(
+#         "Student", filters={"guardian": guardian.name}, fields=["*"]
+#     )
 
-    student_disabled = all(student.get("enabled") == 0 for student in all_student_data)
-    # if all of student disabled log out the parent
-    if student_disabled:
-        logout()
+#     student_disabled = all(student.get("enabled") == 0 for student in all_student_data)
+#     # if all of student disabled log out the parent
+#     if student_disabled:
+#         logout()
 
-        frappe.throw(("Not permitted"), frappe.PermissionError)
-        return []
+#         frappe.throw(("Not permitted"), frappe.PermissionError)
+#         return []
 
-    students = [student for student in all_student_data if student.get("enabled")]
+#     students = [student for student in all_student_data if student.get("enabled")]
 
-    # Cache the results for 10 minutes
-    frappe.cache().set_value(cache_key, students, expires_in_sec=600)
-    return students
+#     # Cache the results for 10 minutes
+#     frappe.cache().set_value(cache_key, students, expires_in_sec=600)
+#     return students
 
 
 def get_enrollments(student_names):

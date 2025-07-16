@@ -30,7 +30,7 @@ def get_students():
 
     students = [student for student in all_student_data if student.get("enabled")]
     
-    for student in all_student_data:
+    for student in students:
         program_doc = frappe.get_cached_doc("Program", student.program)
         student['program_name'] = program_doc.program_name if program_doc else None
 
