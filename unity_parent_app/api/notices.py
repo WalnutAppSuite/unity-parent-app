@@ -31,6 +31,8 @@ def get_students():
         return []
 
     students = [student for student in all_student_data if student.get("enabled")]
+    
+    print("student")
 
     # Cache the results for 10 minutes
     frappe.cache().set_value(cache_key, students, expires_in_sec=600)
