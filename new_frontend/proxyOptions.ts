@@ -2,7 +2,7 @@ import common_site_config from '../../../sites/common_site_config.json';
 
 const { webserver_port } = common_site_config;
 
-const uat = 'https://uat.unityedu.tech';
+// const uat = 'https://uat.unityedu.tech';
 
 export default {
   '^/(app|api|assets|files|private)': {
