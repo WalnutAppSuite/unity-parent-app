@@ -300,7 +300,7 @@ export const Results = () => {
 
     try {
       const response = await fetch(
-        `/api/method/unity_parent_app.api.studentProfile.get_academic_years?student=${student}`
+        `/api/method/unity_parent_app.api.student_profile.get_academic_years?student=${student}`
       );
 
       if (!response.ok) {

@@ -13,7 +13,7 @@ import PTMOffline from '@/pages/ptm/offline-ptm';
 import StudentProfile from '@/pages/student-profile';
 import Fee from '@/pages/fee';
 import FeeListing from "@/pages/fee/listing"
-import Result from '@/pages/result';
+import Result from '@/pages/result/index';
 import Observation from '@/pages/class-participation/index';
 import ObservationListing from '@/pages/class-participation/listing'
 import SchoolCalendar from '@/pages/school-calendar/index';
@@ -31,7 +31,7 @@ import DailyListing from '@/pages/daily/listing';
 import WeeklyListing from '@/pages/weekly/listing';
 import PortionListing from '@/pages/portion/listing';
 import NotFound from '@/pages/404';
-import ResultDetailsPage from '../result-details';
+import ResultDetailsPage from '@/pages/result/detailed';
 
 function AppRoutes() {
   return (
@@ -71,7 +71,7 @@ function AppRoutes() {
         <Route path='/starred' element={<StarredMessages />} />
         <Route path='/archived' element={<ArchivedMessages />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="result-details/:studentName" element={<ResultDetailsPage />} />
+        <Route path="/result-details/:studentName" element={<ResultDetailsPage />} />
       </Route>
     </Routes>
   );

@@ -42,7 +42,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         >
             <button
                 type="button"
-                className="tw-w-full tw-bg-white tw-border tw-rounded-md tw-px-4 tw-py-2 tw-text-left tw-shadow-sm tw-text-sm tw-cursor-pointer tw-flex tw-justify-between tw-items-center"
+                className="tw-w-full tw-text-secondary tw-bg-bg/10 tw-border tw-rounded-md tw-px-4 tw-py-2 tw-text-left tw-shadow-sm tw-text-sm tw-cursor-pointer tw-flex tw-justify-between tw-items-center"
                 onClick={() => setIsOpen((prev) => !prev)}
             >
                 <span>{selectedLabel}</span>

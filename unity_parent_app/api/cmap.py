@@ -9,7 +9,8 @@ from edu_quality.public.py.utils import get_previous_academic_year
 def get_students():
     user = frappe.session.user
 
-    cache_key = f"walsh:guardian_students_{user}"
+    # Versioned cache key to avoid stale cache after structure changes
+    cache_key = f"walsh:guardian_students_v2_{user}"
     students_cache = frappe.cache().get_value(cache_key)
 
     if students_cache:

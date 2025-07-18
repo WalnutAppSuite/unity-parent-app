@@ -63,6 +63,7 @@ const DashboardLayout = () => {
     '/fee': 'fee',
     '/fee/list': 'feeListing',
     '/result': 'result',
+    '/result-details/:studentName': 'result',
     '/calendar': 'schoolCalendar',
     '/school-calendar': 'schoolCalendar',
     '/certificate': 'bonafideCertificate',
@@ -73,8 +74,8 @@ const DashboardLayout = () => {
     '/timetable/detailed': 'timetableDetailed',
     '/starred': 'starredMessages',
     '/archived': 'archivedMessages',
-    '/knowledge-base' : 'knowledgeBase',
-    '/knowledge-base/detailed' : 'knowledgeBase',
+    '/knowledge-base': 'knowledgeBase',
+    '/knowledge-base/detailed': 'knowledgeBase',
     '*': 'notFound'
   };
 
@@ -86,15 +87,32 @@ const DashboardLayout = () => {
 
     let titleKey = pathTitleMap[path];
 
-    // Detect dynamic notice details route
-    const isNoticeDetails = /^\/notices\/[^/]+$/.test(path);
+    // Handle dynamic routes
+    const dynamicMatchers = [
+      { regex: /^\/notices\/[^/]+$/, key: 'noticeDetails' },
+      { regex: /^\/result-details\/[^/]+$/, key: 'result' },
+      { regex: /^\/knowledge-base\/detailed$/, key: 'knowledgeBase' },
+      { regex: /^\/observation\/list$/, key: 'observation' },
+      // Add other dynamic patterns here
+    ];
 
-    if (isNoticeDetails) {
-      titleKey = 'noticeDetails';
-      setIsDarkHeader(true);
+    for (const matcher of dynamicMatchers) {
+      if (matcher.regex.test(path)) {
+        titleKey = matcher.key;
+        break;
+      }
     }
 
-    if (titleKey === 'notices' || titleKey === 'schoolCalendar' || titleKey === 'noticeDetails' || titleKey === 'starredMessages' || titleKey === 'archivedMessages') {
+    // Set dark header toggle based on route
+    const lightRoutes = [
+      'notices',
+      'schoolCalendar',
+      'noticeDetails',
+      'starredMessages',
+      'archivedMessages',
+    ];
+
+    if (lightRoutes.includes(titleKey || '')) {
       setIsDarkHeader(false);
     } else {
       setIsDarkHeader(true);
@@ -102,6 +120,7 @@ const DashboardLayout = () => {
 
     setHeaderTitle(t(titleKey || ''));
   }, [location.pathname, t]);
+
 
   // const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 

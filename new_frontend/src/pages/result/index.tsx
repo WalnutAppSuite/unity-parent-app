@@ -3,15 +3,14 @@ import { useAtom } from 'jotai';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-
 import ProfileWrapper from '@/components/custom/ProfileWrapper';
 import { Button } from '@/components/ui/button';
-import Dropdown from '@/components/ui/dropdown';
 import { useFetchAcademicYears } from '@/hooks/useFetchAcademicYears';
 import { useFetchAssessmentGroups } from '@/hooks/useAssessmentGroups';
 import { useAssessmentResultMutate } from '@/hooks/useAssessmentResultMutate';
 import { studentsAtom } from '@/store/studentAtoms';
 import type { Student } from '@/types/students';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface AssessmentOption {
   value: string;
@@ -105,9 +104,9 @@ const useResultForm = (student: Student) => {
           const result = await mutateAssessmentResult.mutateAsync({
             selected_year: selectedYearObj
               ? {
-                  academic_year: selectedYearObj.academic_year,
-                  program: selectedYearObj.program,
-                }
+                academic_year: selectedYearObj.academic_year,
+                program: selectedYearObj.program,
+              }
               : null,
             selected_exam: selectedValue,
           });
@@ -202,28 +201,42 @@ const ResultForm = ({ student }: { student: Student }) => {
   return (
     <div className="tw-flex tw-flex-col tw-gap-3 tw-mt-5">
       {/* Academic Year Dropdown */}
-      <div className="tw-w-[250px] tw-mx-auto">
-        <Dropdown
-          options={academicYearOptions}
-          value={formData.selectedAcademicYear}
-          onChange={handleAcademicYearChange}
-          placeholder={t('selectAcademicYear')}
-          disabled={isLoading}
-        />
-      </div>
+      <Select
+        value={formData.selectedAcademicYear}
+        onValueChange={handleAcademicYearChange}
+        disabled={isLoading}
+      >
+        <SelectTrigger className="tw-border tw-rounded-md tw-h-10">
+          <SelectValue placeholder={t('selectAcademicYear')} />
+        </SelectTrigger>
+        <SelectContent>
+          {academicYearOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
-      {/* Exam Dropdown */}
-      <div className="tw-w-[250px] tw-mx-auto">
-        <Dropdown
-          options={formData.assessmentOptions}
-          value={formData.selectedExam}
-          onChange={handleExamChange}
-          placeholder={t('selectExam')}
-          disabled={
-            !formData.selectedAcademicYear || formData.assessmentOptions.length === 0 || isLoading
-          }
-        />
-      </div>
+
+      <Select
+        value={formData.selectedExam}
+        onValueChange={handleExamChange}
+        disabled={
+          !formData.selectedAcademicYear || formData.assessmentOptions.length === 0 || isLoading
+        }
+      >
+        <SelectTrigger className="tw-border tw-rounded-md tw-h-10">
+          <SelectValue placeholder={t('selectExam')} />
+        </SelectTrigger>
+        <SelectContent>
+          {formData.assessmentOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
       {/* Error Message */}
       {hasNoExams && (
@@ -234,8 +247,7 @@ const ResultForm = ({ student }: { student: Student }) => {
 
       {/* Show Result Button */}
       <Button
-        className="tw-w-full tw-bg-white tw-text-black tw-font-semibold tw-rounded-xl tw-mt-2"
-        style={{ color: '#1a1a1a' }}
+        className="tw-bg-secondary !tw-text-primary hover:!tw-bg-secondary/80 tw-text-4 tw-font-semibold tw-rounded-xl"
         onClick={handleShowResult}
         disabled={!isFormValid || isLoading}
       >
@@ -283,11 +295,9 @@ const ResultPage = () => {
 
   return (
     <div className="tw-flex tw-flex-col tw-gap-4">
-      <div className="tw-space-y-6 tw-max-w-md tw-mx-auto">
-        {students.map((student) => (
-          <StudentCard key={student.name || ''} student={student} />
-        ))}
-      </div>
+      {students.map((student) => (
+        <StudentCard key={student.name || ''} student={student} />
+      ))}
     </div>
   );
 };
