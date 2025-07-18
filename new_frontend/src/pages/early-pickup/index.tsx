@@ -12,22 +12,35 @@ import { useTranslation } from "react-i18next";
 import useEarlyPickUpMutation from '@/hooks/useEarlyPickup';
 import { toast } from "sonner";
 import EarlyPickupInstruction from "@/components/custom/instruction/earlyPickup"
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 function EarlyPickup() {
 
   const [students] = useAtom(studentsAtom);
 
+  const [loading, setLoading] = useState(false);
+
+  if (loading) {
+    return (
+      <div className="tw-flex tw-justify-center tw-items-center tw-h-full tw-bg-transparent tw-backdrop-blur-sm tw-w-full tw-inset-0 tw-absolute tw-left-0 tw-top-0 tw-z-999">
+        <div className="tw-flex tw-w-1/2">
+          <LoadingSpinner />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="tw-p-4">
       <EarlyPickupInstruction />
       {students.map((student) => (
-        <StudentProfileWithFilters key={student.name} student={student} />
+        <StudentProfileWithFilters key={student.name} student={student} setLoading={setLoading} />
       ))}
     </div>
   )
 }
 
-function StudentProfileWithFilters({ student }: { student: Student }) {
+function StudentProfileWithFilters({ student, setLoading }: { student: Student, setLoading: (loading: boolean) => void }) {
 
   const { data: classDetails, isLoading: classLoading } = useClassDetails(student.name);
 
@@ -38,59 +51,52 @@ function StudentProfileWithFilters({ student }: { student: Student }) {
   return (
     <ProfileWrapper
       image={student.image}
-      name={student.name}
       student_name={student.student_name}
-      classSection={student.classSection}
       reference_number={student.reference_number}
       custom_division={student.custom_division}
       first_name={student.first_name}
       last_name={student.last_name}
       program_name={student.program_name}
       isLoading={classLoading}
-      children={<EarlyPickupChild studentId={student.name} program={student.program} />}
+      children={<EarlyPickupChild studentId={student.name} program={student.program} setLoading={setLoading} />}
     />
   );
 }
 
 export default EarlyPickup;
 
-function EarlyPickupChild({ studentId, program }: { studentId: string; program: string }) {
+function EarlyPickupChild({ studentId, program, setLoading }: { studentId: string; program: string, setLoading: (loading: boolean) => void }) {
   const { t } = useTranslation("early_pickup");
   const [date, setDate] = useState<Date | undefined>();
   const [time, setTime] = useState<string>("");
   const [reason, setReason] = useState("");
-  const[loading,setLoading] = useState(false);
 
-  const { mutate } = useEarlyPickUpMutation();
+  const { mutateAsync } = useEarlyPickUpMutation();
 
-  const handleEarlySubmit = () => {
+  const handleEarlyPickup = async () => {
     if (!date) return;
     const newDate = new Date(date);
     const formattedDate = newDate.toISOString().split("T")[0];
 
-    setLoading(true)
-
-    mutate({
-      student: studentId,
-      dates: [formattedDate],
-      date: formattedDate,
-      time: time,
-      status: "early_pickup",
-      program: program,
-      note: reason,
-    }, {
-      onSuccess: () => {
-        toast.success("Early pickup request submitted successfully!");
-        setLoading(false);
-      },
-      onError: (err: any) => {
-        const message = err?.response?.data?.message || "Something went wrong while submitting the application , please try again later";
-        toast.error(`Submission failed: ${message}`);
-        setLoading(false);
-      }
+    setLoading(true);
+    try {
+      await mutateAsync({
+        student: studentId,
+        dates: [formattedDate],
+        date: formattedDate,
+        time: time,
+        status: "early_pickup",
+        program: program,
+        note: reason,
+      });
+      toast.success("Early pickup request submitted successfully!");
+    } catch (err: any) {
+      const message = err?.response?.data?.message || "Something went wrong while submitting the application , please try again later";
+      toast.error(`Submission failed: ${message}`);
+    } finally {
+      setLoading(false);
     }
-  );
-  }
+  };
 
   // Calculate yesterday
   const yesterday = new Date();
@@ -150,9 +156,9 @@ function EarlyPickupChild({ studentId, program }: { studentId: string; program: 
       <Button
         className="tw-bg-secondary !tw-text-primary hover:!tw-bg-secondary/80 tw-text-4 tw-font-semibold tw-rounded-xl"
         disabled={!date || !time}
-        onClick={handleEarlySubmit}
+        onClick={handleEarlyPickup}
       >
-        {loading ? t('sending') : t('button')}
+        {t('button')}
       </Button>
     </div>
   );

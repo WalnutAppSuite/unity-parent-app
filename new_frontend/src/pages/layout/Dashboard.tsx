@@ -145,7 +145,7 @@ const DashboardLayout = () => {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 1000 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="tw-bg-background-accent tw-max-w-md tw-w-full tw-h-full tw-border-opacity-30 tw-overflow-y-auto tw-shadow-primary tw-shadow-2xl"
+          className="tw-bg-background-accent tw-relative tw-max-w-md tw-w-full tw-h-full tw-border-opacity-30 tw-overflow-y-auto tw-shadow-primary tw-shadow-2xl"
         >
           <Outlet />
         </motion.div>

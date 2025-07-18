@@ -5,9 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import CreateNote from '@/pages/create-absent-notes/index'
 import PastNotes from '@/pages/past-absent-notes/index'
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function AnimatedTabs() {
   const { t } = useTranslation('absent')
+  const [loading, setLoading] = useState(false);
 
   const [students] = useAtom(studentsAtom);
 
@@ -37,7 +39,7 @@ export default function AnimatedTabs() {
     switch (selectedTab) {
       case "create":
         return (
-          <CreateNote students={students} />
+          <CreateNote students={students} setLoading={setLoading} />
         );
       case "past-notes":
         return (
@@ -47,6 +49,16 @@ export default function AnimatedTabs() {
         return null;
     }
   };
+
+  if (loading) {
+    return (
+      <div className="tw-flex tw-justify-center tw-items-center tw-h-full tw-bg-transparent tw-backdrop-blur-sm tw-w-full tw-inset-0 tw-absolute tw-left-0 tw-top-0 tw-z-999">
+        <div className="tw-flex tw-w-1/2">
+          <LoadingSpinner />
+        </div>
+      </div>
+    );
+  }
 
 
   return (
